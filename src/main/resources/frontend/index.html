@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Drug Store</title>
+</head>
+<body>
+    <style>
+        html, body {
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        #app {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+    <div id="app"></div>
+    <script>
+        function loadComponent(container, path, options = {}) {
+            if (options.hasOwnProperty('loadingContainer')) {
+                container.style.display = 'none';
+                options.loadingContainer.style.display = 'block';
+            }
+            fetch('/frontend/component?path=' + path)
+                .then(response => response.json())
+                .then(json => {
+                    container.innerHTML = json.html;
+                    eval(json.js);
+                })
+                .then(() => {
+                    if (options.hasOwnProperty('loadingContainer')) {
+                        container.style.display = 'block';
+                        options.loadingContainer.style.display = 'none';
+                    }
+                });
+        }
+        loadComponent(document.getElementById('app'), 'screens/home');
+    </script>
+</body>
+</html>

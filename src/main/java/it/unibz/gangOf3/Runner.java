@@ -1,5 +1,7 @@
 package it.unibz.gangOf3;
 
+import it.unibz.gangOf3.framework.ComponentProvider;
+import it.unibz.gangOf3.framework.FrameworkRouter;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,24 +25,7 @@ public class Runner {
 
         Context context = tomcat.addContext(contextPath, docBase);
 
-        class SampleServlet extends HttpServlet {
-
-            @Override
-            protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-                    throws IOException {
-                PrintWriter writer = resp.getWriter();
-
-                writer.println("<html><title>Tomcat Embedded</title><body>");
-                writer.println("<h1>Hi mom!</h1>");
-                writer.println("</body></html>");
-            }
-        }
-
-        String servletName = "HiMom";
-        String urlPattern = "/";
-
-        tomcat.addServlet(contextPath, servletName, new SampleServlet());
-        context.addServletMappingDecoded(urlPattern, servletName);
+        FrameworkRouter.registerRoutes(tomcat, context);
 
         tomcat.start();
         System.out.println("📡 Tomcat Embedded listening on port 8080!");
