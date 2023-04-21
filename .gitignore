@@ -361,3 +361,4 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,intellij+all,intellij+iml,visualstudiocode,eclipse,maven
 /.idea/
+/database.db

@@ -2,6 +2,7 @@ package it.unibz.gangOf3;
 
 import it.unibz.gangOf3.framework.ComponentProvider;
 import it.unibz.gangOf3.framework.FrameworkRouter;
+import it.unibz.gangOf3.util.DatabaseUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,14 @@ import java.io.PrintWriter;
 
 public class Runner {
     public static void main(String[] args) throws LifecycleException {
+
+        //Initialize database
+
+        DatabaseUtil.init();
+        System.out.println("💿 Database initialized!");
+
+        //Setup Tomcat
+
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir("temp");
         tomcat.setPort(8080);
