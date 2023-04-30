@@ -47,7 +47,7 @@ public class ComponentProvider extends HttpServlet {
         StringBuilder javascript = new StringBuilder();
         for (int i = 0; i < scripts.size(); i++) {
             String script = scripts.get(i).html();
-            javascript.append("(function() {").append(script).append("})()");
+            javascript.append(script).append(";\n");
             scripts.get(i).remove();
         }
         response.put("js", javascript.toString());

@@ -20,7 +20,7 @@ public class Runner {
         //Initialize database
 
         DatabaseUtil.init();
-        System.out.println("💿 Database initialized!");
+        System.out.println("💾 Database initialized!");
 
         //Setup Tomcat
 

@@ -1,0 +1,74 @@
+<div class="form-img"></div>
+<h1>Sign Up</h1>
+<span>Already have an account? <a href="javascript:navigate_signIn()">Sign In</a></span>
+<form>
+    <label for="form-vc-input">Type</label>
+    <div id="form-vc" class="form-vc">
+        <span>Customer</span>
+        <div class="form-vc-selector" onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
+            <div id="form-vc-selector-inner" class="form-vc-selector-inner"></div>
+        </div>
+        <span>Vendor</span>
+        <input id="form-vc-input" type="checkbox" style="display: none" name="vendor_customer_selector" onchange="onVendorCustomerToggle()">
+    </div>
+    <label for="form-name">Name</label>
+    <input id="form-name" type="text" name="name" required>
+    <label for="form-email">Email</label>
+    <input id="form-email" type="email" name="username" required>
+    <label for="form-password">Password</label>
+    <input id="form-password" type="password" name="password" required>
+    <label for="form-password-repeat">Repeat Password</label>
+    <input id="form-password-repeat" type="password" name="password" required>
+    <button type="submit">Sign Up</button>
+</form>
+
+<style>
+    .form-vc {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+    .form-vc span {
+        color: #ccc !important;
+        font-size: 16px !important;
+        margin-bottom: 0 !important;
+    }
+    .form-vc-selector {
+        display: inline-block;
+        width: 30px;
+        border-radius: 28px;
+        height: 18px;
+        border: 1px solid white;
+        background-color: transparent;
+        margin-left: 8px;
+        margin-right: 8px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.5s ease-in-out;
+    }
+    .form-vc-selector-inner {
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background-color: #07db38;
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        transition: all 0.2s ease-in-out;
+    }
+</style>
+
+<script>
+    window.onVendorCustomerToggle = () => {
+        const formVCInput = document.getElementById('form-vc-input');
+        if (!formVCInput.checked) {
+            console.log('checked')
+            document.getElementById('form-vc-selector-inner').style.left = '2px';
+        } else {
+            console.log('unchecked')
+            document.getElementById('form-vc-selector-inner').style.left = '14px';
+        }
+    }
+</script>
