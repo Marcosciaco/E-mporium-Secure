@@ -6,27 +6,30 @@
 
 <style>
     .background {
-        background-image: url("/frontend/assets?name=background-pills.png");
+        background-image: url("/frontend/assets?name=background.jpeg");
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        opacity: .25;
+        opacity: .6;
         height: 100%;
         width: 100%;
         position: fixed;
+        top: 0;
+        left: 0;
     }
 
     .form {
         width: 90%;
         max-width: 450px;
         border-radius: 15px;
-        background-color: rgba(17, 17, 17, 0.8);
+        background-color: rgba(17, 17, 17, 0.65);
         position: absolute;
         display: flex;
         align-items: center;
         flex-direction: column;
         margin-top: 120px;
         margin-bottom: 20px;
+        animation: slide_in_animation 0.7s ease-in-out;
     }
 
     .form-img {
@@ -65,7 +68,7 @@
         border-radius: 5px;
         border: none;
         outline-color: transparent;
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.4);
         color: white;
         font-size: 20px;
         padding: 10px 3px;
@@ -95,14 +98,25 @@
 
     .form span {
         color: white;
-        font-size: 13px;
+        font-size: 15px;
         margin-bottom: 15px;
-        font-weight: 300;
+        font-weight: 500;
     }
     .form span a {
         color: white;
         text-decoration: underline;
-        font-weight: 600;
+        font-weight: 800;
+    }
+
+    @keyframes slide_in_animation {
+        0% {
+            opacity: 0;
+            transform: translateY(100px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 
