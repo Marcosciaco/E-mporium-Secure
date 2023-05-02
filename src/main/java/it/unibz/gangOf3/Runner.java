@@ -1,5 +1,6 @@
 package it.unibz.gangOf3;
 
+import it.unibz.gangOf3.api.ApiRouter;
 import it.unibz.gangOf3.framework.ComponentProvider;
 import it.unibz.gangOf3.framework.FrameworkRouter;
 import it.unibz.gangOf3.util.DatabaseUtil;
@@ -35,6 +36,7 @@ public class Runner {
         Context context = tomcat.addContext(contextPath, docBase);
 
         FrameworkRouter.registerRoutes(tomcat, context);
+        ApiRouter.registerRoutes(tomcat, context);
 
         tomcat.start();
         System.out.println("📡 Tomcat Embedded listening on port 8080!");
