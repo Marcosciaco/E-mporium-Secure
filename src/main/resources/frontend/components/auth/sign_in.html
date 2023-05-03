@@ -1,17 +1,117 @@
-<div class="form-img"></div>
-<h1>Sign In</h1>
-<span>Don't have an account? <a href="javascript:navigate_signUp()">Sign Up</a></span>
+<h1>Join the Trip</h1>
 <form>
     <label for="form-email">Email</label>
     <input id="form-email" type="email" name="username" required>
     <label for="form-password">Password</label>
     <input id="form-password" type="password" name="password" required>
-    <button type="submit">Sign In</button>
+    <div class="remember-row">
+        <div class="remember-me">
+            <label class="checkbox-container">
+                <input id="remember-me" type="checkbox" name="remember-me">
+                <span class="checkmark"></span>
+            </label>
+            <label for="remember-me">Remember me</label>
+        </div>
+        <span class="forgot-pwd" style="margin-bottom: 0"><a href="javascript:navigate_forgot()">Forgot password?</a></span>
+    </div>
+    <button type="submit">Login</button>
 </form>
-<span style="width: 90%"><a href="javascript:navigate_forgot()">Forgot password?</a></span>
+<span>Don't have an account? <a href="javascript:navigate_signUp()">Sign Up</a></span>
 
 <style>
     #app {
         min-height: max(620px, 100%) !important;
+        overflow: hidden;
+    }
+
+    .remember-row {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .remember-me {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+    }
+
+    .forgot-pwd {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: flex-end;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .checkbox-container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        cursor: pointer;
+        font-size: 22px;
+        margin-bottom: 25px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        border: solid 2px #56C596;
+        transition: 150ms all linear;
+    }
+
+    .checkbox-container:hover input ~ .checkmark {
+        background-color: #FFFFFF;
+    }
+
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: #56C596;
+    }
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+        transition: 150ms all linear;
+    }
+
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+        transition: 150ms all linear;
+    }
+
+    .checkbox-container .checkmark:after {
+        left: 9px;
+        top: 3px;
+        width: 2px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+        transition: 150ms all linear;
     }
 </style>

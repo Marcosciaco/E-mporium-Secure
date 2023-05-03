@@ -1,35 +1,45 @@
-<div class="background">
-</div>
+<div class="background"></div>
 <div class="form" id="form">
 
 </div>
 
 <style>
     .background {
-        background-image: url("/frontend/assets?name=background.jpeg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        opacity: .6;
-        height: 100%;
-        width: 100%;
-        position: fixed;
         top: 0;
         left: 0;
+        height: 100%;
+        width: 100%;
+        position:fixed;
+        background: linear-gradient(156.42deg, #329D9C 0%, #7BE495 55.53%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d12738', endColorstr='#7a1726',GradientType=0 );
+    }
+
+    .background:after {
+        -moz-transform: rotate(-15deg);
+        -ms-transform:rotate(-15deg); /* Internet Explorer */
+        -webkit-transform:rotate(-15deg); /* Safari and Chrome */
+        -o-transform:rotate(-15deg); /* Opera */
+        background: none repeat scroll 0 0 white;
+        content: "";
+        height: 200%;
+        left: 21px;
+        position: absolute;
+        top: 30%;
+        width: 200%;
     }
 
     .form {
         width: 90%;
         max-width: 450px;
         border-radius: 15px;
-        background-color: rgba(17, 17, 17, 0.65);
+        background-color: #FFFFFF;
         position: absolute;
         display: flex;
         align-items: center;
         flex-direction: column;
-        margin-top: 120px;
         margin-bottom: 20px;
         animation: slide_in_animation 0.7s ease-in-out;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
     }
 
     .form-img {
@@ -43,9 +53,12 @@
     }
 
     h1 {
-        color: white;
-        font-size: 2.5rem;
+        color: #205072;
         margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        font-size: 25px;
+        text-align: center;
     }
 
     form {
@@ -56,38 +69,39 @@
     }
 
     form label {
-        color: white;
+        color: #205072;
         font-size: 20px;
-        margin-bottom: 10px;
+        line-height: 30px;
     }
 
     form input[type="email"],
     form input[type="password"],
+    form input[type="tel"],
     form input[type="text"] {
         width: 100%;
-        border-radius: 5px;
-        border: none;
+        border-radius: 15px;
+        border: solid 2px #205072;
         outline-color: transparent;
-        background-color: rgba(255, 255, 255, 0.4);
-        color: white;
+        background-color: #FFFFFF;
+        color: #205072;
         font-size: 20px;
-        padding: 10px 3px;
+        padding: 10px 10px;
         margin-bottom: 20px;
     }
 
-    form input[type="email"]:focus,
+    /*form input[type="email"]:focus,
     form input[type="password"]:focus,
     form input[type="text"]:focus {
         outline: 1px solid #07db38;
-    }
+    }*/
 
     form button[type="submit"] {
         width: 100%;
-        border-radius: 5px;
+        border-radius: 15px;
         border: none;
         outline-color: transparent;
-        background-color: #07db38;
-        color: white;
+        background-color: #56C596;
+        color: #205072;
         font-size: 20px;
         padding: 10px 3px;
         margin-bottom: 20px;
@@ -97,15 +111,26 @@
     }
 
     .form span {
-        color: white;
+        color: #205072;
         font-size: 15px;
         margin-bottom: 15px;
         font-weight: 500;
     }
     .form span a {
-        color: white;
-        text-decoration: underline;
-        font-weight: 800;
+        color: #56C596;
+        text-decoration: none;
+        font-weight: 400;
+    }
+
+    .diagonal {
+        width: 400%;
+        height: 100%;
+        top: 65%;
+        z-index: 0;
+        position: absolute;
+
+        background: #FFFFFF;
+        transform: rotate(-15deg);
     }
 
     @keyframes slide_in_animation {
