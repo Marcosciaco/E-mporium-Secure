@@ -1,5 +1,5 @@
 <h1>Join the Trip</h1>
-<form>
+<form id="form-signin">
     <label for="form-email">Email</label>
     <input id="form-email" type="email" name="username" required>
     <label for="form-password">Password</label>
@@ -115,3 +115,26 @@
         transition: 150ms all linear;
     }
 </style>
+
+<script>
+    document.getElementById('form-signin').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('form-email').value;
+        const password = document.getElementById('form-password').value;
+
+        fetchAPI('auth/login', 'POST', {
+            email,
+            password
+        }).then(res => {
+            localStorage.setItem('login', {
+                token: res.token,
+                email
+            });
+            console.log('login success');
+            //TODO: navigate to home
+        }).catch(err => {
+            //TODO: Toast error
+            console.error(err);
+        });
+    });
+</script>
