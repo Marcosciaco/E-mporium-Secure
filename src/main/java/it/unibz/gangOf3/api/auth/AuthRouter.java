@@ -11,6 +11,10 @@ public class AuthRouter {
         //Register
         tomcat.addServlet(context, "registerServlet", new Register());
         context.addServletMappingDecoded(prefix + "/register", "registerServlet");
+
+        //Login
+        tomcat.addServlet(context, "loginServlet", new Login());
+        context.addServletMappingDecoded(prefix + "/login", "loginServlet");
     }
 
 }
