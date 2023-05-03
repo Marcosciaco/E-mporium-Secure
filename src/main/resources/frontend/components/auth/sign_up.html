@@ -1,28 +1,40 @@
-<div class="form-img"></div>
-<h1>Sign Up</h1>
-<span>Already have an account? <a href="javascript:navigate_signIn()">Sign In</a></span>
+<h1>One last step to enter paradise</h1>
 <form>
-    <label for="form-vc-input">Type</label>
-    <div id="form-vc" class="form-vc">
-        <span>Customer</span>
-        <div class="form-vc-selector" onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
-            <div id="form-vc-selector-inner" class="form-vc-selector-inner"></div>
+    <div class="row">
+        <div class="column">
+            <label for="form-name">Username</label>
+            <input id="form-name" type="text" name="name" required>
+            <label for="form-email">Email</label>
+            <input id="form-email" type="email" name="username" required>
+            <label for="form-emergency-email">Emergency Contact Email</label>
+            <input id="form-emergency-email" type="email" name="emergency-email" required>
+            <div id="form-vc" class="form-vc">
+                <div class="form-vc-selector" id="form-vc-selector" onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
+                    <div id="form-vc-selector-inner" class="form-vc-selector-inner"></div>
+                </div>
+                <input id="form-vc-input" type="checkbox" style="display: none" name="vendor_customer_selector" onchange="onVendorCustomerToggle()">
+                <h1><label for="form-vc-input">Seller</label></h1>
+            </div>
         </div>
-        <span>Vendor</span>
-        <input id="form-vc-input" type="checkbox" style="display: none" name="vendor_customer_selector" onchange="onVendorCustomerToggle()">
+        <div class="column">
+            <label for="form-password">Password</label>
+            <input id="form-password" type="password" name="password" required>
+            <label for="form-password-repeat">Repeat Password</label>
+            <input id="form-password-repeat" type="password" name="password" required>
+            <label for="form-emergency-phone">Emergency Contact Phone</label>
+            <input id="form-emergency-phone" type="tel" name="emergency-phone" required>
+            <button type="submit">Register</button>
+        </div>
     </div>
-    <label for="form-name">Name</label>
-    <input id="form-name" type="text" name="name" required>
-    <label for="form-email">Email</label>
-    <input id="form-email" type="email" name="username" required>
-    <label for="form-password">Password</label>
-    <input id="form-password" type="password" name="password" required>
-    <label for="form-password-repeat">Repeat Password</label>
-    <input id="form-password-repeat" type="password" name="password" required>
-    <button type="submit">Sign Up</button>
 </form>
+<span>Already have an account? <a href="javascript:navigate_signIn()">Sign In</a></span>
 
 <style>
+
+    .form {
+        max-width: 1200px !important;
+    }
+
     .form-vc {
         display: flex;
         flex-direction: row;
@@ -30,37 +42,53 @@
         margin-top: 5px;
         margin-bottom: 20px;
     }
+
     .form-vc span {
         color: #ccc !important;
         font-size: 16px !important;
         margin-bottom: 0 !important;
     }
+
     .form-vc-selector {
         display: inline-block;
-        width: 30px;
+        width: 80px;
         border-radius: 28px;
-        height: 18px;
-        border: 1px solid white;
+        height: 39px;
+        border: 2px solid #56C596;
         background-color: transparent;
-        margin-left: 8px;
         margin-right: 8px;
         position: relative;
         cursor: pointer;
         transition: all 0.5s ease-in-out;
     }
+
     .form-vc-selector-inner {
-        height: 12px;
-        width: 12px;
+        height: 32px;
+        width: 32px;
         border-radius: 50%;
-        background-color: #07db38;
+        background-color: #56C596;
         position: absolute;
         left: 2px;
         top: 2px;
         transition: all 0.2s ease-in-out;
     }
 
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 10px;
+        height: 100%;
+    }
+
     #app {
-        min-height: max(880px, 100%) !important;
+        min-height: max(70px, 100%) !important;
     }
 </style>
 
@@ -70,9 +98,13 @@
         if (!formVCInput.checked) {
             console.log('checked')
             document.getElementById('form-vc-selector-inner').style.left = '2px';
+            document.getElementById('form-vc-selector-inner').style.backgroundColor = '#56C596';
+            document.getElementById('form-vc-selector').style.border = '2px solid #56C596';
         } else {
             console.log('unchecked')
-            document.getElementById('form-vc-selector-inner').style.left = '14px';
+            document.getElementById('form-vc-selector-inner').style.left = '43px';
+            document.getElementById('form-vc-selector-inner').style.backgroundColor = '#ccc';
+            document.getElementById('form-vc-selector').style.border = '2px solid #ccc';
         }
     }
 </script>
