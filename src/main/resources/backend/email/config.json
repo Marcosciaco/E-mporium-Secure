@@ -1,0 +1,8 @@
+{
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "starttls": true,
+    "sender_email": "something@abc.de",
+    "username": "abcde",
+    "password": "12345"
+}

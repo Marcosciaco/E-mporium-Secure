@@ -3,23 +3,20 @@ package it.unibz.gangOf3.api.auth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.User;
-import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
+import it.unibz.gangOf3.util.DatabaseUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
-public class Register extends HttpServlet {
+public class Redeem extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //get body of request
         byte[] body = req.getInputStream().readAllBytes();
         String bodyStr = new String(body);
         JsonNode bodyJson = parseBody(bodyStr);
@@ -30,9 +27,7 @@ public class Register extends HttpServlet {
         }
 
         //check if required fields are present
-        if (!bodyJson.has("name")
-            || !bodyJson.has("email")
-            || !bodyJson.has("password")
+        if (!bodyJson.has("token")
             || !bodyJson.has("type")) {
             resp.setStatus(400);
             resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
@@ -42,23 +37,34 @@ public class Register extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
-        //create user
         try {
-            User.createUser(
-                bodyJson.get("name").asText(),
-                bodyJson.get("email").asText(),
-                bodyJson.get("password").asText(),
-                bodyJson.get("type").asText(),
-                bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText() : null,
-                bodyJson.has("emergencyPhone") ? bodyJson.get("emergencyPhone").asText() : null
-            );
-            response.set("status", mapper.valueToTree("ok"));
-
+            String type = bodyJson.get("type").asText();
+            switch (type) {
+                case "forgot":
+                    if (!bodyJson.has("password")) {
+                        resp.setStatus(400);
+                        resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
+                        return;
+                    }
+                    DatabaseUtil.getConnection()
+                        .prepareStatement("UPDATE users SET password = '" + bodyJson.get("password") + "', forgetToken = NULL WHERE forgotToken = '" + bodyJson.get("token") + "';")
+                        .execute();
+                    response.set("status", mapper.valueToTree("ok"));
+                    break;
+                case "activate":
+                    DatabaseUtil.getConnection()
+                        .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = '" + bodyJson.get("token") + "';")
+                        .execute();
+                    response.set("status", mapper.valueToTree("ok"));
+                    break;
+                default:
+                    resp.setStatus(400);
+                    response.set("status", mapper.valueToTree("error"));
+                    response.set("message", mapper.valueToTree("Invalid type"));
+            }
         } catch (Exception e) {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
-
-        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 }

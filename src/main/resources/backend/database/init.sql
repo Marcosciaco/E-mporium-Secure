@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     type BOOLEAN DEFAULT FALSE,
     emergencyEmail VARCHAR(255) DEFAULT NULL,
-    emergencyPhone VARCHAR(255) DEFAULT NULL
+    emergencyPhone VARCHAR(255) DEFAULT NULL,
+    forgotToken VARCHAR(36) DEFAULT NULL,
+    registrationToken VARCHAR(36) default NULL
 );

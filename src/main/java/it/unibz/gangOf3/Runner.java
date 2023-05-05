@@ -1,6 +1,7 @@
 package it.unibz.gangOf3;
 
 import it.unibz.gangOf3.api.ApiRouter;
+import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.framework.ComponentProvider;
 import it.unibz.gangOf3.framework.FrameworkRouter;
 import it.unibz.gangOf3.util.DatabaseUtil;
@@ -16,12 +17,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Runner {
-    public static void main(String[] args) throws LifecycleException {
+    public static void main(String[] args) throws LifecycleException, IOException {
 
         //Initialize database
 
         DatabaseUtil.init();
         System.out.println("💾 Database initialized!");
+
+        //Initialize email sender
+
+        EmailSender.init();
+        System.out.println("📧 EmailSender initialized!");
 
         //Setup Tomcat
 
