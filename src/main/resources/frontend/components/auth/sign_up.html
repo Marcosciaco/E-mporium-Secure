@@ -2,12 +2,12 @@
 <form id="form-signup">
     <div class="row">
         <div class="column">
-            <label for="form-name">Username</label>
-            <input id="form-name" type="text" name="name" required>
+            <label for="form-username">Username</label>
+            <input id="form-username" type="text" name="text" required>
             <label for="form-email">Email</label>
             <input id="form-email" type="email" name="username" required>
             <label for="form-emergency-email">Emergency Contact Email</label>
-            <input id="form-emergency-email" type="email" name="emergency-email" required>
+            <input id="form-emergency-email" type="email" name="emergency-email">
             <div id="form-vc" class="form-vc">
                 <div class="form-vc-selector" id="form-vc-selector" onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
                     <div id="form-vc-selector-inner" class="form-vc-selector-inner"></div>
@@ -22,7 +22,7 @@
             <label for="form-password-repeat">Repeat Password</label>
             <input id="form-password-repeat" type="password" name="password" required>
             <label for="form-emergency-phone">Emergency Contact Phone</label>
-            <input id="form-emergency-phone" type="tel" name="emergency-phone" required>
+            <input id="form-emergency-phone" type="tel" name="emergency-phone">
             <button type="submit">Register</button>
             <span style="text-align: center">Already have an account? <a href="javascript:navigate_signIn()">Sign In</a></span>
         </div>
@@ -111,11 +111,11 @@
     document.getElementById('form-signup').addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = {
-            name: document.getElementById('form-name').value,
-            email: document.getElementById('form-email').value,
-            password: document.getElementById('form-password').value,
-            emergencyEmail: document.getElementById('form-emergency-email').value,
-            emergencyPhone: document.getElementById('form-emergency-phone').value,
+            username: document.getElementById('form-username').value.trim(),
+            email: document.getElementById('form-email').value.trim(),
+            password: document.getElementById('form-password').value.trim(),
+            emergencyEmail: document.getElementById('form-emergency-email').value.trim(),
+            emergencyPhone: document.getElementById('form-emergency-phone').value.trim(),
             type: document.getElementById('form-vc-input').checked ? 'seller' : 'customer'
         };
 

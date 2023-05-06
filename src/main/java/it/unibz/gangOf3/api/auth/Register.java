@@ -30,7 +30,7 @@ public class Register extends HttpServlet {
         }
 
         //check if required fields are present
-        if (!bodyJson.has("name")
+        if (!bodyJson.has("username")
             || !bodyJson.has("email")
             || !bodyJson.has("password")
             || !bodyJson.has("type")) {
@@ -45,7 +45,7 @@ public class Register extends HttpServlet {
         //create user
         try {
             User.createUser(
-                bodyJson.get("name").asText(),
+                bodyJson.get("username").asText(),
                 bodyJson.get("email").asText(),
                 bodyJson.get("password").asText(),
                 bodyJson.get("type").asText(),

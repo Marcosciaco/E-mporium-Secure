@@ -71,14 +71,15 @@ public class User {
         type = "'" + "seller".equals(type) + "'";
         emergencyEmail = emergencyEmail != null ? "'" + emergencyEmail + "'" : "NULL";
         emergencyPhone = emergencyPhone != null ? "'" + emergencyPhone + "'" : "NULL";
-        String registrationToken = "'" + UUID.randomUUID() + "'";
+        String registrationTokenUUID = UUID.randomUUID().toString();
+        String registrationToken = "'" + registrationTokenUUID + "'";
         //FIXME: SQL injection
         DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO users (name, email, password, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (" + name + ", " + emailSQL + ", " + password + ", " + type.equals("seller") + ", " + emergencyEmail + ", " + emergencyPhone + ", " + registrationToken + ");")
+            .prepareStatement("INSERT INTO users (username, email, password, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (" + name + ", " + emailSQL + ", " + password + ", " + type.equals("seller") + ", " + emergencyEmail + ", " + emergencyPhone + ", " + registrationToken + ");")
             .execute();
         InputStream registrationEmailStream = User.class.getClassLoader().getResourceAsStream("backend/email/registration.html");
         String registrationEmail = new String(registrationEmailStream.readAllBytes());
-        EmailSender.sendEmail(email, "Confirm your email", registrationEmail.replace("{TOKEN}", registrationToken));
+        EmailSender.sendEmail(email, "Confirm your email", registrationEmail.replace("{TOKEN}", registrationTokenUUID));
     }
 
     public static User getUser(String email) throws SQLException, UserNotFoundException {
