@@ -178,6 +178,15 @@
         void form.offsetWidth;
         form.classList.add('form-animation');
     }
+    window.navigate_redeem = () => {
+        const form = document.getElementById('form');
+        loadComponent(form, 'components/auth/redeem', {
+            loadingContainer: document.getElementById('form-loading')
+        });
+        form.classList.remove('form-animation');
+        void form.offsetWidth;
+        form.classList.add('form-animation');
+    }
 
     function processPath() {
         const componentName = window.path[0];
@@ -192,6 +201,9 @@
                 break;
             case 'forgot':
                 window.navigate_forgot();
+                break;
+            case 'redeem':
+                window.navigate_redeem();
                 break;
             default:
                 window.navigate_signIn();

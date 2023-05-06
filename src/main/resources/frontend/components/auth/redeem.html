@@ -1,0 +1,65 @@
+<h1 id="form-header">Validating...</h1>
+<p>
+    <span id="form-text">We're validating your request. This might take some seconds...</span>
+</p>
+
+<style>
+    #app {
+        min-height: max(400px, 100%) !important;
+    }
+
+    p {
+        width: 100%;
+        text-align: center;
+    }
+
+    span {
+        font-size: 15px;
+    }
+</style>
+
+<script>
+    function redeemActivation(token) {
+        fetchAPI('/auth/redeem', 'POST', {
+            token,
+            type: 'activate'
+        })
+            .then(() => {
+                document.getElementById('form-header').innerText = 'Success';
+                document.getElementById('form-text').innerText = 'Your account has been activated! You can close this tab now.';
+            })
+            .catch(err => {
+                document.getElementById('form-header').innerText = 'Error';
+                document.getElementById('form-text').innerText = err.message;
+            })
+    }
+
+    function redeemForgot(token) {
+        //TODO: implement
+    }
+
+    function validate() {
+        const params = new URLSearchParams(window.query);
+        if (!params.has('token') || !params.has('type')) {
+            document.getElementById('form-header').innerText = 'Error';
+            document.getElementById('form-text').innerText = 'Missing parameter!';
+            return;
+        }
+        const token = params.get('token');
+        const type = params.get('type');
+
+        switch (type){
+            case 'activate':
+                redeemActivation(token);
+                break;
+            case 'forgot':
+                redeemForgot(token);
+                break;
+            default:
+                document.getElementById('form-header').innerText = 'Error';
+                document.getElementById('form-text').innerText = 'Invalid token type!';
+                return;
+        }
+    }
+    validate();
+</script>

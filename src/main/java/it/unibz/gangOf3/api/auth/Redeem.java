@@ -53,7 +53,7 @@ public class Redeem extends HttpServlet {
                     break;
                 case "activate":
                     DatabaseUtil.getConnection()
-                        .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = '" + bodyJson.get("token") + "';")
+                        .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = '" + bodyJson.get("token").asText() + "';")
                         .execute();
                     response.set("status", mapper.valueToTree("ok"));
                     break;
@@ -66,5 +66,7 @@ public class Redeem extends HttpServlet {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
+
+        resp.getWriter().write(response.toString());
     }
 }

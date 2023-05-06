@@ -15,6 +15,9 @@ public class AuthRouter {
         //Login
         tomcat.addServlet(context, "loginServlet", new Login());
         context.addServletMappingDecoded(prefix + "/login", "loginServlet");
+
+        tomcat.addServlet(context, "redeemServlet", new Redeem());
+        context.addServletMappingDecoded(prefix + "/redeem", "redeemServlet");
     }
 
 }
