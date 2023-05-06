@@ -135,11 +135,9 @@
                 token: res.token,
                 email
             });
-            console.log('login success');
-            //TODO: navigate to home
+            loadComponent(document.getElementById('app'), 'screens/home');
         }).catch(err => {
-            //TODO: Toast error
-            console.error(err);
+            alert(err);
         });
     });
 </script>

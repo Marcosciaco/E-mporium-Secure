@@ -46,7 +46,6 @@ public class Redeem extends HttpServlet {
                         resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
                         return;
                     }
-                    System.out.println("UPDATE users SET password = '" + bodyJson.get("password").asText() + "', forgotToken = NULL WHERE forgotToken = '" + bodyJson.get("token").asText() + "';");
                     DatabaseUtil.getConnection()
                         .prepareStatement("UPDATE users SET password = '" + bodyJson.get("password").asText() + "', forgotToken = NULL WHERE forgotToken = '" + bodyJson.get("token").asText() + "';")
                         .execute();
