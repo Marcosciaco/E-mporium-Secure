@@ -126,9 +126,16 @@
             type: document.getElementById('form-vc-input').checked ? 'seller' : 'customer'
         };
 
-        fetchAPI('auth/register', 'POST', formData)
+        fetchAPI('auth/register', 'POST', formData, {
+            loadingContainer: document.getElementById('form-loading'),
+            activityContainer: document.getElementById('form')
+        })
             .then((res) => {
-                console.log('Registration successful');
+                const form = document.getElementById('form');
+                loadComponent(form, 'components/auth/check_email');
+                form.classList.remove('form-animation');
+                void form.offsetWidth;
+                form.classList.add('form-animation');
             })
             .catch((err) => {
                 console.error(err.message);

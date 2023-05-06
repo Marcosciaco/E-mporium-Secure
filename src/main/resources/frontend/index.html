@@ -46,7 +46,7 @@
         function loadComponent(container, path, options = {}) {
             if (options.hasOwnProperty('loadingContainer')) {
                 container.style.display = 'none';
-                options.loadingContainer.style.display = 'block';
+                options.loadingContainer.style.removeProperty('display')
             }
             fetch('/frontend/component?path=' + path)
                 .then(response => response.json())
@@ -56,13 +56,19 @@
                 })
                 .then(() => {
                     if (options.hasOwnProperty('loadingContainer')) {
-                        container.style.display = 'block';
+                        container.style.removeProperty('display');
                         options.loadingContainer.style.display = 'none';
                     }
                 });
         }
 
-        function fetchAPI(path, method, body = {}) {
+        function fetchAPI(path, method, body = {}, options = {}) {
+            if (options.hasOwnProperty('loadingContainer')) {
+                options.loadingContainer.style.removeProperty('display');
+            }
+            if (options.hasOwnProperty('activityContainer')) {
+                options.loadingContainer.style.display = 'none';
+            }
             return fetch('/api/' + path, {
                 method: method,
                 headers: {
@@ -71,6 +77,12 @@
                 body: JSON.stringify(body)
             }).then(response => response.json())
                 .then(json => {
+                    if (options.hasOwnProperty('loadingContainer')) {
+                        options.loadingContainer.style.display = 'none';
+                    }
+                    if (options.hasOwnProperty('activityContainer')) {
+                        options.activityContainer.style.removeProperty('display');
+                    }
                     if (json.hasOwnProperty('status') && json.status === 'error') {
                         throw new Error(json.message);
                     }

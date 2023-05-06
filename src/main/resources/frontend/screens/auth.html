@@ -1,6 +1,9 @@
 <div class="background"></div>
-<div class="form form-animation" id="form">
 
+<div class="form form-animation" id="form">
+</div>
+<div id="form-loading" class="form" style="width: 80px; display: none">
+    <img src="/frontend/assets?name=images/loading.gif"  width="80px" height="80px"/>
 </div>
 
 <style>
@@ -150,21 +153,27 @@
 <script>
     window.navigate_signUp = () => {
         const form = document.getElementById('form');
-        loadComponent(form, 'components/auth/sign_up');
+        loadComponent(form, 'components/auth/sign_up', {
+            loadingContainer: document.getElementById('form-loading')
+        });
         form.classList.remove('form-animation');
         void form.offsetWidth;
         form.classList.add('form-animation');
     }
     window.navigate_signIn = () => {
         const form = document.getElementById('form');
-        loadComponent(form, 'components/auth/sign_in');
+        loadComponent(form, 'components/auth/sign_in', {
+            loadingContainer: document.getElementById('form-loading')
+        });
         form.classList.remove('form-animation');
         void form.offsetWidth;
         form.classList.add('form-animation');
     }
     window.navigate_forgot = () => {
         const form = document.getElementById('form');
-        loadComponent(form, 'components/auth/forgot_password');
+        loadComponent(form, 'components/auth/forgot_password', {
+            loadingContainer: document.getElementById('form-loading')
+        });
         form.classList.remove('form-animation');
         void form.offsetWidth;
         form.classList.add('form-animation');
