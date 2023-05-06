@@ -1,7 +1,14 @@
 <h1 id="form-header">Validating...</h1>
-<p>
+<p id="form-paragraph">
     <span id="form-text">We're validating your request. This might take some seconds...</span>
 </p>
+<form id="form-reset">
+    <label for="form-password-1">Password</label>
+    <input id="form-password-1" type="password" name="password-1" required>
+    <label for="form-password-2">Repeat Password</label>
+    <input id="form-password-2" type="password" name="password-2" required>
+    <button type="submit">Reset</button>
+</form>
 
 <style>
     #app {
@@ -35,7 +42,10 @@
     }
 
     function redeemForgot(token) {
-        //TODO: implement
+        document.getElementById('form-header').innerText = 'Reset Password';
+        document.getElementById('form-paragraph').style.display = 'none';
+        document.getElementById('form-reset').style.removeProperty('display');
+        window.token = token;
     }
 
     function validate() {
@@ -62,4 +72,36 @@
         }
     }
     validate();
+
+    document.getElementById('form-reset').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const password1 = document.getElementById('form-password-1').value;
+        const password2 = document.getElementById('form-password-2').value;
+
+        if (password1 !== password2) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        if (password1.length < 8) {
+            alert('Password must be at least 8 characters long!');
+            return;
+        }
+
+        fetchAPI('/auth/redeem', 'POST', {
+            token: window.token,
+            type: 'forgot',
+            password: password1
+        })
+            .then(() => {
+                document.getElementById('form-header').innerText = 'Success';
+                document.getElementById('form-paragraph').style.removeProperty('display');
+                document.getElementById('form-text').innerText = 'Your password has been reset! You can close this tab now.';
+                document.getElementById('form-reset').style.display = 'none';
+            })
+            .catch(err => {
+                alert(err.message);
+            })
+    })
 </script>

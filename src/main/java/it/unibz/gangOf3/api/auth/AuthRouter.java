@@ -18,6 +18,9 @@ public class AuthRouter {
 
         tomcat.addServlet(context, "redeemServlet", new Redeem());
         context.addServletMappingDecoded(prefix + "/redeem", "redeemServlet");
+
+        tomcat.addServlet(context, "forgotServlet", new Forgot());
+        context.addServletMappingDecoded(prefix + "/forgot", "forgotServlet");
     }
 
 }

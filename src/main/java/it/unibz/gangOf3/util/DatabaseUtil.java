@@ -7,14 +7,18 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
+    private static Connection connection = null;
+
     public static Connection getConnection() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
-            return connection;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        if (connection == null) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
+        return connection;
     }
 
     public static void init() {
