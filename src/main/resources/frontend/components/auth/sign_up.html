@@ -117,6 +117,17 @@
 
     document.getElementById('form-signup').addEventListener('submit', (e) => {
         e.preventDefault();
+
+        if (document.getElementById('form-password').value !== document.getElementById('form-password-repeat').value) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        if (document.getElementById('form-password').value.trim().length < 8){
+            alert('Password must be at least 8 characters');
+            return;
+        }
+
         const formData = {
             username: document.getElementById('form-username').value.trim(),
             email: document.getElementById('form-email').value.trim(),
