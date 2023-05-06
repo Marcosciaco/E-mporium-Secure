@@ -61,8 +61,7 @@
                     }
                 });
         }
-        loadComponent(document.getElementById('app'), 'screens/auth');
-        
+
         function fetchAPI(path, method, body = {}) {
             return fetch('/api/' + path, {
                 method: method,
@@ -78,6 +77,23 @@
                     return json.data || {};
                 })
         }
+
+
+        window.navigatePath = (path, query) => {
+            const pathParts = path.split('/');
+            const pathPartsFiltered = pathParts.filter(part => part !== '');
+            window.path = pathPartsFiltered;
+            window.query = query;
+            loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'auth'));
+            window.path = window.path.slice(1);
+        }
+        window.navigatePath(window.location.pathname, window.location.search);
+        window.addEventListener('popstate', event => {
+            if (event.state && event.state.path) {
+                console.log('popstate', event.state);
+                window.navigatePath(event.state.path, event.state.query || '');
+            }
+        });
     </script>
 </body>
 </html>

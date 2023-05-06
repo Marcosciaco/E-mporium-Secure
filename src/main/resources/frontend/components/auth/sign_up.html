@@ -93,6 +93,13 @@
 </style>
 
 <script>
+    if (window.location.pathname !== '/auth/signup') {
+        window.history.pushState({
+            path: '/auth/signup'
+        }, '', '/auth/signup');
+    }
+
+
     window.onVendorCustomerToggle = () => {
         const formVCInput = document.getElementById('form-vc-input');
         if (!formVCInput.checked) {

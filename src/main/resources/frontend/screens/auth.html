@@ -1,5 +1,5 @@
 <div class="background"></div>
-<div class="form" id="form">
+<div class="form form-animation" id="form">
 
 </div>
 
@@ -38,8 +38,10 @@
         align-items: center;
         flex-direction: column;
         margin-bottom: 20px;
-        animation: slide_in_animation 0.7s ease-in-out;
         box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+    }
+    .form-animation {
+        animation: slide_in_animation 0.7s ease-in-out;
     }
 
     .form-img {
@@ -147,14 +149,45 @@
 
 <script>
     window.navigate_signUp = () => {
-        loadComponent(document.getElementById('form'), 'components/auth/sign_up');
+        const form = document.getElementById('form');
+        loadComponent(form, 'components/auth/sign_up');
+        form.classList.remove('form-animation');
+        void form.offsetWidth;
+        form.classList.add('form-animation');
     }
     window.navigate_signIn = () => {
-        loadComponent(document.getElementById('form'), 'components/auth/sign_in');
+        const form = document.getElementById('form');
+        loadComponent(form, 'components/auth/sign_in');
+        form.classList.remove('form-animation');
+        void form.offsetWidth;
+        form.classList.add('form-animation');
     }
     window.navigate_forgot = () => {
-        loadComponent(document.getElementById('form'), 'components/auth/forgot_password');
+        const form = document.getElementById('form');
+        loadComponent(form, 'components/auth/forgot_password');
+        form.classList.remove('form-animation');
+        void form.offsetWidth;
+        form.classList.add('form-animation');
     }
 
-    window.navigate_signIn();
+    function processPath() {
+        const componentName = window.path[0];
+        window.path = window.path.slice(1);
+
+        switch (componentName) {
+            case 'signup':
+                window.navigate_signUp();
+                break;
+            case 'signin':
+                window.navigate_signIn();
+                break;
+            case 'forgot':
+                window.navigate_forgot();
+                break;
+            default:
+                window.navigate_signIn();
+                break;
+        }
+    }
+    processPath();
 </script>
