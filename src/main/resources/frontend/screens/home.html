@@ -1,4 +1,27 @@
-<div>This is the home screen!</div>
+<div class="background" style="height: 100%">
+    <div id="card"></div>
+</div>
+<div style="height: 100%; width: 100%;">
+    test
+</div>
+
+<style>
+    .background {
+        background-image: url("/frontend/assets?name=images/background.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        opacity: 1;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
 <script>
-    console.log('Hello from home.html');
+    const card = document.getElementById('card');
+    loadComponent(card, 'components/home/card', {});
 </script>
