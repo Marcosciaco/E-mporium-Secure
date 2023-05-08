@@ -26,6 +26,16 @@ public class User {
         return email;
     }
 
+    public String getUsername() throws SQLException, UserNotFoundException {
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT username FROM users WHERE email = '" + email + "';")
+            .executeQuery();
+        if (!resultSet.next()) {
+            throw new UserNotFoundException("User not found");
+        }
+        return resultSet.getString("username");
+    }
+
     public String login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException {
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT password, registrationToken FROM users WHERE email = '" + email + "';")
@@ -45,14 +55,16 @@ public class User {
         return "placeholder //TODO: generate token"; //TODO: generate token
     }
 
-    public void forgotPassword() throws SQLException, IOException, MessagingException {
+    public void forgotPassword() throws SQLException, IOException, MessagingException, UserNotFoundException {
         String resetUUID = UUID.randomUUID().toString();
         DatabaseUtil.getConnection()
             .prepareStatement("UPDATE users SET forgotToken = '" + resetUUID + "' WHERE email = '" + email + "';")
             .execute();
         InputStream emailTemplate = getClass().getClassLoader().getResourceAsStream("backend/email/reset_password.html");
         String emailBody = new String(emailTemplate.readAllBytes());
-        emailBody = emailBody.replace("{TOKEN}", resetUUID);
+        emailBody = emailBody
+            .replace("{TOKEN}", resetUUID)
+            .replace("{NAME}", getUsername());
         EmailSender.sendEmail(email, "Reset password", emailBody);
     }
 
@@ -65,7 +77,6 @@ public class User {
 
 
     public static void createUser(String name, String email, String password, String type, String emergencyEmail, String emergencyPhone) throws UserAlreadyExistsException, SQLException, IOException, MessagingException {
-        name = "'" + name + "'";
         String emailSQL = "'" + email + "'";
         password = "'" + password + "'";
         type = "'" + "seller".equals(type) + "'";
@@ -75,11 +86,14 @@ public class User {
         String registrationToken = "'" + registrationTokenUUID + "'";
         //FIXME: SQL injection
         DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO users (username, email, password, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (" + name + ", " + emailSQL + ", " + password + ", " + type.equals("seller") + ", " + emergencyEmail + ", " + emergencyPhone + ", " + registrationToken + ");")
+            .prepareStatement("INSERT INTO users (username, email, password, type, emergencyEmail, emergencyPhone, registrationToken) VALUES ('" + name + "', " + emailSQL + ", " + password + ", " + type.equals("seller") + ", " + emergencyEmail + ", " + emergencyPhone + ", " + registrationToken + ");")
             .execute();
         InputStream registrationEmailStream = User.class.getClassLoader().getResourceAsStream("backend/email/registration.html");
         String registrationEmail = new String(registrationEmailStream.readAllBytes());
-        EmailSender.sendEmail(email, "Confirm your email", registrationEmail.replace("{TOKEN}", registrationTokenUUID));
+        EmailSender.sendEmail(email, "Confirm your email", registrationEmail
+            .replace("{TOKEN}", registrationTokenUUID)
+            .replace("{NAME}", name)
+        );
     }
 
     public static User getUser(String email) throws SQLException, UserNotFoundException {
