@@ -2,117 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="author" content="Lisa Mussner, Marco Sciacovelli, Elias Binder">
-    <meta name="description" content="Online Drug Store">
-    <meta name="keywords" content="Online Drug Store">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Lisa Mussner, Marco Sciacovelli, Elias Binder" name="author">
+    <meta content="Online Drug Store" name="description">
+    <meta content="Online Drug Store" name="keywords">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Online Drug Store</title>
 </head>
 <body>
-    <style>
-        @font-face {
-            font-family: 'Manrope';
-            src: url('/frontend/assets?name=fonts/manrope.ttf');
-        }
-        @font-face {
-            font-family: 'Poppins';
-            font-weight: 400;
-            src: url('/frontend/assets?name=fonts/Poppins-Regular.ttf');
-        }
+<style>
+    @font-face {
+        font-family: 'Manrope';
+        src: url('/frontend/assets?name=fonts/manrope.ttf');
+    }
 
-        html, body {
-            min-height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #111111;
-        }
-        * {
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        #app {
-            width: 100%;
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-        }
-    </style>
-    <div id="app"></div>
-    <script>
-        function loadComponent(container, path, options = {}) {
-            if (options.hasOwnProperty('loadingContainer')) {
-                container.style.display = 'none';
-                options.loadingContainer.style.removeProperty('display')
-            }
-            fetch('/frontend/component?path=' + path)
-                .then(response => response.json())
-                .then(json => {
-                    container.innerHTML = json.html;
-                    eval(json.js);
-                })
-                .then(() => {
-                    if (options.hasOwnProperty('loadingContainer')) {
-                        container.style.removeProperty('display');
-                        options.loadingContainer.style.display = 'none';
-                    }
-                });
-        }
+    @font-face {
+        font-family: 'Poppins';
+        font-weight: 400;
+        src: url('/frontend/assets?name=fonts/Poppins-Regular.ttf');
+    }
 
-        function fetchAPI(path, method, body = {}, options = {}) {
-            if (options.hasOwnProperty('loadingContainer')) {
-                options.loadingContainer.style.removeProperty('display');
-            }
-            if (options.hasOwnProperty('activityContainer')) {
-                options.loadingContainer.style.display = 'none';
-            }
-            return fetch('/api/' + path, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            }).then(response => response.json())
-                .then(json => {
-                    if (options.hasOwnProperty('loadingContainer')) {
-                        options.loadingContainer.style.display = 'none';
-                    }
-                    if (options.hasOwnProperty('activityContainer')) {
-                        options.activityContainer.style.removeProperty('display');
-                    }
-                    if (json.hasOwnProperty('status') && json.status === 'error') {
-                        throw new Error(json.message);
-                    }
-                    return json.data || {};
-                })
+    html, body {
+        min-height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #111111;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    #app {
+        width: 100%;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #2CB543;
+        border-radius: 10px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #2CB543;
+    }
+</style>
+<div id="app"></div>
+<script>
+    function loadComponent(container, path, options = {}) {
+        if (options.hasOwnProperty('loadingContainer')) {
+            container.style.display = 'none';
+            options.loadingContainer.style.removeProperty('display')
         }
+        fetch('/frontend/component?path=' + path)
+            .then(response => response.json())
+            .then(json => {
+                container.innerHTML = json.html;
+                eval(json.js);
+            })
+            .then(() => {
+                if (options.hasOwnProperty('loadingContainer')) {
+                    container.style.removeProperty('display');
+                    options.loadingContainer.style.display = 'none';
+                }
+            });
+    }
+
+    function fetchAPI(path, method, body = {}, options = {}) {
+        if (options.hasOwnProperty('loadingContainer')) {
+            options.loadingContainer.style.removeProperty('display');
+        }
+        if (options.hasOwnProperty('activityContainer')) {
+            options.loadingContainer.style.display = 'none';
+        }
+        return fetch('/api/' + path, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then(response => response.json())
+            .then(json => {
+                if (options.hasOwnProperty('loadingContainer')) {
+                    options.loadingContainer.style.display = 'none';
+                }
+                if (options.hasOwnProperty('activityContainer')) {
+                    options.activityContainer.style.removeProperty('display');
+                }
+                if (json.hasOwnProperty('status') && json.status === 'error') {
+                    throw new Error(json.message);
+                }
+                return json.data || {};
+            })
+    }
 
 
-        window.navigatePath = (path, query) => {
-            const pathParts = path.split('/');
-            const pathPartsFiltered = pathParts.filter(part => part !== '');
-            window.path = pathPartsFiltered;
-            window.query = query;
-            loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'auth'));
-            window.path = window.path.slice(1);
+    window.navigatePath = (path, query) => {
+        const pathParts = path.split('/');
+        const pathPartsFiltered = pathParts.filter(part => part !== '');
+        window.path = pathPartsFiltered;
+        window.query = query;
+        loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'auth'));
+        window.path = window.path.slice(1);
+    }
+    window.navigatePath(window.location.pathname, window.location.search);
+    window.addEventListener('popstate', event => {
+        if (event.state && event.state.path) {
+            console.log('popstate', event.state);
+            window.navigatePath(event.state.path, event.state.query || '');
         }
-        window.navigatePath(window.location.pathname, window.location.search);
-        window.addEventListener('popstate', event => {
-            if (event.state && event.state.path) {
-                console.log('popstate', event.state);
-                window.navigatePath(event.state.path, event.state.query || '');
-            }
-        });
+    });
 
-        //TODO: replace with custom alert
-        /*
-        window.alert = (msg) => {
-            ...
-        }
-         */
-    </script>
+    //TODO: replace with custom alert
+    /*
+    window.alert = (msg) => {
+        ...
+    }
+     */
+</script>
 </body>
 </html>
