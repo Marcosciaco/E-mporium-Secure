@@ -21,6 +21,9 @@ public class AuthRouter {
 
         tomcat.addServlet(context, "forgotServlet", new Forgot());
         context.addServletMappingDecoded(prefix + "/forgot", "forgotServlet");
+
+        tomcat.addServlet(context, "logoutServlet", new Logout());
+        context.addServletMappingDecoded(prefix + "/logout", "logoutServlet");
     }
 
 }

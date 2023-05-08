@@ -52,7 +52,11 @@ public class User {
         if (!dbPassword.equals(password)) {
             throw new InvalidPasswordException("Invalid email or password");
         }
-        return "placeholder //TODO: generate token"; //TODO: generate token
+        String sessionUUID = UUID.randomUUID().toString();
+        DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE users SET sessionToken = '" + sessionUUID + "' WHERE email = '" + email + "';")
+            .execute();
+        return sessionUUID;
     }
 
     public void forgotPassword() throws SQLException, IOException, MessagingException, UserNotFoundException {

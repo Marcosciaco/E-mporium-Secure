@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
     emergencyEmail VARCHAR(255) DEFAULT NULL,
     emergencyPhone VARCHAR(255) DEFAULT NULL,
     forgotToken VARCHAR(36) DEFAULT NULL,
-    registrationToken VARCHAR(36) DEFAULT NULL
+    registrationToken VARCHAR(36) DEFAULT NULL,
+    sessionToken VARCHAR(36) DEFAULT NULL
 );
