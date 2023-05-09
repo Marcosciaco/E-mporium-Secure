@@ -17,22 +17,8 @@ public class Redeem extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        byte[] body = req.getInputStream().readAllBytes();
-        String bodyStr = new String(body);
-        JsonNode bodyJson = parseBody(bodyStr);
-        if (bodyJson == null) {
-            resp.setStatus(400);
-            resp.getWriter().write("{\"status\": \"error\", \"message\": \"Invalid body\"}");
-            return;
-        }
-
-        //check if required fields are present
-        if (!bodyJson.has("token")
-            || !bodyJson.has("type")) {
-            resp.setStatus(400);
-            resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
-            return;
-        }
+        ObjectNode bodyJson = parseBody(req, resp, new String[]{"token", "type"});
+        if (bodyJson == null) return; // parseBody already sent the response (400)
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();

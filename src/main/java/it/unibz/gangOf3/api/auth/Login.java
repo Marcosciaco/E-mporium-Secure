@@ -19,23 +19,8 @@ public class Login extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //get body of request
-        byte[] body = req.getInputStream().readAllBytes();
-        String bodyStr = new String(body);
-        JsonNode bodyJson = parseBody(bodyStr);
-        if (bodyJson == null) {
-            resp.setStatus(400);
-            resp.getWriter().write("{\"status\": \"error\", \"message\": \"Invalid body\"}");
-            return;
-        }
-
-        //check if required fields are present
-        if (!bodyJson.has("email")
-            || !bodyJson.has("password")) {
-            resp.setStatus(400);
-            resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
-            return;
-        }
+        ObjectNode bodyJson = parseBody(req, resp, new String[]{"email", "password"});
+        if (bodyJson == null) return; // parseBody already sent the response (400)
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
