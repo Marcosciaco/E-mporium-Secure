@@ -1,4 +1,22 @@
 <div class="background" id="carousel"></div>
+<div class="row">
+    <div class="left">E-mporium</div>
+    <div class="center">
+        <div class="item">Home</div>
+        <div class="item">Merchandize</div>
+        <div class="item">Hot Offers</div>
+        <div class="item">Categories</div>
+    </div>
+    <div class="right">
+        <input type="text" placeholder="Search..." id="search">
+        <div class="wrapper">
+            <img src="/frontend/assets?name=images/basket.svg" alt="Basket" class="logo">
+        </div>
+        <div class="wrapper">
+            <img src="/frontend/assets?name=images/profile.svg" alt="Profile" class="logo">
+        </div>
+    </div>
+</div>
 <div class="content">
     <div class="header">
         <img class="header-img" src="/frontend/assets?name=icons/fire.svg">
@@ -55,9 +73,109 @@
         min-height: 100vh;
         width: 100%;
     }
+
+    .row {
+        position: absolute;
+        top: 0;
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #205072;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        width: 30%;
+        height: 100%;
+        margin: 10px;
+        font-size: 170%;
+    }
+
+    .center {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: max-content;
+        white-space: nowrap;
+    }
+
+    .right {
+        width: 30%;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+
+    .item {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+    .item:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        border: 1px solid #205072;
+        border-radius: 20px;
+        outline: none;
+        margin-right: 10px;
+        float: right;
+    }
+
+    input[type="text"]::placeholder {
+        color: #205072;
+    }
+
+    input[type="text"]:focus {
+        border: 1px solid #205072;
+        box-shadow: none;
+        float: right;
+    }
+
+    .logo {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        fill: #205072;
+    }
+
+    .wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid #205072;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
 </style>
 
 <script>
     const card = document.getElementById('carousel');
     loadComponent(card, 'components/home/carousel', {});
+
+    $(document).ready(function() {
+        $('#search').keypress(function(e) {
+            if (e.which === 13) { // 13 is the key code for the enter key
+                e.preventDefault(); // prevent the form from submitting
+                // do something with the search query
+                alert('Search: ' + $(this).val());
+            }
+        });
+    });
 </script>
