@@ -1,10 +1,8 @@
 package it.unibz.gangOf3.api.auth;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
-import it.unibz.gangOf3.model.exceptions.UserNotFoundException;
 import it.unibz.gangOf3.model.utils.UserUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
@@ -34,7 +31,7 @@ public class Login extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = UserUtil.getUser(bodyJson.get("email").asText());
+            User user = UserUtil.getUserByEmail(bodyJson.get("email").asText());
             String token = user.login(bodyJson.get("password").asText());
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();

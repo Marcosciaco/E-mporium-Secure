@@ -19,5 +19,8 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10,2) NOT NULL,
     image VARCHAR(255) DEFAULT NULL,
     stock INTEGER DEFAULT NULL,
-    category VARCHAR(255) NOT NULL
+    category VARCHAR(255) NOT NULL,
+    stars INTEGER DEFAULT NULL,
+    owner INTEGER NOT NULL,
+    FOREIGN KEY(owner) REFERENCES users(id)
 );

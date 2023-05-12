@@ -36,6 +36,16 @@ public class User {
         return resultSet.getString("username");
     }
 
+    public int getID() throws SQLException, UserNotFoundException {
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM users WHERE email = '" + email + "';")
+            .executeQuery();
+        if (!resultSet.next()) {
+            throw new UserNotFoundException("User not found");
+        }
+        return resultSet.getInt("id");
+    }
+
     public String login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException {
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT password, registrationToken FROM users WHERE email = '" + email + "';")

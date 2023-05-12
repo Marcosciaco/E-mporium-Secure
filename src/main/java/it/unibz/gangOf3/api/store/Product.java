@@ -2,7 +2,9 @@ package it.unibz.gangOf3.api.store;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.utils.ProductUtil;
+import it.unibz.gangOf3.util.AuthUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +28,15 @@ public class Product extends HttpServlet {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"name", "tag", "description", "price", "category"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
+        User user = AuthUtil.getAuthedUser(req, resp);
+        if (user == null) return; // AuthUtil already sent the response (401)
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
         try{
             ProductUtil.createProduct(
+                user,
                 bodyJson.get("name").asText(),
                 bodyJson.get("tag").asText(),
                 bodyJson.get("description").asText(),

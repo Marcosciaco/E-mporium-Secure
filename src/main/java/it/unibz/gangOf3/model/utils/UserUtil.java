@@ -34,10 +34,20 @@ public class UserUtil {
         );
     }
 
-    public static User getUser(String email) throws SQLException, UserNotFoundException {
+    public static User getUserByEmail(String email) throws SQLException, UserNotFoundException {
         email = "'" + email + "'";
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT email FROM users WHERE email = " + email + ";")
+            .executeQuery();
+        if (!resultSet.next())
+            throw new UserNotFoundException("User not found");
+        return new User(resultSet.getString("email"));
+    }
+
+    public static User getUserBySessionId(String sessionId) throws SQLException, UserNotFoundException {
+        sessionId = "'" + sessionId + "'";
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT email FROM users WHERE sessionToken = '" + sessionId + "';")
             .executeQuery();
         if (!resultSet.next())
             throw new UserNotFoundException("User not found");

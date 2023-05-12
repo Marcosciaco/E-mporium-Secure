@@ -1,6 +1,5 @@
 package it.unibz.gangOf3.api.auth;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
@@ -32,7 +31,7 @@ public class Forgot extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = UserUtil.getUser(bodyJson.get("email").asText());
+            User user = UserUtil.getUserByEmail(bodyJson.get("email").asText());
             user.forgotPassword();
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception e) {
