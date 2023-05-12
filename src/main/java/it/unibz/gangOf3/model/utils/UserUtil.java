@@ -3,7 +3,7 @@ package it.unibz.gangOf3.model.utils;
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
-import it.unibz.gangOf3.model.exceptions.UserNotFoundException;
+import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import jakarta.mail.MessagingException;
 
@@ -34,23 +34,23 @@ public class UserUtil {
         );
     }
 
-    public static User getUserByEmail(String email) throws SQLException, UserNotFoundException {
+    public static User getUserByEmail(String email) throws SQLException, NotFoundException {
         email = "'" + email + "'";
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT email FROM users WHERE email = " + email + ";")
             .executeQuery();
         if (!resultSet.next())
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         return new User(resultSet.getString("email"));
     }
 
-    public static User getUserBySessionId(String sessionId) throws SQLException, UserNotFoundException {
+    public static User getUserBySessionId(String sessionId) throws SQLException, NotFoundException {
         sessionId = "'" + sessionId + "'";
         ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT email FROM users WHERE sessionToken = '" + sessionId + "';")
+            .prepareStatement("SELECT email FROM users WHERE sessionToken = " + sessionId + ";")
             .executeQuery();
         if (!resultSet.next())
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         return new User(resultSet.getString("email"));
     }
 

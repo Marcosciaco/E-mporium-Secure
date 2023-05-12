@@ -3,8 +3,7 @@ package it.unibz.gangOf3.model;
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.exceptions.InvalidPasswordException;
 import it.unibz.gangOf3.model.exceptions.UnconfirmedRegistrationException;
-import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
-import it.unibz.gangOf3.model.exceptions.UserNotFoundException;
+import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import jakarta.mail.MessagingException;
 
@@ -17,33 +16,47 @@ import java.util.UUID;
 public class User {
 
     private String email;
+    private int id;
 
     public User(String email) {
         this.email = email;
     }
 
-    public String getEmail() {
+    public User(int id) {
+        this.id = id;
+    }
+
+    public String getEmail() throws SQLException {
+        if (email == null) {
+            email = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT email FROM users WHERE id = " + id + ";")
+                .executeQuery()
+                .getString("email");
+        }
         return email;
     }
 
-    public String getUsername() throws SQLException, UserNotFoundException {
+    public String getUsername() throws SQLException, NotFoundException {
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT username FROM users WHERE email = '" + email + "';")
             .executeQuery();
         if (!resultSet.next()) {
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
         return resultSet.getString("username");
     }
 
-    public int getID() throws SQLException, UserNotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT id FROM users WHERE email = '" + email + "';")
-            .executeQuery();
-        if (!resultSet.next()) {
-            throw new UserNotFoundException("User not found");
+    public int getID() throws SQLException, NotFoundException {
+        if (id == 0) {
+            ResultSet resultSet = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM users WHERE email = '" + email + "';")
+                .executeQuery();
+            if (!resultSet.next()) {
+                throw new NotFoundException("User not found");
+            }
+            id = resultSet.getInt("id");
         }
-        return resultSet.getInt("id");
+        return id;
     }
 
     public String login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException {
@@ -69,7 +82,7 @@ public class User {
         return sessionUUID;
     }
 
-    public void forgotPassword() throws SQLException, IOException, MessagingException, UserNotFoundException {
+    public void forgotPassword() throws SQLException, IOException, MessagingException, NotFoundException {
         String resetUUID = UUID.randomUUID().toString();
         DatabaseUtil.getConnection()
             .prepareStatement("UPDATE users SET forgotToken = '" + resetUUID + "' WHERE email = '" + email + "';")
