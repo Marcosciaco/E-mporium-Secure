@@ -11,7 +11,7 @@
         <div class="wrapper">
             <img alt="Basket" class="logo" src="/frontend/assets?name=icons/basket.svg">
         </div>
-        <div class="wrapper">
+        <div class="wrapper" onclick="navigate_login()">
             <img alt="Profile" class="logo" src="/frontend/assets?name=icons/profile.svg">
         </div>
     </div>
@@ -168,8 +168,18 @@
 </style>
 
 <script>
+    if (window.location.pathname !== '/home') {
+        window.history.pushState({
+            path: '/home'
+        }, '', '/home');
+    }
+
     const card = document.getElementById('carousel');
     loadComponent(card, 'components/home/carousel', {});
+
+    window.navigate_login = () => {
+        loadComponent(document.getElementById('app'), 'screens/auth', {})
+    }
 
     $(document).ready(function () {
         $('#search').keypress(function (e) {

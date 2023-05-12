@@ -187,7 +187,7 @@
         const pathPartsFiltered = pathParts.filter(part => part !== '');
         window.path = pathPartsFiltered;
         window.query = query;
-        loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'auth'));
+        loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'home'));
         window.path = window.path.slice(1);
     }
     window.navigatePath(window.location.pathname, window.location.search);
