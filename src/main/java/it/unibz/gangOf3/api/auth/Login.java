@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.exceptions.UserNotFoundException;
+import it.unibz.gangOf3.model.utils.UserUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,13 @@ import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
 public class Login extends HttpServlet {
 
+    /**
+     * Login a user
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"email", "password"});
@@ -26,7 +34,7 @@ public class Login extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = User.getUser(bodyJson.get("email").asText());
+            User user = UserUtil.getUser(bodyJson.get("email").asText());
             String token = user.login(bodyJson.get("password").asText());
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();

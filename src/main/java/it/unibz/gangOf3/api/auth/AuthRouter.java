@@ -16,12 +16,15 @@ public class AuthRouter {
         tomcat.addServlet(context, "loginServlet", new Login());
         context.addServletMappingDecoded(prefix + "/login", "loginServlet");
 
+        //Redeem
         tomcat.addServlet(context, "redeemServlet", new Redeem());
         context.addServletMappingDecoded(prefix + "/redeem", "redeemServlet");
 
+        //Forgot
         tomcat.addServlet(context, "forgotServlet", new Forgot());
         context.addServletMappingDecoded(prefix + "/forgot", "forgotServlet");
 
+        //Logout
         tomcat.addServlet(context, "logoutServlet", new Logout());
         context.addServletMappingDecoded(prefix + "/logout", "logoutServlet");
     }

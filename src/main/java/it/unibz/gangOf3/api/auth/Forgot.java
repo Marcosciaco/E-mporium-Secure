@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
+import it.unibz.gangOf3.model.utils.UserUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,13 @@ import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
 public class Forgot extends HttpServlet {
 
+    /**
+     * Send an email to the user with a link to reset the password
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"email"});
@@ -24,7 +32,7 @@ public class Forgot extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = User.getUser(bodyJson.get("email").asText());
+            User user = UserUtil.getUser(bodyJson.get("email").asText());
             user.forgotPassword();
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception e) {

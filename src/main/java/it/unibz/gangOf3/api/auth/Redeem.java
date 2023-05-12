@@ -15,6 +15,13 @@ import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
 public class Redeem extends HttpServlet {
 
+    /**
+     * Redeem a token (either registration or forgot password)
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"token", "type"});

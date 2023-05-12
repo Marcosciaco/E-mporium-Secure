@@ -13,6 +13,13 @@ import java.sql.SQLException;
 
 public class Logout extends HttpServlet {
 
+    /**
+     * Logout the user by setting the sessionToken to null
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String sessionID = req.getHeader("Authorization");

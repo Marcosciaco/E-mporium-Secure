@@ -1,9 +1,8 @@
 package it.unibz.gangOf3.api.auth;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.User;
+import it.unibz.gangOf3.model.utils.UserUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +14,13 @@ import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
 public class Register extends HttpServlet {
 
+    /**
+     * Register a new user
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"username", "email", "password", "type"});
@@ -24,7 +30,7 @@ public class Register extends HttpServlet {
 
         //create user
         try {
-            User.createUser(
+            UserUtil.createUser(
                 bodyJson.get("username").asText(),
                 bodyJson.get("email").asText(),
                 bodyJson.get("password").asText(),
