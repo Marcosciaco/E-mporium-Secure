@@ -9,6 +9,13 @@ import java.io.IOException;
 
 public class BodyParser {
 
+    /**
+     * Parse the body of a request and check if all the required fields are present
+     * @param req the request
+     * @param resp the response
+     * @param requiredFields the required fields in the body to check for
+     * @return the body of the request as a JSON object
+     */
     public static ObjectNode parseBody(HttpServletRequest req, HttpServletResponse resp, String[] requiredFields) {
         byte[] body;
         try {
