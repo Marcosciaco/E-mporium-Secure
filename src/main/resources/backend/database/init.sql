@@ -44,4 +44,3 @@ CREATE TABLE IF NOT EXISTS chat(
     FOREIGN KEY(user1) REFERENCES users(id),
     FOREIGN KEY(user2) REFERENCES users(id)
 );
-)
