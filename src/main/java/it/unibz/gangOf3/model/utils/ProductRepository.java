@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-public class ProductUtil {
+public class ProductRepository {
 
     /**
      * Create a new product

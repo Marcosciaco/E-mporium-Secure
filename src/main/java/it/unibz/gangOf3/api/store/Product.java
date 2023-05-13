@@ -1,14 +1,12 @@
 package it.unibz.gangOf3.api.store;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.utils.ProductUtil;
-import it.unibz.gangOf3.model.utils.UserUtil;
+import it.unibz.gangOf3.model.utils.ProductRepository;
+import it.unibz.gangOf3.model.utils.UserRepository;
 import it.unibz.gangOf3.util.AuthUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -42,7 +40,7 @@ public class Product extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try{
-            int productID = ProductUtil.createProduct(
+            int productID = ProductRepository.createProduct(
                 user,
                 bodyJson.get("name").asText(),
                 bodyJson.get("tag").asText(),
@@ -85,7 +83,7 @@ public class Product extends HttpServlet {
 
         if(filter.has("random")) {
             try {
-                ProductUtil.getRandomProducts(queryResult, max);
+                ProductRepository.getRandomProducts(queryResult, max);
             } catch (SQLException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -97,7 +95,7 @@ public class Product extends HttpServlet {
         //Get product by filter
         if (filter.has("id")) {
             try {
-                queryResult.add(ProductUtil.getProductById(filter.get("id").asInt()));
+                queryResult.add(ProductRepository.getProductById(filter.get("id").asInt()));
             } catch (Exception e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -109,7 +107,7 @@ public class Product extends HttpServlet {
         //Get products by search term (name, tag, description)
         if (filter.has("query")) {
             try {
-                ProductUtil.filterProductsByQuery(filter.get("query").asText(), queryResult, max);
+                ProductRepository.filterProductsByQuery(filter.get("query").asText(), queryResult, max);
             } catch (SQLException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -121,7 +119,7 @@ public class Product extends HttpServlet {
         //Get products by category
         if (filter.has("category")) {
             try {
-                ProductUtil.filterProductsByCategory(filter.get("category").asText(), queryResult, max);
+                ProductRepository.filterProductsByCategory(filter.get("category").asText(), queryResult, max);
             } catch (SQLException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -133,7 +131,7 @@ public class Product extends HttpServlet {
         //Get products by price range
         if (filter.has("price")) {
             try {
-                ProductUtil.filterProductsByPrice(filter.get("price").get("min").asDouble(), filter.get("price").get("max").asDouble(), queryResult, max);
+                ProductRepository.filterProductsByPrice(filter.get("price").get("min").asDouble(), filter.get("price").get("max").asDouble(), queryResult, max);
             } catch (SQLException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -145,8 +143,8 @@ public class Product extends HttpServlet {
         //Get products by seller
         if (filter.has("seller")) {
             try {
-                User seller = UserUtil.getUserByEmail(filter.get("seller").asText());
-                ProductUtil.filterProductsByOwner(seller, queryResult, max);
+                User seller = UserRepository.getUserByEmail(filter.get("seller").asText());
+                ProductRepository.filterProductsByOwner(seller, queryResult, max);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -194,7 +192,7 @@ public class Product extends HttpServlet {
         int id = bodyJson.get("id").asInt();
 
         try{
-            it.unibz.gangOf3.model.Product product = ProductUtil.getProductById(id);
+            it.unibz.gangOf3.model.Product product = ProductRepository.getProductById(id);
 //            FIXME check if user is owner of product
 //            if (product.getOwner().getID() != user.getID()) {
 //                response.set("status", mapper.valueToTree("error"));
@@ -203,8 +201,12 @@ public class Product extends HttpServlet {
 //                return;
 //            }
             product.delete();
+            response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException | NotFoundException e) {
-            throw new RuntimeException(e);
+            response.set("status", mapper.valueToTree("error"));
+            response.set("message", mapper.valueToTree("No products found"));
         }
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 }

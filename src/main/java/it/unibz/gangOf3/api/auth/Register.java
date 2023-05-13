@@ -2,7 +2,7 @@ package it.unibz.gangOf3.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.utils.UserUtil;
+import it.unibz.gangOf3.model.utils.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class Register extends HttpServlet {
 
         //create user
         try {
-            UserUtil.createUser(
+            UserRepository.createUser(
                 bodyJson.get("username").asText(),
                 bodyJson.get("email").asText(),
                 bodyJson.get("password").asText(),

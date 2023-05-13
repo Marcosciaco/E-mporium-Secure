@@ -3,7 +3,7 @@ package it.unibz.gangOf3.api.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
-import it.unibz.gangOf3.model.utils.UserUtil;
+import it.unibz.gangOf3.model.utils.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class Forgot extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = UserUtil.getUserByEmail(bodyJson.get("email").asText());
+            User user = UserRepository.getUserByEmail(bodyJson.get("email").asText());
             user.forgotPassword();
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception e) {

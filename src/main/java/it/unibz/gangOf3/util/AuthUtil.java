@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.utils.UserUtil;
+import it.unibz.gangOf3.model.utils.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -30,7 +30,7 @@ public class AuthUtil {
         }
         User user = null;
         try {
-            user = UserUtil.getUserBySessionId(sessionID);
+            user = UserRepository.getUserBySessionId(sessionID);
         } catch (SQLException | NotFoundException e) {
             res.set("message", mapper.valueToTree(e.getMessage()));
             try {
