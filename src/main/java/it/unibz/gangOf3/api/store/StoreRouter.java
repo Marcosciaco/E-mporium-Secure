@@ -11,6 +11,10 @@ public class StoreRouter {
         //Product
         tomcat.addServlet(context, "productServlet", new Product());
         context.addServletMappingDecoded(prefix + "/product", "productServlet");
+
+        //Review
+        tomcat.addServlet(context, "reviewServlet", new Review());
+        context.addServletMappingDecoded(prefix + "/review", "reviewServlet");
     }
 
 }

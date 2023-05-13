@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 
@@ -71,6 +72,26 @@ public class Product {
                 .executeQuery()
                 .getInt("owner")
         );
+    }
+
+    public void updateRating() throws NotFoundException, SQLException {
+        //Get the average rating of the product with productId
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT AVG(stars) AS avg FROM reviews WHERE product = " + id + ";")
+            .executeQuery();
+        if (!resultSet.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        double avg = resultSet.getDouble("avg");
+
+        String avgStr = String.valueOf(avg);
+        if (avg == 0)
+            avgStr = "NULL";
+
+        //Update the rating in the products table
+        DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE products SET stars = " + avgStr + " WHERE id = " + id + ";")
+            .executeUpdate();
     }
 
     public void delete() throws SQLException {

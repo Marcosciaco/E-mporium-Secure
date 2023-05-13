@@ -1,5 +1,6 @@
 package it.unibz.gangOf3.model.utils;
 
+import it.unibz.gangOf3.model.Product;
 import it.unibz.gangOf3.model.Review;
 import it.unibz.gangOf3.model.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
@@ -16,19 +17,8 @@ public class ReviewRepository {
             .prepareStatement("INSERT INTO reviews (user, stars, comment, product) VALUES ('" + user.getID() + "', " + rating + ", '" + comment + "', " + productId + ");")
             .executeUpdate();
 
-        //Get the average rating of the product with productId
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT AVG(stars) AS avg FROM reviews WHERE product = " + productId + ";")
-            .executeQuery();
-        if (!resultSet.next()) {
-            throw new NotFoundException("Product not found");
-        }
-        double avg = resultSet.getDouble("avg");
-
-        //Update the rating in the products table
-        DatabaseUtil.getConnection()
-            .prepareStatement("UPDATE products SET stars = " + avg + " WHERE id = " + productId + ";")
-            .executeUpdate();
+        Product product = ProductRepository.getProductById(productId);
+        product.updateRating();
     }
 
     public static Review getReviewById(int id) throws SQLException, NotFoundException {

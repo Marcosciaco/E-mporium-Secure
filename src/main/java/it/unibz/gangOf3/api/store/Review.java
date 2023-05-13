@@ -45,6 +45,7 @@ public class Review extends HttpServlet {
                 data.add(reviewJson);
             }
         }catch (Exception e) {
+            e.printStackTrace();
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
@@ -74,7 +75,7 @@ public class Review extends HttpServlet {
             ReviewRepository.createReview(
                 user,
                 bodyJson.get("product").asInt(),
-                bodyJson.get("stars").asInt(),
+                bodyJson.get("stars").asInt(), //FIXME check if stars is between 1 and 5
                 bodyJson.get("message").asText()
             );
             response.set("status", mapper.valueToTree("ok"));
@@ -114,9 +115,12 @@ public class Review extends HttpServlet {
 //                return;
 //            }
             review.delete();
+            response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException | NotFoundException e) {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 }

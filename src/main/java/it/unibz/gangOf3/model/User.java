@@ -38,7 +38,7 @@ public class User {
 
     public String getUsername() throws SQLException, NotFoundException {
         ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT username FROM users WHERE email = '" + email + "';")
+            .prepareStatement("SELECT username FROM users WHERE id = '" + getID() + "';")
             .executeQuery();
         if (!resultSet.next()) {
             throw new NotFoundException("User not found");
