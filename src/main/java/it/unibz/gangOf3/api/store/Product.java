@@ -1,5 +1,7 @@
 package it.unibz.gangOf3.api.store;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -152,6 +154,23 @@ public class Product extends HttpServlet {
                 return;
             }
         }
+
+        if (queryResult.size() == 0) {
+            response.set("status", mapper.valueToTree("error"));
+            response.set("message", mapper.valueToTree("No products found"));
+            resp.getWriter().write(mapper.writeValueAsString(response));
+            return;
+        }
+
+        response.set("status", mapper.valueToTree("ok"));
+
+        ArrayNode data = mapper.createArrayNode();
+        for (it.unibz.gangOf3.model.Product product : queryResult) {
+            data.add(product.getAsJSON(fields, mapper));
+        }
+        response.set("data", data);
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 
     /**

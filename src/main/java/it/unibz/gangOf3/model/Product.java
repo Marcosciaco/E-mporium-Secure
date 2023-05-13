@@ -1,8 +1,14 @@
 package it.unibz.gangOf3.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 
 public class Product {
 
@@ -53,7 +59,7 @@ public class Product {
 
     public String getImg() throws SQLException {
         return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT img FROM products WHERE id = " + id + ";")
+            .prepareStatement("SELECT image FROM products WHERE id = " + id + ";")
             .executeQuery()
             .getString("img");
     }
@@ -71,6 +77,68 @@ public class Product {
         DatabaseUtil.getConnection()
             .prepareStatement("DELETE FROM products WHERE id = " + id + ";")
             .executeUpdate();
+    }
+
+    //TODO: refactor this maybe?
+    public ObjectNode getAsJSON(ArrayNode fields, ObjectMapper mapper) {
+        ObjectNode node = mapper.createObjectNode();
+        for (Iterator<JsonNode> it = fields.elements(); it.hasNext(); ) {
+            JsonNode element = it.next();
+            String fieldName = element.asText();
+            switch (fieldName) {
+                case "id" -> node.put(fieldName, id);
+                case "name" -> {
+                    try {
+                        node.put(fieldName, getName());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "tag" -> {
+                    try {
+                        node.put(fieldName, getTag());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "description" -> {
+                    try {
+                        node.put(fieldName, getDescription());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "price" -> {
+                    try {
+                        node.put(fieldName, getPrice());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "category" -> {
+                    try {
+                        node.put(fieldName, getCategory());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "img" -> {
+                    try {
+                        node.put(fieldName, getImg());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "owner" -> {
+                    try {
+                        node.put(fieldName, getOwner().getID());
+                    } catch (SQLException | NotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return node;
     }
 
 }
