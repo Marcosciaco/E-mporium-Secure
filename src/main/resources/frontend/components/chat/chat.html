@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="chat-card">
+    <div class="header">
+        <img class="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
+        <div class="name">Lisa Mussner</div>
+        <img alt="avatar" class="avatar active" src="https://i.imgur.com/8Km9tLL.jpg">
+    </div>
+    <div class="messages" id="messages">
+        <div>
+            <div class="message-item">
+                <span class="message-username">Test</span>
+                <span class="message-text">Hello</span>
+            </div>
+        </div>
+        <div class="sender">
+            <div class="message-item">
+                <span class="message-username">Test</span>
+                <span class="message-text">Hello</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <textarea id="message" class="message"></textarea>
+        <img class="back" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
+    </div>
+
+</div>
+<style>
+    .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .active {
+        border: 2px solid #2CB543;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .name {
+        margin-left: 10px;
+        font-weight: bold;
+    }
+
+    .back {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .chat-card {
+        width: 300px;
+        height: 400px;
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .messages {
+        flex: 1;
+        overflow-y: scroll;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .messages::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+        background: #2CB543;
+        border-radius: 10px;
+    }
+
+    .messages::-webkit-scrollbar-thumb:hover {
+        background: #2CB543;
+    }
+
+    .footer {
+        padding: 10px;
+        border-top: 1px solid #eee;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .message {
+        width: 100%;
+        height: 50px;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        padding: 10px;
+        resize: none;
+        outline: none;
+    }
+
+    .message-item {
+        display: flex;
+        border-radius: 10px;
+        flex-direction: column;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+        width: 80%;
+        marg
+    }
+
+    .message-username {
+        font-weight: bold;
+        margin: 0 5px 5px 5px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .message-text {
+        margin-left: 10px;
+    }
+
+    .sender {
+        justify-content: flex-end;
+        color: white;
+        display: flex;
+    }
+
+    .sender .message-item {
+        background-color: #2CB543;
+    }
+</style>
+<script>
+    const messages = ["Hello", "How are you?", "I am fine", "Thank you", "Goodbye"];
+    var message = document.getElementById('messages');
+    for (let i = 0; i < messages.length; i++) {
+        let div = document.createElement('div');
+        div.innerHTML = '<div class="message-item">\n' +
+            '                <span class="message-username">Test</span>\n' +
+            '                <span class="message-text">' + messages[i] + '</span>\n' +
+            '            </div>';
+        message.appendChild(div);
+    }
+
+    //log the message of the textarea when clicking on the img
+    document.getElementById('send').addEventListener('click', () => {
+        let message = document.getElementById('message').value
+        ;
+        console.log(message);
+    });
+</script>
+</body>
+</html>

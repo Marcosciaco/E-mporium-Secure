@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="seller-dashboard">
+    <div class="header">
+        <div class="title">Dashboard</div>
+        <div class="actions">
+            <img class="action" src="/frontend/assets?name=icons/home.svg"/>
+            <img class="action" src="/frontend/assets?name=icons/notifications.svg"/>
+            <img class="action" src="/frontend/assets?name=icons/settings.svg"/>
+        </div>
+    </div>
+    <div class="greetings">
+        <div class="title">Hello, Test</div>
+        <div class="subtitle">Welcome back to your dashboard</div>
+    </div>
+    <div class="content">
+        <div class="card">
+            <div class="title">Sales</div>
+            <div class="value">$ 1.000</div>
+        </div>
+        <div class="card">
+            <div class="title">Orders</div>
+            <div class="value">10</div>
+        </div>
+        <div class="card">
+            <div class="title">Products</div>
+            <div class="value">10</div>
+        </div>
+        <div class="card">
+            <div class="title">Customers</div>
+            <div class="value">10</div>
+        </div>
+    </div>
+    <div class="latest-sales">
+        <div class="title">Latest sales</div>
+        <div class="sales" id="sales"></div>
+    </div>
+</div>
+</body>
+<style>
+    .seller-dashboard {
+        display: flex;
+        flex-direction: column;
+        align-self: start;
+        height: 100%;
+        width: 100%;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .action {
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .card {
+        width: 100%;
+        height: 200px;
+        border-radius: 10px;
+        background-color: #eee;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .card:hover {
+        background-color: #7BE495;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .title {
+        font-weight: bold;
+    }
+
+    .value {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .latest-sales {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .sales {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .sale {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #7BE495;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .sale:last-child {
+        margin-bottom: 0;
+    }
+
+    .sale .title {
+        font-weight: bold;
+    }
+
+    .sale .value {
+        font-weight: bold;
+    }
+
+    .sale:hover {
+        background-color: #7BE495;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .sale:hover .title {
+        color: white;
+    }
+
+    .sale:hover .value {
+        color: white;
+    }
+
+    .greetings {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .greetings .title {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .greetings .subtitle {
+        font-size: 20px;
+    }
+
+</style>
+
+<script>
+    //load the sales form an array and add them to the div with class sales
+    var arr = ["sale1", "sale2", "sale3", "sale4", "sale5"];
+    var sales = document.getElementById("sales");
+    for (var i = 0; i < arr.length; i++) {
+        var sale = document.createElement("div");
+        sale.className = "sale";
+        var info = document.createElement("div");
+        info.className = "info";
+        var title = document.createElement("div");
+        title.className = "title";
+        title.innerHTML = arr[i];
+        var customer = document.createElement("div");
+        customer.className = "customer";
+        customer.innerHTML = "Test";
+        info.appendChild(title);
+        info.appendChild(customer);
+        var value = document.createElement("div");
+        value.className = "value";
+        value.innerHTML = "$ 100";
+        sale.appendChild(info);
+        sale.appendChild(value);
+        sales.appendChild(sale);
+    }
+</script>
+</html>
