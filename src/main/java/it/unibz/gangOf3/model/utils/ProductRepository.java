@@ -36,6 +36,14 @@ public class ProductRepository {
         return resultSet.getInt("seq");
     }
 
+
+    /**
+     * find a product by its id
+     * @param id
+     * @return Product with that id
+     * @throws SQLException
+     * @throws NotFoundException
+     */
     public static Product getProductById(int id) throws SQLException, NotFoundException {
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT id FROM products WHERE id = " + id + ";")
@@ -44,6 +52,7 @@ public class ProductRepository {
             throw new NotFoundException("Product not found");
         return new Product(id);
     }
+
 
     /**
      * Filter the given list of products by the given query
@@ -146,13 +155,14 @@ public class ProductRepository {
         } else {
             LinkedList<Product> toRemove = new LinkedList<>();
             for (Product product : source) {
-                if (product.getOwner().getID() != owner.getID()) {
+                if (product.getOwner().equals(owner)) {
                     toRemove.add(product);
                 }
             }
             source.removeAll(toRemove);
         }
     }
+
 
     /**
      * Get a list of random products

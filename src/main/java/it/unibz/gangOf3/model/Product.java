@@ -100,66 +100,31 @@ public class Product {
             .executeUpdate();
     }
 
-    //TODO: refactor this maybe?
-    public ObjectNode getAsJSON(ArrayNode fields, ObjectMapper mapper) {
+    public ObjectNode getAsJSON(ArrayNode fields, ObjectMapper mapper) throws SQLException, NotFoundException {
         ObjectNode node = mapper.createObjectNode();
         for (Iterator<JsonNode> it = fields.elements(); it.hasNext(); ) {
             JsonNode element = it.next();
             String fieldName = element.asText();
             switch (fieldName) {
                 case "id" -> node.put(fieldName, id);
-                case "name" -> {
-                    try {
-                        node.put(fieldName, getName());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "tag" -> {
-                    try {
-                        node.put(fieldName, getTag());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "description" -> {
-                    try {
-                        node.put(fieldName, getDescription());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "price" -> {
-                    try {
-                        node.put(fieldName, getPrice());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "category" -> {
-                    try {
-                        node.put(fieldName, getCategory());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "img" -> {
-                    try {
-                        node.put(fieldName, getImg());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case "owner" -> {
-                    try {
-                        node.put(fieldName, getOwner().getID());
-                    } catch (SQLException | NotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
+                case "name" -> node.put(fieldName, getName());
+                case "tag" -> node.put(fieldName, getTag());
+                case "description" -> node.put(fieldName, getDescription());
+                case "price" -> node.put(fieldName, getPrice());
+                case "category" -> node.put(fieldName, getCategory());
+                case "img" -> node.put(fieldName, getImg());
+                case "owner" -> node.put(fieldName, getOwner().getID());
             }
         }
         return node;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Product)) {
+            return false;
+        }
+        Product product = (Product) obj;
+        return product.getId() == getId();
+    }
 }

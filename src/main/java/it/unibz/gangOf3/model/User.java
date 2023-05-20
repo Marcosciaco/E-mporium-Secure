@@ -95,4 +95,16 @@ public class User {
         EmailSender.sendEmail(email, "Reset password", emailBody);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User toCompare = (User) obj;
+        try {
+            return toCompare.getID() == getID();
+        } catch (SQLException | NotFoundException e) {
+            return false;
+        }
+    }
 }

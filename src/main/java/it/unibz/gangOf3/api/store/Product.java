@@ -81,6 +81,8 @@ public class Product extends HttpServlet {
 
         LinkedList<it.unibz.gangOf3.model.Product> queryResult = new LinkedList<>();
 
+        //Get product by filter
+
         if(filter.has("random")) {
             try {
                 ProductRepository.getRandomProducts(queryResult, max);
@@ -92,7 +94,6 @@ public class Product extends HttpServlet {
             }
         }
 
-        //Get product by filter
         if (filter.has("id")) {
             try {
                 queryResult.add(ProductRepository.getProductById(filter.get("id").asInt()));
@@ -160,12 +161,16 @@ public class Product extends HttpServlet {
             return;
         }
 
-        response.set("status", mapper.valueToTree("ok"));
 
         ArrayNode data = mapper.createArrayNode();
         for (it.unibz.gangOf3.model.Product product : queryResult) {
-            data.add(product.getAsJSON(fields, mapper));
+            try {
+                data.add(product.getAsJSON(fields, mapper));
+            } catch (Exception e) {
+                //Ignore me
+            }
         }
+        response.set("status", mapper.valueToTree("ok"));
         response.set("data", data);
 
         resp.getWriter().write(mapper.writeValueAsString(response));
