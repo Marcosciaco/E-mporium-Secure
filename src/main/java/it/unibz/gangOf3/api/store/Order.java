@@ -32,7 +32,7 @@ public class Order extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields", "max"});
+        ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
         ObjectMapper mapper = new ObjectMapper();
@@ -126,5 +126,7 @@ public class Order extends HttpServlet {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 }

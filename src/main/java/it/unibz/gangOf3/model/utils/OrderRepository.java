@@ -59,6 +59,9 @@ public class OrderRepository {
             ResultSet resultSet = DatabaseUtil.getConnection()
                 .prepareStatement("SELECT id FROM orders WHERE product = " + product.getId() + ";")
                 .executeQuery();
+            while (resultSet.next()){
+                source.add(new Order(resultSet.getInt("id")));
+            }
         } else {
             LinkedList<Order> toRemove = new LinkedList<>();
             for (Order order : source) {
