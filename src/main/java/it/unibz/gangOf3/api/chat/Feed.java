@@ -3,6 +3,7 @@ package it.unibz.gangOf3.api.chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unibz.gangOf3.model.classes.Message;
 import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.AuthUtil;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Feed extends HttpServlet {
@@ -46,13 +48,18 @@ public class Feed extends HttpServlet {
      * @param message message to feed
      */
     public static void notify(Message message) {
-        User receiver = message.getTo();
+        User receiver = null;
+        try {
+            receiver = message.getTo();
+        } catch (SQLException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
         if (feededUsers.containsKey(receiver)) { //receiver is currently online
             AsyncContext asyncContext = feededUsers.get(receiver);
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 PrintWriter writer = asyncContext.getResponse().getWriter();
-                writer.write("data: " + mapper.writeValueAsString(message.getAsJson()) + "\n\n");
+                writer.write("data: " + mapper.writeValueAsString(message.getAsJson(mapper)) + "\n\n");
                 writer.flush();
             } catch (Exception ex) {
                 ex.printStackTrace();
