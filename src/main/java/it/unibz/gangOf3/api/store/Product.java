@@ -3,10 +3,10 @@ package it.unibz.gangOf3.api.store;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.User;
+import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.utils.ProductRepository;
-import it.unibz.gangOf3.model.utils.UserRepository;
+import it.unibz.gangOf3.model.repositories.ProductRepository;
+import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.AuthUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -79,7 +79,7 @@ public class Product extends HttpServlet {
         ArrayNode fields = (ArrayNode) bodyJson.get("fields");
         int max = bodyJson.get("max").asInt();
 
-        LinkedList<it.unibz.gangOf3.model.Product> queryResult = new LinkedList<>();
+        LinkedList<it.unibz.gangOf3.model.classes.Product> queryResult = new LinkedList<>();
 
         //Get product by filter
 
@@ -163,7 +163,7 @@ public class Product extends HttpServlet {
 
 
         ArrayNode data = mapper.createArrayNode();
-        for (it.unibz.gangOf3.model.Product product : queryResult) {
+        for (it.unibz.gangOf3.model.classes.Product product : queryResult) {
             try {
                 data.add(product.getAsJSON(fields, mapper));
             } catch (Exception e) {
@@ -197,7 +197,7 @@ public class Product extends HttpServlet {
         int id = bodyJson.get("id").asInt();
 
         try{
-            it.unibz.gangOf3.model.Product product = ProductRepository.getProductById(id);
+            it.unibz.gangOf3.model.classes.Product product = ProductRepository.getProductById(id);
 //            FIXME check if user is owner of product
 //            if (product.getOwner().getID() != user.getID()) {
 //                response.set("status", mapper.valueToTree("error"));

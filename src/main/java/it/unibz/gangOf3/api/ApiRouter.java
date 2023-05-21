@@ -1,6 +1,7 @@
 package it.unibz.gangOf3.api;
 
 import it.unibz.gangOf3.api.auth.AuthRouter;
+import it.unibz.gangOf3.api.chat.ChatRouter;
 import it.unibz.gangOf3.api.store.StoreRouter;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -15,6 +16,9 @@ public class ApiRouter {
 
         // store
         StoreRouter.registerRoutes(tomcat, context, prefix);
+
+        // chat
+        ChatRouter.registerRoutes(tomcat, context, prefix);
     }
 
 }

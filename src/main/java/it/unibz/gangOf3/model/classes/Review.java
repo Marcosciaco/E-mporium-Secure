@@ -1,9 +1,8 @@
-package it.unibz.gangOf3.model;
+package it.unibz.gangOf3.model.classes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.utils.ReviewRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package it.unibz.gangOf3.model;
+package it.unibz.gangOf3.model.classes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

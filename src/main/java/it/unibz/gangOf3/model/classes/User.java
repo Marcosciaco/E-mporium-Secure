@@ -1,4 +1,4 @@
-package it.unibz.gangOf3.model;
+package it.unibz.gangOf3.model.classes;
 
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.exceptions.InvalidPasswordException;

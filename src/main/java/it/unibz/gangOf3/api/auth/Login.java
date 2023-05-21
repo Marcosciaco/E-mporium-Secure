@@ -2,8 +2,8 @@ package it.unibz.gangOf3.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.User;
-import it.unibz.gangOf3.model.utils.UserRepository;
+import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.model.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

@@ -3,9 +3,9 @@ package it.unibz.gangOf3.api.store;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.User;
+import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.utils.ReviewRepository;
+import it.unibz.gangOf3.model.repositories.ReviewRepository;
 import it.unibz.gangOf3.util.AuthUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -36,11 +36,11 @@ public class Review extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try{
-            LinkedList<it.unibz.gangOf3.model.Review> reviews = ReviewRepository.getReviewsForProduct(bodyJson.get("product").asInt());
+            LinkedList<it.unibz.gangOf3.model.classes.Review> reviews = ReviewRepository.getReviewsForProduct(bodyJson.get("product").asInt());
             response.set("status", mapper.valueToTree("ok"));
             ArrayNode data = mapper.createArrayNode();
             response.set("data", data);
-            for (it.unibz.gangOf3.model.Review review : reviews) {
+            for (it.unibz.gangOf3.model.classes.Review review : reviews) {
                 ObjectNode reviewJson = review.toJSON(mapper);
                 data.add(reviewJson);
             }
@@ -106,7 +106,7 @@ public class Review extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try{
-            it.unibz.gangOf3.model.Review review = ReviewRepository.getReviewById(bodyJson.get("id").asInt());
+            it.unibz.gangOf3.model.classes.Review review = ReviewRepository.getReviewById(bodyJson.get("id").asInt());
 //            FIXME check if user has written the review
 //            if (review.getWriter().getID() != user.getID()) {
 //                response.set("status", mapper.valueToTree("error"));

@@ -1,7 +1,7 @@
-package it.unibz.gangOf3.model.utils;
+package it.unibz.gangOf3.model.repositories;
 
-import it.unibz.gangOf3.model.Product;
-import it.unibz.gangOf3.model.User;
+import it.unibz.gangOf3.model.classes.Product;
+import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
