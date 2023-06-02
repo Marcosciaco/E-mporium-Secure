@@ -62,7 +62,7 @@ public class Product {
         return DatabaseUtil.getConnection()
             .prepareStatement("SELECT image FROM products WHERE id = " + id + ";")
             .executeQuery()
-            .getString("img");
+            .getString("image");
     }
 
     public User getOwner() throws SQLException {
@@ -79,6 +79,13 @@ public class Product {
             .prepareStatement("SELECT stock FROM products WHERE id = " + id + ";")
             .executeQuery()
             .getInt("stock");
+    }
+
+    public int getStars() throws SQLException {
+        return DatabaseUtil.getConnection()
+            .prepareStatement("SELECT stars FROM products WHERE id = " + id + ";")
+            .executeQuery()
+            .getInt("stars");
     }
 
     public void updateRating() throws NotFoundException, SQLException {
@@ -122,6 +129,7 @@ public class Product {
                 case "img" -> node.put(fieldName, getImg());
                 case "owner" -> node.put(fieldName, getOwner().getUsername());
                 case "stock" -> node.put(fieldName, getStock());
+                case "stars" -> node.put(fieldName, getStars());
             }
         }
         return node;
