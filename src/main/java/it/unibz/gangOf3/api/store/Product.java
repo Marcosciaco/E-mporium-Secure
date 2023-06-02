@@ -47,7 +47,8 @@ public class Product extends HttpServlet {
                 bodyJson.get("description").asText(),
                 bodyJson.get("price").asDouble(),
                 bodyJson.get("category").asText(),
-                bodyJson.get("stock").asInt()
+                bodyJson.get("stock").asInt(),
+                bodyJson.get("image").asText()
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();
