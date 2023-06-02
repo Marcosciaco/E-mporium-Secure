@@ -66,12 +66,10 @@ public class Message {
 
     public ObjectNode getAsJson(ObjectMapper mapper) throws SQLException, NotFoundException, ParseException {
         ObjectNode node = mapper.createObjectNode();
-        node.put("from", getFrom().getID());
-        node.put("to", getTo().getID());
+        node.put("from", getFrom().getEmail());
+        node.put("to", getTo().getEmail());
         node.put("message", getMessage());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        node.put("timestamp", getTimestamp().toLocalDateTime().format(DateTimeFormatter.ISO_INSTANT));
+        node.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(getTimestamp().toInstant()));
         return node;
     }
 
