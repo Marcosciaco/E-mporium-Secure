@@ -1,6 +1,7 @@
 package it.unibz.gangOf3.framework;
 
 import it.unibz.gangOf3.util.QueryParser;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +15,8 @@ public class AssetsProvider extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         OutputStream out = resp.getOutputStream();
 
         String queryStr = req.getQueryString();

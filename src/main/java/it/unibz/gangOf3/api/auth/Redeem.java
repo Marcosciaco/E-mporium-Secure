@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.util.DatabaseUtil;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class Redeem extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"token", "type"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 

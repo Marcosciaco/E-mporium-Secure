@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.repositories.UserRepository;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class Forgot extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"email"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 

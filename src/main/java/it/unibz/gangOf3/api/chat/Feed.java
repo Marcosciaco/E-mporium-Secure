@@ -5,6 +5,7 @@ import it.unibz.gangOf3.model.classes.Message;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.AuthUtil;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -29,6 +30,8 @@ public class Feed extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         resp.setContentType("text/event-stream");
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("connection", "keep-alive");

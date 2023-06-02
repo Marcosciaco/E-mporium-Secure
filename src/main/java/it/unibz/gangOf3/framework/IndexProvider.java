@@ -1,5 +1,6 @@
 package it.unibz.gangOf3.framework;
 
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,8 @@ public class IndexProvider extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         PrintWriter writer = resp.getWriter();
 
         InputStream indexFileIS = getClass().getResourceAsStream("/frontend/index.html");

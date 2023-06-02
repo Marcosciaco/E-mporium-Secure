@@ -10,6 +10,7 @@ import it.unibz.gangOf3.model.repositories.OrderRepository;
 import it.unibz.gangOf3.model.repositories.ProductRepository;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.AuthUtil;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,8 @@ public class Order extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
@@ -102,6 +105,8 @@ public class Order extends HttpServlet {
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"product", "quantity"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 

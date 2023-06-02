@@ -123,8 +123,8 @@
             return;
         }
 
-        if (document.getElementById('form-password').value.trim().length < 8){
-            alert('Password must be at least 8 characters');
+        if (document.getElementById('form-password').value.trim().length === 0){
+            alert('Please specify a password');
             return;
         }
 

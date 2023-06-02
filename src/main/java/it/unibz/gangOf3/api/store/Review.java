@@ -7,6 +7,7 @@ import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.ReviewRepository;
 import it.unibz.gangOf3.util.AuthUtil;
+import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,8 @@ public class Review extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"product"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
@@ -62,6 +65,8 @@ public class Review extends HttpServlet {
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"message", "product", "stars"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
@@ -96,6 +101,8 @@ public class Review extends HttpServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"id"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
