@@ -4,6 +4,7 @@ import it.unibz.gangOf3.model.classes.Order;
 import it.unibz.gangOf3.model.classes.Product;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.ResultSet;
@@ -13,9 +14,7 @@ import java.util.LinkedList;
 public class OrderRepository {
 
     public static int createOrder(User buyer, Product product, int quantity) throws SQLException, NotFoundException {
-        DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO orders (buyer, product, quantity) VALUES (" + buyer.getID() + ", " + product.getId() + ", " + quantity + ");")
-            .executeUpdate();
+        DatabaseInsertionUtil.insertData("orders", new String[]{"buyer", "product", "quantity"}, new String[]{buyer.getID() + "", product.getId() + "", quantity + ""});
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='orders';")
             .executeQuery();

@@ -3,6 +3,7 @@ package it.unibz.gangOf3.model.repositories;
 import it.unibz.gangOf3.model.classes.Product;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.ResultSet;
@@ -24,9 +25,7 @@ public class ProductRepository {
      * @throws NotFoundException
      */
     public static int createProduct(User owner, String name, String tag, String description, double price, String category, int stock, String image) throws SQLException, NotFoundException {
-       DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner, stock, image) VALUES ('" + name + "', '" + tag + "', '" + description + "', " + price + ", '" + category + "', " + owner.getID() + ", " + stock + ", '" + image + "');")
-            .execute();
+        DatabaseInsertionUtil.insertData("products", new String[]{"name", "tag", "description", "price", "category", "owner", "stock", "image"}, new String[]{name, tag, description, price + "", category, owner.getID() + "", stock + "", image});
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='products';")
             .executeQuery();

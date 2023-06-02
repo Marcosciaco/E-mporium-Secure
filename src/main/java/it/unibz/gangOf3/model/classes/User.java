@@ -15,6 +15,9 @@ import java.util.UUID;
 
 public class User {
 
+    private static int loginCounter = 0;
+
+
     private String email;
     private int id;
 
@@ -75,7 +78,7 @@ public class User {
         if (!dbPassword.equals(password)) {
             throw new InvalidPasswordException("Invalid email or password");
         }
-        String sessionUUID = UUID.randomUUID().toString();
+        String sessionUUID = "" + (++loginCounter); //UUID.randomUUID().toString();
         DatabaseUtil.getConnection()
             .prepareStatement("UPDATE users SET sessionToken = '" + sessionUUID + "' WHERE email = '" + email + "';")
             .execute();

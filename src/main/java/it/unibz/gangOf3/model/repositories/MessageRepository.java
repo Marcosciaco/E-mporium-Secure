@@ -3,6 +3,7 @@ package it.unibz.gangOf3.model.repositories;
 import it.unibz.gangOf3.model.classes.Message;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.ResultSet;
@@ -13,9 +14,7 @@ import java.util.LinkedList;
 public class MessageRepository {
 
     public static int createMessage(User from, User to, String message) throws SQLException, NotFoundException {
-        DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO chat (user1, user2, message) VALUES (" + from.getID() + ", " + to.getID() + ", '" + message + "');")
-            .executeUpdate();
+        DatabaseInsertionUtil.insertData("chat", new String[]{"user1", "user2", "message"}, new String[]{from.getID() + "", to.getID() + "", message});
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='chat';")
             .executeQuery();

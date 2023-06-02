@@ -4,6 +4,7 @@ import it.unibz.gangOf3.model.classes.Product;
 import it.unibz.gangOf3.model.classes.Review;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.ResultSet;
@@ -13,10 +14,7 @@ import java.util.LinkedList;
 public class ReviewRepository {
 
     public static void createReview(User user, int productId, int rating, String comment) throws SQLException, NotFoundException {
-        DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO reviews (user, stars, comment, product) VALUES ('" + user.getID() + "', " + rating + ", '" + comment + "', " + productId + ");")
-            .executeUpdate();
-
+        DatabaseInsertionUtil.insertData("reviews", new String[]{"user", "stars", "comment", "product"}, new String[]{user.getID() + "", rating + "", comment, productId + ""});
         Product product = ProductRepository.getProductById(productId);
         product.updateRating();
     }
