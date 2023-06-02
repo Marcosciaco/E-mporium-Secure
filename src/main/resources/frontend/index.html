@@ -56,13 +56,13 @@
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
-        background: #2CB543;
+        background: #7BE495;
         border-radius: 10px;
     }
 
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
-        background: #2CB543;
+        background: #7BE495;
     }
 
     #snackbar {
@@ -209,6 +209,16 @@
         setTimeout(function () {
             x.className = x.className.replace("show", "");
         }, 3000);
+    }
+
+    window.getUsername = () => {
+        const storage = JSON.parse(localStorage.getItem("login"))
+        return storage.username;
+    }
+
+    window.getEmail = () => {
+        const storage = JSON.parse(localStorage.getItem("login"))
+        return storage.email;
     }
 </script>
 </body>

@@ -1,0 +1,199 @@
+<div class="background"></div>
+<div class="container">
+    <div id="create_product">
+        <div class="title">Create a product</div>
+        <div id="create_product_form">
+            <div class="row">
+                <div class="col" style="width: 30%">
+                    <img class="prod-image" id="ldImage">
+                    <input class="file" id="image" type="file">
+                    <input id="price" placeholder="Price" type="text"/>
+                    <input id="stock" placeholder="Stock" type="text"/>
+                </div>
+                <div class="col" style="width: 70%">
+                    <input id="name" placeholder="Name" type="text"/>
+                    <textarea id="description" placeholder="Description"></textarea>
+                    <input id="tag" placeholder="Tag" type="text"/>
+                    <input id="category" placeholder="Category" type="text"/>
+                </div>
+            </div>
+            <button class="submit" id="submitProduct" onclick="createProduct()">Create</button>
+        </div>
+    </div>
+</div>
+<script>
+
+    document.getElementById("image").addEventListener("change", () => {
+        var fileInput = document.getElementById("image");
+        var img = document.getElementById("ldImage");
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onloadend = function () {
+            img.src = reader.result
+        }
+
+    })
+
+    window.createProduct = () => {
+        var name = document.getElementById("name").value
+        var tag = document.getElementById("tag").value
+        var description = document.getElementById("description").value
+        var price = document.getElementById("price").value
+        var category = document.getElementById("category").value
+        var stock = document.getElementById("stock").value
+        var fileInput = document.getElementById("image");
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onloadend = function () {
+            var data = {
+                name: name,
+                description: description,
+                tag: tag,
+                price: price,
+                category: category,
+                stock: stock,
+                image: reader.result
+            }
+
+            fetchAPI("store/product", "PUT", data).then(json => {
+                console.log(json)
+                alert("Product created successfully")
+            })
+        }
+    }
+</script>
+<style>
+
+    .title {
+        margin: 10px;
+        font-size: 20px !important;
+    }
+
+    #create_product {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        background: white;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 15px;
+    }
+
+    .container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #create_product_form {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 100%;
+        border-radius: 10px;
+        outline-color: transparent;
+        background-color: #FFFFFF;
+        border: 1px solid #eee;
+        color: #205072;
+        font-size: 15px;
+        padding: 5px;
+        margin-bottom: 20px;
+    }
+
+    input:focus {
+        border: 1px solid #56C596 !important;
+        color: #56C596;
+    }
+
+    textarea {
+        width: 100%;
+        border-radius: 10px;
+        height: 100%;
+        border: 1px solid #eee;
+        outline-color: transparent;
+        background-color: #FFFFFF;
+        color: #205072;
+        font-size: 15px;
+        padding: 5px;
+        margin-bottom: 20px;
+    }
+
+    textarea:focus {
+        border: 1px solid #56C596 !important;
+        color: #56C596;
+    }
+
+    .submit {
+        border-radius: 15px;
+        border: none;
+        outline-color: transparent;
+        background-color: #7BE495;
+        color: white;
+        font-size: 20px;
+        padding: 5px 2px;
+        margin: 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .col {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .prod-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        overflow: hidden;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        background: lightgrey;
+    }
+
+    .background {
+        background-image: url("/frontend/assets?name=images/background.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        opacity: 1;
+        display: flex;
+        z-index: -1;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        min-height: 100vh;
+        width: 100%;
+    }
+</style>
