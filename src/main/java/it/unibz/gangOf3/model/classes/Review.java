@@ -8,7 +8,7 @@ import it.unibz.gangOf3.util.DatabaseUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Review {
+public class  Review {
 
     private int id;
 

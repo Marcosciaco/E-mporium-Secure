@@ -6,7 +6,7 @@
 # Things to do for secure version
 
 - [X] Use HTTPS
-- [ ] Use UUIDs for the session token
+- [X] Use UUIDs for the session token
 - [ ] Add password strength checker (for register and reset password)
 - [ ] Change CORS header and X-Frame-Options header
 - [ ] Add SQL injection protection
