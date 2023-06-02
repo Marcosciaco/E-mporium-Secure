@@ -3,26 +3,29 @@
     <div class="row">
         <div class="column">
             <label for="form-username">Username</label>
-            <input id="form-username" type="text" name="text" required>
+            <input id="form-username" name="text" required type="text">
             <label for="form-email">Email</label>
-            <input id="form-email" type="email" name="username" required>
+            <input id="form-email" name="username" required type="email">
             <label for="form-emergency-email">Emergency Contact Email</label>
-            <input id="form-emergency-email" type="email" name="emergency-email">
-            <div id="form-vc" class="form-vc">
-                <div class="form-vc-selector" id="form-vc-selector" onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
-                    <div id="form-vc-selector-inner" class="form-vc-selector-inner"></div>
-                </div>
-                <input id="form-vc-input" type="checkbox" style="display: none" name="vendor_customer_selector" onchange="onVendorCustomerToggle()">
+            <input id="form-emergency-email" name="emergency-email" type="email">
+            <div class="form-vc" id="form-vc">
                 <h1><label for="form-vc-input">Seller</label></h1>
+                <div class="form-vc-selector" id="form-vc-selector"
+                     onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
+                    <div class="form-vc-selector-inner" id="form-vc-selector-inner"></div>
+                </div>
+                <input id="form-vc-input" name="vendor_customer_selector" onchange="onVendorCustomerToggle()" style="display: none"
+                       type="checkbox">
+                <h1><label for="form-vc-input">Buyer</label></h1>
             </div>
         </div>
         <div class="column">
             <label for="form-password">Password</label>
-            <input id="form-password" type="password" name="password" required>
+            <input id="form-password" name="password" required type="password">
             <label for="form-password-repeat">Repeat Password</label>
-            <input id="form-password-repeat" type="password" name="password" required>
+            <input id="form-password-repeat" name="password" required type="password">
             <label for="form-emergency-phone">Emergency Contact Phone</label>
-            <input id="form-emergency-phone" type="tel" name="emergency-phone">
+            <input id="form-emergency-phone" name="emergency-phone" type="tel">
             <button type="submit">Register</button>
             <span style="text-align: center">Already have an account? <a href="javascript:navigate_signIn()">Sign In</a></span>
         </div>
@@ -123,7 +126,7 @@
             return;
         }
 
-        if (document.getElementById('form-password').value.trim().length === 0){
+        if (document.getElementById('form-password').value.trim().length === 0) {
             alert('Please specify a password');
             return;
         }
