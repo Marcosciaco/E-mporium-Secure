@@ -53,6 +53,27 @@ public class OrderRepository {
         }
     }
 
+    public static void filterOrdersBySeller(User seller, LinkedList<Order> source) throws SQLException, NotFoundException {
+        if (source.size() == 0) {
+            ResultSet resultSet = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT orders.id " +
+                    "FROM orders JOIN products p ON p.id = orders.product " +
+                    "WHERE owner = " + seller.getID() + ";")
+                .executeQuery();
+            while (resultSet.next()) {
+                source.add(new Order(resultSet.getInt("id")));
+            }
+        } else {
+            LinkedList<Order> toRemove = new LinkedList<>();
+            for (Order order : source) {
+                if (!order.getProduct().getOwner().equals(seller)){
+                    toRemove.add(order);
+                }
+            }
+            source.removeAll(toRemove);
+        }
+    }
+
     public static void filterOrdersByProduct(Product product, LinkedList<Order> source) throws SQLException, NotFoundException {
         if (source.size() == 0) {
             ResultSet resultSet = DatabaseUtil.getConnection()

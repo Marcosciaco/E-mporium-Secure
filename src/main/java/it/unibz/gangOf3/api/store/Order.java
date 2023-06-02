@@ -57,6 +57,18 @@ public class Order extends HttpServlet {
             }
         }
 
+        if (filter.has("seller")) {
+            try {
+                User seller = UserRepository.getUserByEmail(filter.get("seller").asText());
+                OrderRepository.filterOrdersBySeller(seller, queryResult);
+            } catch (SQLException | NotFoundException e) {
+                response.set("status", mapper.valueToTree("error"));
+                response.set("message", mapper.valueToTree(e.getMessage()));
+                resp.getWriter().write(mapper.writeValueAsString(response));
+                return;
+            }
+        }
+
         if (filter.has("buyer")) {
             try{
                 User buyer = UserRepository.getUserByEmail(filter.get("buyer").asText());

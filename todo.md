@@ -3,6 +3,7 @@
 - [ ] JavaDocs
 - [ ] Connect frontend
 - [ ] Refactor emails
+- [ ] Filter orders by seller
 - [x] Remove minimum password length
 - [X] Change uuids to incremential numbers
 - [X] Refactor for a default method to insert data into the database
