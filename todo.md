@@ -2,15 +2,18 @@
 
 - [ ] Connect frontend
 - [ ] Refactor emails
-- [X] Filter orders by seller
-- [x] Remove minimum password length
-- [X] Change uuids to incremential numbers
-- [X] Refactor for a default method to insert data into the database
-- [X] Vulnerabilities.md
-- [X] Add a `README.md` to the root of the project
 
 # Things to do for secure version
+
 - [ ] Change CORS header and X-Frame-Options header
+- [ ] Add CSRF protection by using a token
+- [ ] Use HTTPS
 - [ ] Secure Rest API
 - [ ] Refactor default method to insert data into the database
-- [ ] Add XSS protection
+- [ ] Add XSS protection (stored + reflected)
+- [ ] Add SQL injection protection
+- [ ] Add timeout for login
+- [ ] Add password strength checker
+- [ ] Use password hashing
+- [ ] Use UUIDs for the session token
+- [ ] Encrypt chat messages
