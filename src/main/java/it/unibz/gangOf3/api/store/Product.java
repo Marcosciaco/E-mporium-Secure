@@ -174,7 +174,7 @@ public class Product extends HttpServlet {
             try {
                 data.add(product.getAsJSON(fields, mapper));
             } catch (Exception e) {
-                //Ignore me
+                // ignore me
             }
         }
         response.set("status", mapper.valueToTree("ok"));

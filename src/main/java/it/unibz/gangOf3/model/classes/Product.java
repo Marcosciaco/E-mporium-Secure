@@ -59,10 +59,12 @@ public class Product {
     }
 
     public String getImg() throws SQLException {
-        return DatabaseUtil.getConnection()
+        String img = DatabaseUtil.getConnection()
             .prepareStatement("SELECT image FROM products WHERE id = " + id + ";")
             .executeQuery()
             .getString("img");
+        System.out.println("img: " + img);
+        return img;
     }
 
     public User getOwner() throws SQLException {

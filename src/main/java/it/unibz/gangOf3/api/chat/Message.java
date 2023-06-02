@@ -71,7 +71,7 @@ public class Message extends HttpServlet {
 
         if (filter.has("sender")) {
             try {
-                User sender = UserRepository.getUserById(filter.get("sender").asInt());
+                User sender = UserRepository.getUserByEmail(filter.get("sender").asText());
                 MessageRepository.filterBySender(sender, queryResult, max);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
@@ -83,7 +83,7 @@ public class Message extends HttpServlet {
 
         if (filter.has("receiver")) {
             try {
-                User receiver = UserRepository.getUserById(filter.get("receiver").asInt());
+                User receiver = UserRepository.getUserByEmail(filter.get("receiver").asText());
                 MessageRepository.filterByReceiver(receiver, queryResult, max);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));

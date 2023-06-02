@@ -45,7 +45,7 @@ public class Runner {
         ApiRouter.registerRoutes(tomcat, context);
 
         tomcat.start();
-        System.out.println("📡 Tomcat Embedded listening on port 8080!");
+        System.out.println("📡 HTTP Tomcat Embedded listening on port 8080!");
         tomcat.getServer().await();
     }
 }
