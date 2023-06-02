@@ -10,11 +10,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Service;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.apache.tomcat.util.net.SSLHostConfig;
+import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import java.io.*;
+import java.security.*;
+import java.security.cert.CertificateException;
 
 public class Runner {
     public static void main(String[] args) throws LifecycleException, IOException {
@@ -33,19 +41,46 @@ public class Runner {
 
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir("temp");
-        tomcat.setPort(8080);
-        tomcat.getConnector();
+        tomcat.setPort(8443);
+        tomcat.setConnector(getHttpsConnector());
 
+        // Configure the security constraint for HTTPS
+        SecurityCollection securityCollection = new SecurityCollection();
+        securityCollection.addPattern("/*");
+        SecurityConstraint securityConstraint = new SecurityConstraint();
+        securityConstraint.setUserConstraint("CONFIDENTIAL");
+        securityConstraint.addCollection(securityCollection);
+
+        // Register routes
         String contextPath = "";
         String docBase = new File(".").getAbsolutePath();
 
         Context context = tomcat.addContext(contextPath, docBase);
+        context.addConstraint(securityConstraint);
 
         FrameworkRouter.registerRoutes(tomcat, context);
         ApiRouter.registerRoutes(tomcat, context);
 
         tomcat.start();
-        System.out.println("📡 Tomcat Embedded listening on port 8080!");
+        System.out.println("📡 HTTPS Tomcat Embedded listening on port 8443!");
         tomcat.getServer().await();
+    }
+
+    private static Connector getHttpsConnector() {
+        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        connector.setPort(8443);
+        connector.setSecure(true);
+        connector.setScheme("https");
+        connector.setProperty("SSLEnabled", "true");
+
+        // Configure SSL
+        SSLHostConfig sslHostConfig = new SSLHostConfig();
+        SSLHostConfigCertificate certificate = new SSLHostConfigCertificate(sslHostConfig, SSLHostConfigCertificate.Type.RSA);
+        certificate.setCertificateFile("../certificate.crt");
+        certificate.setCertificateKeyFile("../certificate.key");
+        sslHostConfig.addCertificate(certificate);
+        connector.addSslHostConfig(sslHostConfig);
+
+        return connector;
     }
 }
