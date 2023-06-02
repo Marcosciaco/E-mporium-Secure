@@ -1,7 +1,8 @@
 <div class="columns">
     <div class="column">
         <div class="row">
-            <div class="green">sweets</div>
+            <div class="close" id="close"></div>
+            <div class="green" id="category">sweets</div>
             <div class="green">
                 <div class="star"></div>
                 <div class="star"></div>
@@ -13,9 +14,12 @@
                 <div class="mail"></div>
             </div>
         </div>
-        <div class="title">Haribo Goldbears</div>
+        <div class="title" id="name">Haribo Goldbears</div>
         <div class="subtitle">Description</div>
-        <div class="text-container">Delicious gummy bears that big and small love. Available in different colors and flavors.</div>
+        <div class="text-container" id="description">Delicious gummy bears that big and small love. Available in
+            different colors and
+            flavors.
+        </div>
         <div class="subtitle">Reviews</div>
         <div class="row">
             <div class="green">
@@ -39,19 +43,19 @@
         <div class="text-container">Not recommended for children. But for us adults these are amazing.</div>
     </div>
     <div class="column">
-        <img class="prod-image" src="/frontend/assets?name=images/haribo.jpg">
+        <img class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
         <div class="purchase">
-            <div id="price" class="price">2,99$</div>
+            <div class="price" id="price">2,99$</div>
             <div class="row">
                 <div class="green">
                     <div class="minus" onclick="decreaseCount()"></div>
                 </div>
-                <div id="count" class="count">1</div>
+                <div class="count" id="count">1</div>
                 <div class="green">
                     <div class="plus" onclick="increaseCount()"></div>
                 </div>
-                <div class="green">
-                    <div>purchase</div>
+                <div class="green" id="purchase">
+                    <div>Purchase</div>
                 </div>
             </div>
         </div>
@@ -62,6 +66,7 @@
     .columns {
         flex-direction: row;
         display: flex;
+        width: 100%;
         align-items: flex-start;
     }
 
@@ -120,6 +125,14 @@
         background-color: black;
         -webkit-mask: url("/frontend/assets?name=images/minus.svg") no-repeat center;
         mask: url("/frontend/assets?name=images/minus.svg") no-repeat center;
+    }
+
+    .close {
+        width: 30px;
+        height: 30px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=icons/close.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/close.svg") no-repeat center;
     }
 
     .title {
@@ -181,10 +194,18 @@
 </style>
 
 <script>
-    let count = 1;
-    let price = 2.99;
+    const product = window.props.product
 
-    function decreaseCount() {
+    let count = 1;
+    let price = product.price;
+
+    document.getElementById("category").innerText = product.category
+    document.getElementById("name").innerText = product.name
+    document.getElementById("image").src = product.image
+    document.getElementById("price").innerText = price + "$"
+    document.getElementById("description").innerText = product.description
+
+    window.decreaseCount = () => {
         if (count > 1) {
             count--;
             updateCount();
@@ -192,17 +213,31 @@
         }
     }
 
-    function increaseCount() {
+    window.increaseCount = () => {
         count++;
         updateCount();
         updatePrice();
     }
 
-    function updateCount() {
-        document.getElementById("count").innerText = count;
+    window.updateCount = () => {
+        document.getElementById("count").innerText = "" + count;
     }
 
-    function updatePrice() {
-        document.getElementById("price").innerText = price * count;
+    window.updatePrice = () => {
+        document.getElementById("price").innerText = price * count + "$";
     }
+
+    document.getElementById("close").addEventListener("click", () => {
+        const dialog = document.getElementById("dialog")
+        dialog.style.display = "none"
+    })
+
+    document.getElementById("purchase").addEventListener("click", () => {
+        fetchAPI("/store/order", "PUT", {
+            "product": product.id,
+            "quantity": count
+        }).then(res => {
+            alert(res)
+        })
+    })
 </script>

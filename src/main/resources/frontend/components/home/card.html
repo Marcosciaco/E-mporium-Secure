@@ -90,4 +90,31 @@
         const star = card.querySelector(`.row .rating .star[star="${i}"]`)
         star.classList.add("active")
     }
+
+    document.getElementById(`card${cardId + 1}`).addEventListener("click", () => {
+        const dialog = document.getElementById("dialog")
+        dialog.style.display = "flex"
+        fetchAPI('store/product', 'POST', {
+            "filter": {
+                "id": product.id
+            },
+            "fields": [
+                "id",
+                "name",
+                "description",
+                "category",
+                "price"
+            ],
+            "max": 1
+        }).then(json => {
+            const prod = json[0]
+            loadComponent(dialog, "components/product/product_detail", {
+                props: {
+                    product: prod
+                }
+            })
+        }).catch(err => {
+            alert(err.message)
+        });
+    })
 </script>
