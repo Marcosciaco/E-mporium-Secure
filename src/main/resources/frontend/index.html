@@ -142,6 +142,9 @@
         fetch('/frontend/component?path=' + path)
             .then(response => response.json())
             .then(json => {
+                if (options.hasOwnProperty('props')) {
+                    window.props = options.props;
+                }
                 container.innerHTML = json.html;
                 eval(json.js);
             })

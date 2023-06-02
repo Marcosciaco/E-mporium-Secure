@@ -74,6 +74,13 @@ public class Product {
         );
     }
 
+    public int getStock() throws SQLException {
+        return DatabaseUtil.getConnection()
+            .prepareStatement("SELECT stock FROM products WHERE id = " + id + ";")
+            .executeQuery()
+            .getInt("stock");
+    }
+
     public void updateRating() throws NotFoundException, SQLException {
         //Get the average rating of the product with productId
         ResultSet resultSet = DatabaseUtil.getConnection()
@@ -114,6 +121,7 @@ public class Product {
                 case "category" -> node.put(fieldName, getCategory());
                 case "img" -> node.put(fieldName, getImg());
                 case "owner" -> node.put(fieldName, getOwner().getID());
+                case "stock" -> node.put(fieldName, getStock());
             }
         }
         return node;

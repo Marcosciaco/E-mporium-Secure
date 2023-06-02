@@ -23,9 +23,9 @@ public class ProductRepository {
      * @throws SQLException
      * @throws NotFoundException
      */
-    public static int createProduct(User owner, String name, String tag, String description, double price, String category) throws SQLException, NotFoundException {
+    public static int createProduct(User owner, String name, String tag, String description, double price, String category, int stock) throws SQLException, NotFoundException {
        DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner) VALUES ('" + name + "', '" + tag + "', '" + description + "', " + price + ", '" + category + "', " + owner.getID() + ");")
+            .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner, stock) VALUES ('" + name + "', '" + tag + "', '" + description + "', " + price + ", '" + category + "', " + owner.getID() + ", " + stock + ");")
             .execute();
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='products';")

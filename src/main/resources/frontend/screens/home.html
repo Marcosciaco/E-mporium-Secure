@@ -11,7 +11,7 @@
         <div class="wrapper">
             <img alt="Basket" class="logo" src="/frontend/assets?name=icons/basket.svg">
         </div>
-        <div class="wrapper" onclick="navigate_login()">
+        <div class="wrapper" onclick="navigateLogin()">
             <img alt="Profile" class="logo" src="/frontend/assets?name=icons/profile.svg">
         </div>
     </div>
@@ -177,7 +177,7 @@
     const card = document.getElementById('carousel');
     loadComponent(card, 'components/home/carousel', {});
 
-    window.navigate_login = () => {
+    window.navigateLogin = () => {
         loadComponent(document.getElementById('app'), 'screens/auth', {})
     }
 
