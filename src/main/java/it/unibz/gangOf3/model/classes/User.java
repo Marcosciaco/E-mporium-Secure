@@ -1,5 +1,7 @@
 package it.unibz.gangOf3.model.classes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.exceptions.InvalidPasswordException;
 import it.unibz.gangOf3.model.exceptions.UnconfirmedRegistrationException;
@@ -62,7 +64,9 @@ public class User {
         return id;
     }
 
-    public String login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException {
+    public ObjectNode login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException, NotFoundException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT password, registrationToken FROM users WHERE email = '" + email + "';")
             .executeQuery();
@@ -82,7 +86,10 @@ public class User {
         DatabaseUtil.getConnection()
             .prepareStatement("UPDATE users SET sessionToken = '" + sessionUUID + "' WHERE email = '" + email + "';")
             .execute();
-        return sessionUUID;
+        result.put("token", sessionUUID);
+        result.put("email", getEmail());
+        result.put("username", getUsername());
+        return result;
     }
 
     public void forgotPassword() throws SQLException, IOException, MessagingException, NotFoundException {

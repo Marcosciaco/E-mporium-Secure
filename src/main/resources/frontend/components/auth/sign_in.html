@@ -133,7 +133,8 @@
         }).then(res => {
             localStorage.setItem('login', JSON.stringify({
                 token: res.token,
-                email
+                email: res.email,
+                username: res.username
             }));
             loadComponent(document.getElementById('app'), 'screens/home');
         }).catch(err => {
