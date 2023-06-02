@@ -2,12 +2,12 @@
     <div class="column">
         <div class="row" style="justify-content: space-between">
             <div class="close" id="close"></div>
-            <div class="green">
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
+            <div class="green_outline" id="rating">
+                <div class="star" star="1"></div>
+                <div class="star" star="2"></div>
+                <div class="star" star="3"></div>
+                <div class="star" star="4"></div>
+                <div class="star" star="5"></div>
             </div>
         </div>
         <div class="title" id="name">Haribo Goldbears</div>
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="green_outline" id="createReview">send</div>
+        <div class="green_outline" id="createReview">Send</div>
     </div>
     <div class="column">
         <img class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
@@ -328,16 +328,23 @@
 
     document.getElementById("category").innerText = product.category
     document.getElementById("name").innerText = product.name
-    document.getElementById("image").src = product.image
+    document.getElementById("image").src = product.img
     document.getElementById("price").innerText = price + "$"
     document.getElementById("description").innerText = product.description
 
     updateReviews()
 
+    console.log(product)
+    for (let i = 1; i <= product.stars; i++) {
+        const star = document.getElementById("rating").querySelector(`.star[star="${i}"]`)
+        star.classList.add("active")
+    }
+
     function updateReviews() {
         fetchAPI("/store/review", "POST", {
             "product": product.id
         }).then(res => {
+
             document.getElementById("reviews").innerHTML = ""
             if (res.length === 0) {
                 document.getElementById("reviews").innerHTML = `
@@ -410,7 +417,8 @@
         let stars = 0;
 
         for (let i = 5; i >= 1; i--) {
-            if (document.getElementById("star-" + i).value) {
+            console.log(document.getElementById("star-" + i).checked)
+            if (document.getElementById("star-" + i).checked) {
                 stars = i
                 break
             }

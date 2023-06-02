@@ -80,6 +80,9 @@
     const title = card.querySelector('.row .card-title');
     title.innerText = product.name;
 
+    const image = card.querySelector('.prod-image');
+    image.src = product.img;
+
     const price = card.querySelector('.row .card-price');
     price.innerText = product.price + '$';
 
@@ -105,6 +108,7 @@
                 "category",
                 "price",
                 "owner",
+                "stars",
                 "img"
             ],
             "max": 1
