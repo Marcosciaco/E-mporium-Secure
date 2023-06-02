@@ -181,13 +181,13 @@
         loadComponent(document.getElementById('app'), 'screens/auth', {})
     }
 
-    $(document).ready(function () {
-        $('#search').keypress(function (e) {
-            if (e.which === 13) { // 13 is the key code for the enter key
-                e.preventDefault(); // prevent the form from submitting
-                // do something with the search query
-                alert('Search: ' + $(this).val());
-            }
-        });
-    });
+    // $(document).ready(function () {
+    //     $('#search').keypress(function (e) {
+    //         if (e.which === 13) { // 13 is the key code for the enter key
+    //             e.preventDefault(); // prevent the form from submitting
+    //             // do something with the search query
+    //             alert('Search: ' + $(this).val());
+    //         }
+    //     });
+    // });
 </script>

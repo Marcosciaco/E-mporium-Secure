@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <h2 class="card-title">Haribo</h2>
-        <h2 class="card-title">0,99$</h2>
+        <h2 class="card-title card-price">0,99$</h2>
     </div>
 </div>
 <style>
@@ -73,5 +73,16 @@
 </style>
 
 <script>
-    const title = document.querySelector('[class="1"].card.row.card-title');
+    const cardId = window.props.cardId;
+    const product = window.props.product;
+    const card = document.getElementById(`card${cardId+1}`);
+
+    const title = card.querySelector('.row .card-title');
+    title.innerText = product.name;
+
+    const price = card.querySelector('.row .card-price');
+    price.innerText = product.price + '$';
+
+    const tag = card.querySelector('.row .category');
+    tag.innerText = product.category;
 </script>

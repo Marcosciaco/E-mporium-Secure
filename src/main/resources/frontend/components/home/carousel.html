@@ -10,13 +10,13 @@
 <div class="container">
 
     <div class="slider">
-        <div class="item" id="card1"></div>
-        <div class="item" id="card2"></div>
-        <div class="item" id="card3"></div>
-        <div class="item" id="card4"></div>
-        <div class="item" id="card5"></div>
-        <div class="item" id="card6"></div>
-        <div class="item" id="card7"></div>
+        <div class="item" id="card1" style="display: none"></div>
+        <div class="item" id="card2" style="display: none"></div>
+        <div class="item" id="card3" style="display: none"></div>
+        <div class="item" id="card4" style="display: none"></div>
+        <div class="item" id="card5" style="display: none"></div>
+        <div class="item" id="card6" style="display: none"></div>
+        <div class="item" id="card7" style="display: none"></div>
         <button id="next">
             <img class="cmdBtnIcon" src="/frontend/assets?name=/icons/chevron_right.svg">
         </button>
@@ -44,7 +44,9 @@
             throw new Error("Invalid response from server")
 
         json.forEach((product, index) => {
+            console.log('Product ' + index, product)
             const card = document.getElementById(`card${index + 1}`);
+            card.style.removeProperty('display');
             document.getElementById(`card${index + 1}`).setAttribute('card-id', index)
             loadComponent(card, 'components/home/card', {
                 props: {
