@@ -1,35 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="background"></div>
 <div class="seller-dashboard">
-    <div class="header">
-        <div class="title">Dashboard</div>
-        <div class="actions">
-            <img class="action" src="/frontend/assets?name=icons/home.svg"/>
-            <img class="action" src="/frontend/assets?name=icons/notifications.svg"/>
-            <img class="action" src="/frontend/assets?name=icons/settings.svg"/>
-        </div>
-    </div>
     <div class="greetings">
-        <div class="title">Hello, Test</div>
+        <div class="title">Hello, <span id="username"></span></div>
         <div class="subtitle">Welcome back to your dashboard</div>
     </div>
     <div class="content">
         <div class="card">
             <div class="title">Sales</div>
-            <div class="value">$ 1.000</div>
+            <div class="value" id="totalSales">$ 0</div>
         </div>
         <div class="card">
             <div class="title">Orders</div>
-            <div class="value">10</div>
+            <div class="value" id="orders">0</div>
         </div>
         <div class="card">
             <div class="title">Products</div>
-            <div class="value">10</div>
+            <div class="value" id="products">0</div>
         </div>
         <div class="card">
             <div class="title">Customers</div>
@@ -41,8 +27,8 @@
         <div class="sales" id="sales"></div>
     </div>
 </div>
-</body>
 <style>
+
     .seller-dashboard {
         display: flex;
         flex-direction: column;
@@ -100,7 +86,7 @@
     }
 
     .title {
-        font-weight: bold;
+        font-size: 20px !important;
     }
 
     .value {
@@ -110,9 +96,18 @@
 
     .latest-sales {
         display: flex;
-        flex-direction: column;
-        width: 100%;
+        flex-wrap: nowrap;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
         padding: 10px;
+        width: 99%;
+        height: 100%;
+        flex-direction: column;
+        background: white;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }
 
     .sales {
@@ -120,6 +115,7 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
+        overflow: scroll;
         margin-top: 10px;
     }
 
@@ -127,15 +123,14 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        width: 100%;
+        width: 95%;
         padding: 10px;
         border: 1px solid #7BE495;
         border-radius: 10px;
-        margin-bottom: 10px;
+        margin: 10px;
     }
 
     .sale:last-child {
-        margin-bottom: 0;
     }
 
     .sale .title {
@@ -174,31 +169,89 @@
         font-size: 20px;
     }
 
-</style>
-
-<script>
-    //load the sales form an array and add them to the div with class sales
-    var arr = ["sale1", "sale2", "sale3", "sale4", "sale5"];
-    var sales = document.getElementById("sales");
-    for (var i = 0; i < arr.length; i++) {
-        var sale = document.createElement("div");
-        sale.className = "sale";
-        var info = document.createElement("div");
-        info.className = "info";
-        var title = document.createElement("div");
-        title.className = "title";
-        title.innerHTML = arr[i];
-        var customer = document.createElement("div");
-        customer.className = "customer";
-        customer.innerHTML = "Test";
-        info.appendChild(title);
-        info.appendChild(customer);
-        var value = document.createElement("div");
-        value.className = "value";
-        value.innerHTML = "$ 100";
-        sale.appendChild(info);
-        sale.appendChild(value);
-        sales.appendChild(sale);
+    .background {
+        background-image: url("/frontend/assets?name=images/background.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        opacity: 1;
+        display: flex;
+        z-index: -1;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        min-height: 100vh;
+        width: 100%;
     }
+
+</style>
+<script>
+
+    var totalSales = 0
+
+    document.getElementById("username").textContent = getUsername()
+
+    fetchAPI("/store/product", "POST", {
+        filter: {
+            seller: getEmail()
+        },
+        fields: [
+            "id"
+        ],
+        max: -1
+    }).then(result => {
+        document.getElementById("products").innerText = result.length
+    })
+
+    fetchAPI("/store/order", "POST", {
+        filter: {
+            seller: getEmail()
+        },
+        fields: [
+            "product",
+            "quantity"
+        ],
+        max: -1
+    }).then(result => {
+        document.getElementById("orders").innerText = result.length
+        console.log(result)
+        result.forEach(res => {
+            fetchAPI("/store/product", "POST", {
+                filter: {
+                    id: res.product
+                },
+                fields: [
+                    "id",
+                    "name",
+                    "price"
+                ],
+                max: -1
+            }).then(resp => {
+                const prod = resp[0]
+                console.log(prod)
+                const sale = document.createElement("div");
+                sale.className = "sale";
+                const info = document.createElement("div");
+                info.className = "info";
+                const title = document.createElement("div");
+                title.className = "title";
+                title.innerHTML = "Name: " + prod.name;
+                const customer = document.createElement("div");
+                customer.className = "customer";
+                customer.innerHTML = "Quantity: " + res.quantity;
+                info.appendChild(title);
+                info.appendChild(customer);
+                const value = document.createElement("div");
+                value.className = "value";
+                value.innerHTML = "$ " + prod.price;
+                sale.appendChild(info);
+                sale.appendChild(value);
+                document.getElementById("sales").appendChild(sale);
+                totalSales += res.quantity * prod.price
+                document.getElementById("totalSales").innerText = "$ " + totalSales
+            })
+        })
+    })
 </script>
-</html>
