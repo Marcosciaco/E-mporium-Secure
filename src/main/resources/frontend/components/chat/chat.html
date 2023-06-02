@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 <div class="chat-card">
     <div class="header">
-        <img class="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
-        <div class="name">Lisa Mussner</div>
-        <img alt="avatar" class="avatar active" src="https://i.imgur.com/8Km9tLL.jpg">
+        <img class="back" id="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
+        <div class="name" id="name">Lisa Mussner</div>
     </div>
     <div class="messages" id="messages">
         <div>
@@ -26,28 +18,18 @@
         </div>
     </div>
     <div class="footer">
-        <textarea id="message" class="message"></textarea>
+        <input class="message" id="message" type="text"/>
         <img class="back" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
     </div>
 
 </div>
 <style>
-    .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-
-    .active {
-        border: 2px solid #2CB543;
-    }
-
     .header {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-between !important;
+        width: 100%;
         padding: 10px;
         border-bottom: 1px solid #eee;
     }
@@ -125,7 +107,6 @@
         margin-bottom: 10px;
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
         width: 80%;
-        marg
     }
 
     .message-username {
@@ -149,6 +130,9 @@
     }
 </style>
 <script>
+
+    document.getElementById("name").innerText = window.props.seller
+
     const messages = ["Hello", "How are you?", "I am fine", "Thank you", "Goodbye"];
     var message = document.getElementById('messages');
     for (let i = 0; i < messages.length; i++) {
@@ -162,10 +146,31 @@
 
     //log the message of the textarea when clicking on the img
     document.getElementById('send').addEventListener('click', () => {
-        let message = document.getElementById('message').value
-        ;
-        console.log(message);
+        fetchAPI("/chat/message", "PUT", {
+            "to": getEmail(),
+            "message": document.getElementById('message').value
+        })
     });
+
+    window.updateMessages = () => {
+        fetchAPI("/chat/message", "POST", {
+            filter: {
+                "latest": true,
+                "sender": getEmail(),
+                "receiver": getEmail()
+            },
+            max: 30
+        }).then(res => {
+            console.log(res)
+        }).catch(e => {
+            console.log(e)
+        })
+    }
+
+    updateMessages()
+
+    document.getElementById("back").addEventListener("click", () => {
+        const chat = document.getElementById("chat")
+        loadComponent(chat, "components/chat/user-list")
+    })
 </script>
-</body>
-</html>

@@ -13,7 +13,7 @@
         <div class="title" id="name">Haribo Goldbears</div>
         <div class="row" style="justify-content: space-between">
             <div class="green" id="category">sweets</div>
-            <div class="green">
+            <div class="green" id="contactSeller">
                 <div id="owner" style="margin-right: 5px"></div>
                 <div class="mail"></div>
             </div>
@@ -334,11 +334,20 @@
 
     updateReviews()
 
-    console.log(product)
     for (let i = 1; i <= product.stars; i++) {
         const star = document.getElementById("rating").querySelector(`.star[star="${i}"]`)
         star.classList.add("active")
     }
+
+    document.getElementById("contactSeller").addEventListener("click", () => {
+        const chat = document.getElementById("chat")
+        chat.style.display = "block"
+        loadComponent(chat, "components/chat/chat", {
+            props: {
+                seller: product.owner
+            }
+        })
+    })
 
     function updateReviews() {
         fetchAPI("/store/review", "POST", {
