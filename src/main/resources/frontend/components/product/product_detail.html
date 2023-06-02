@@ -1,20 +1,23 @@
 <div class="columns">
     <div class="column">
-        <div class="row">
+        <div class="row" style="justify-content: space-between">
             <div class="close" id="close"></div>
-            <div class="green" id="category">sweets</div>
             <div class="green">
                 <div class="star"></div>
                 <div class="star"></div>
                 <div class="star"></div>
                 <div class="star"></div>
                 <div class="star"></div>
-            </div>
-            <div class="green">
-                <div class="mail"></div>
             </div>
         </div>
         <div class="title" id="name">Haribo Goldbears</div>
+        <div class="row" style="justify-content: space-between">
+            <div class="green" id="category">sweets</div>
+            <div class="green">
+                <div id="owner" style="margin-right: 5px"></div>
+                <div class="mail"></div>
+            </div>
+        </div>
         <div class="subtitle">Description</div>
         <div class="text-container" id="description">Delicious gummy bears that big and small love. Available in
             different colors and
@@ -23,20 +26,40 @@
         <div class="subtitle">Reviews</div>
         <div class="reviews" id="reviews"></div>
         <div class="row" style="margin: 5px">
-            <input id="revComment" style="width: 100%; height: 40px" type="text"/>
-            <button class="green" id="createReview" style="height: 40px; margin: 0">send</button>
+            <input class="green_outline" id="revComment" style="width: 70%" type="text"/>
+            <div class="rating">
+                <input id="star-1" name="star" type="radio" value="1">
+                <label for="star-1">1 star</label>
+                <input id="star-2" name="star" type="radio" value="2">
+                <label for="star-2">2 stars</label>
+                <input id="star-3" name="star" type="radio" value="3">
+                <label for="star-3">3 stars</label>
+                <input id="star-4" name="star" type="radio" value="4">
+                <label for="star-4">4 stars</label>
+                <input id="star-5" name="star" type="radio" value="5">
+                <label for="star-5">5 stars</label>
+
+                <div class="stars">
+                    <label aria-label="1 star" for="star-1" title="1 star"></label>
+                    <label aria-label="2 stars" for="star-2" title="2 stars"></label>
+                    <label aria-label="3 stars" for="star-3" title="3 stars"></label>
+                    <label aria-label="4 stars" for="star-4" title="4 stars"></label>
+                    <label aria-label="5 stars" for="star-5" title="5 stars"></label>
+                </div>
+            </div>
         </div>
+        <div class="green_outline" id="createReview">send</div>
     </div>
     <div class="column">
         <img class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
         <div class="purchase">
             <div class="price" id="price">2,99$</div>
             <div class="row">
-                <div class="green">
+                <div class="green_outline">
                     <div class="minus" onclick="decreaseCount()"></div>
                 </div>
                 <div class="count" id="count">1</div>
-                <div class="green">
+                <div class="green_outline">
                     <div class="plus" onclick="increaseCount()"></div>
                 </div>
                 <div class="green" id="purchase">
@@ -52,6 +75,11 @@
     .rating {
         display: flex;
         flex-direction: row;
+        height: 100%;
+        width: 30%;
+        margin: 5px;
+        align-items: center;
+        justify-content: center;
     }
 
     .star {
@@ -63,12 +91,12 @@
     }
 
     .active {
-        background-color: #FFDF00;
+        background-color: #FFDF00 !important;
     }
 
     .review_entry {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
         padding: 5px;
         border-radius: 15px;
@@ -77,7 +105,7 @@
     }
 
     .reviews {
-        height: 100%;
+        max-height: 30vh;
         width: 100%;
         overflow: scroll;
     }
@@ -105,6 +133,7 @@
     .green {
         background-color: #7BE495;
         border-radius: 15px;
+        width: fit-content;
         padding: 5px 10px;
         height: 30px;
         flex-direction: row;
@@ -128,6 +157,19 @@
         background-color: black;
         -webkit-mask: url("/frontend/assets?name=images/mail.svg") no-repeat center;
         mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+    }
+
+    .green_outline {
+        border-radius: 15px;
+        width: fit-content;
+        padding: 5px 10px;
+        border: 2px solid #7BE495;
+        height: 30px;
+        flex-direction: row;
+        display: flex;
+        margin: 5px;
+        align-items: center;
+        justify-content: center;
     }
 
     .plus {
@@ -210,6 +252,72 @@
         border-radius: 10px;
         justify-content: center;
     }
+
+    .comment {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /*
+        Use :not with impossible condition so inputs are only hidden
+        if pseudo selectors are supported. Otherwise the user would see
+        no inputs and no highlighted stars.
+    */
+    .rating input[type="radio"]:not(:nth-of-type(0)) {
+        /* hide visually */
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    .rating [type="radio"]:not(:nth-of-type(0)) + label {
+        display: none;
+    }
+
+    label[for]:hover {
+        cursor: pointer;
+    }
+
+    .rating .stars label:before {
+        content: "";
+        display: inline-block;
+        width: 20px !important;
+        height: 20px !important;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+    }
+
+    .stars label {
+        color: lightgray;
+    }
+
+    .stars label:hover {
+        text-shadow: 0 0 1px #000;
+    }
+
+    .rating [type="radio"]:nth-of-type(1):checked ~ .stars label:nth-of-type(-n+1):before,
+    .rating [type="radio"]:nth-of-type(2):checked ~ .stars label:nth-of-type(-n+2):before,
+    .rating [type="radio"]:nth-of-type(3):checked ~ .stars label:nth-of-type(-n+3):before,
+    .rating [type="radio"]:nth-of-type(4):checked ~ .stars label:nth-of-type(-n+4):before,
+    .rating [type="radio"]:nth-of-type(5):checked ~ .stars label:nth-of-type(-n+5):before {
+        background-color: #FFDF00;
+    }
+
+    .rating [type="radio"]:nth-of-type(1):focus ~ .stars label:nth-of-type(1):before,
+    .rating [type="radio"]:nth-of-type(2):focus ~ .stars label:nth-of-type(2):before,
+    .rating [type="radio"]:nth-of-type(3):focus ~ .stars label:nth-of-type(3):before,
+    .rating [type="radio"]:nth-of-type(4):focus ~ .stars label:nth-of-type(4):before,
+    .rating [type="radio"]:nth-of-type(5):focus ~ .stars label:nth-of-type(5):before {
+        background-color: #FFDF00;
+    }
 </style>
 
 <script>
@@ -232,23 +340,31 @@
         }).then(res => {
             document.getElementById("reviews").innerHTML = ""
             if (res.length === 0) {
-                document.getElementById("reviews").innerText = "No reviews have been posted yet."
+                document.getElementById("reviews").innerHTML = `
+                    <div class="review_entry">No reviews have been posted yet.</div>
+                `
             }
 
             for (let review of res) {
                 const reviewEntry = document.createElement("div")
                 reviewEntry.className = "review_entry"
                 reviewEntry.innerHTML = `
-                <div class="reviewer" id="reviewer">${review.writer}</div>
-                <div id="comment">${review.comment}</div>
-                <div class="rating">
-                    <div class="star" star="1"></div>
-                    <div class="star" star="2"></div>
-                    <div class="star" star="3"></div>
-                    <div class="star" star="4"></div>
-                    <div class="star" star="5"></div>
-                </div>
-            `
+                    <div class="row" style="border-bottom: 2px solid #eee">
+                        <div class="reviewer" id="reviewer">${review.writer}</div>
+                        <div class="rating">
+                            <div class="star" star="1"></div>
+                            <div class="star" star="2"></div>
+                            <div class="star" star="3"></div>
+                            <div class="star" star="4"></div>
+                            <div class="star" star="5"></div>
+                        </div>
+                    </div>
+                    <div class="comment" id="comment">${review.comment}</div>
+                `
+                for (let i = 1; i <= review.stars; i++) {
+                    const star = reviewEntry.querySelector(`.row .rating .star[star="${i}"]`)
+                    star.classList.add("active")
+                }
                 document.getElementById("reviews").appendChild(reviewEntry)
             }
         })
@@ -291,9 +407,18 @@
     })
 
     document.getElementById("createReview").addEventListener("click", () => {
+        let stars = 0;
+
+        for (let i = 5; i >= 1; i--) {
+            if (document.getElementById("star-" + i).value) {
+                stars = i
+                break
+            }
+        }
+
         fetchAPI("/store/review", "PUT", {
             "message": document.getElementById("revComment").value,
-            "stars": 2,
+            "stars": stars,
             product: product.id
         }).then(res => {
             document.getElementById("revComment").value = ""
@@ -301,4 +426,6 @@
             alert(res)
         })
     });
+
+    document.getElementById("owner").innerText = product.owner
 </script>

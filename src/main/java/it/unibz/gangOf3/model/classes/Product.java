@@ -120,7 +120,7 @@ public class Product {
                 case "price" -> node.put(fieldName, getPrice());
                 case "category" -> node.put(fieldName, getCategory());
                 case "img" -> node.put(fieldName, getImg());
-                case "owner" -> node.put(fieldName, getOwner().getID());
+                case "owner" -> node.put(fieldName, getOwner().getUsername());
                 case "stock" -> node.put(fieldName, getStock());
             }
         }

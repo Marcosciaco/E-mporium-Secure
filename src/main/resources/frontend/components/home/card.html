@@ -103,11 +103,14 @@
                 "name",
                 "description",
                 "category",
-                "price"
+                "price",
+                "owner",
+                "img"
             ],
             "max": 1
         }).then(json => {
             const prod = json[0]
+            console.log(prod)
             loadComponent(dialog, "components/product/product_detail", {
                 props: {
                     product: prod
