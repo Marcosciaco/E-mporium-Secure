@@ -1,0 +1,208 @@
+<div class="columns">
+    <div class="column">
+        <div class="row">
+            <div class="green">sweets</div>
+            <div class="green">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+            </div>
+            <div class="green">
+                <div class="mail"></div>
+            </div>
+        </div>
+        <div class="title">Haribo Goldbears</div>
+        <div class="subtitle">Description</div>
+        <div class="text-container">Delicious gummy bears that big and small love. Available in different colors and flavors.</div>
+        <div class="subtitle">Reviews</div>
+        <div class="row">
+            <div class="green">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+            </div>
+        </div>
+        <div class="text-container">I do like these. They made me a little high but yolo!</div>
+        <div class="row">
+            <div class="green">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+            </div>
+        </div>
+        <div class="text-container">Not recommended for children. But for us adults these are amazing.</div>
+    </div>
+    <div class="column">
+        <img class="prod-image" src="/frontend/assets?name=images/haribo.jpg">
+        <div class="purchase">
+            <div id="price" class="price">2,99$</div>
+            <div class="row">
+                <div class="green">
+                    <div class="minus" onclick="decreaseCount()"></div>
+                </div>
+                <div id="count" class="count">1</div>
+                <div class="green">
+                    <div class="plus" onclick="increaseCount()"></div>
+                </div>
+                <div class="green">
+                    <div>purchase</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .columns {
+        flex-direction: row;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .column {
+        width: 50%;
+        margin: 10px;
+        justify-content: center;
+        align-content: center;
+    }
+
+    .row {
+        flex-direction: row;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .green {
+        background-color: #7BE495;
+        border-radius: 15px;
+        padding: 5px 10px;
+        height: 30px;
+        flex-direction: row;
+        display: flex;
+        margin: 5px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .star {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+    }
+
+    .mail {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/mail.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+    }
+
+    .plus {
+        width: 15px;
+        height: 15px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/plus.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/plus.svg") no-repeat center;
+    }
+
+    .minus {
+        width: 15px;
+        height: 15px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/minus.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/minus.svg") no-repeat center;
+    }
+
+    .title {
+        font-size: 36px;
+        margin: 5px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        margin-left: 10px;
+        margin-top: 15px;
+    }
+
+    .price {
+        font-size: 30px;
+        margin: 5px;
+        justify-content: center;
+        align-content: center;
+    }
+
+    .text-container {
+        background-color: #CFF4D2;
+        border-radius: 15px;
+        padding: 5px 10px;
+        height: max-content;
+        flex-direction: row;
+        display: flex;
+        margin: 5px;
+        font-size: 16px;
+        align-content: center;
+        justify-content: left;
+    }
+
+    .purchase {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .count {
+        height: 30px;
+        flex-direction: row;
+        display: flex;
+        margin: 5px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .prod-image {
+        width: 99%;
+        height: 300px;
+        object-fit: cover;
+        overflow: hidden;
+        border-radius: 10px;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    let count = 1;
+    let price = 2.99;
+
+    function decreaseCount() {
+        if (count > 1) {
+            count--;
+            updateCount();
+            updatePrice();
+        }
+    }
+
+    function increaseCount() {
+        count++;
+        updateCount();
+        updatePrice();
+    }
+
+    function updateCount() {
+        document.getElementById("count").innerText = count;
+    }
+
+    function updatePrice() {
+        document.getElementById("price").innerText = price * count;
+    }
+</script>
