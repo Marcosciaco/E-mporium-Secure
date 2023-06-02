@@ -130,7 +130,20 @@
             opacity: 0;
         }
     }
+
+    .chat {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        background-color: white;
+        border-radius: 10px 0 0 0;
+        z-index: 1000;
+        display: none;
+    }
 </style>
+<div class="chat" id="chat">
+
+</div>
 <div id="app"></div>
 <div id="snackbar"></div>
 <script>
@@ -184,7 +197,6 @@
                 return json.data || {};
             })
     }
-
 
     window.navigatePath = (path, query) => {
         const pathParts = path.split('/');
