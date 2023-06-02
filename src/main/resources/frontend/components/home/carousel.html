@@ -38,14 +38,13 @@
             "category",
             "price"
         ],
-        "max": 7
+        "max": 6
     }).then(json => {
         if (!Array.isArray(json))
             throw new Error("Invalid response from server")
 
         json.forEach((product, index) => {
             let indexOffset = index < 3 ? 3 : -3;
-            console.log('Product ' + (indexOffset + index), product)
             const card = document.getElementById(`card${(indexOffset + index) + 1}`);
             card.style.removeProperty('display');
             document.getElementById(`card${(indexOffset + index) + 1}`).setAttribute('card-id', (indexOffset + index))

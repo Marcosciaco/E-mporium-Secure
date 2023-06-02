@@ -21,26 +21,11 @@
             flavors.
         </div>
         <div class="subtitle">Reviews</div>
-        <div class="row">
-            <div class="green">
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-            </div>
+        <div class="reviews" id="reviews"></div>
+        <div class="row" style="margin: 5px">
+            <input id="revComment" style="width: 100%; height: 40px" type="text"/>
+            <button class="green" id="createReview" style="height: 40px; margin: 0">send</button>
         </div>
-        <div class="text-container">I do like these. They made me a little high but yolo!</div>
-        <div class="row">
-            <div class="green">
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-                <div class="star"></div>
-            </div>
-        </div>
-        <div class="text-container">Not recommended for children. But for us adults these are amazing.</div>
     </div>
     <div class="column">
         <img class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
@@ -63,6 +48,40 @@
 </div>
 
 <style>
+
+    .rating {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .star {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+        mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
+    }
+
+    .active {
+        background-color: #FFDF00;
+    }
+
+    .review_entry {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 5px;
+        border-radius: 15px;
+        border: solid 2px #7BE495;
+        margin: 5px;
+    }
+
+    .reviews {
+        height: 100%;
+        width: 100%;
+        overflow: scroll;
+    }
+
     .columns {
         flex-direction: row;
         display: flex;
@@ -154,7 +173,7 @@
     }
 
     .text-container {
-        background-color: #CFF4D2;
+        border: solid 2px #CFF4D2;
         border-radius: 15px;
         padding: 5px 10px;
         height: max-content;
@@ -205,6 +224,36 @@
     document.getElementById("price").innerText = price + "$"
     document.getElementById("description").innerText = product.description
 
+    updateReviews()
+
+    function updateReviews() {
+        fetchAPI("/store/review", "POST", {
+            "product": product.id
+        }).then(res => {
+            document.getElementById("reviews").innerHTML = ""
+            if (res.length === 0) {
+                document.getElementById("reviews").innerText = "No reviews have been posted yet."
+            }
+
+            for (let review of res) {
+                const reviewEntry = document.createElement("div")
+                reviewEntry.className = "review_entry"
+                reviewEntry.innerHTML = `
+                <div class="reviewer" id="reviewer">${review.writer}</div>
+                <div id="comment">${review.comment}</div>
+                <div class="rating">
+                    <div class="star" star="1"></div>
+                    <div class="star" star="2"></div>
+                    <div class="star" star="3"></div>
+                    <div class="star" star="4"></div>
+                    <div class="star" star="5"></div>
+                </div>
+            `
+                document.getElementById("reviews").appendChild(reviewEntry)
+            }
+        })
+    }
+
     window.decreaseCount = () => {
         if (count > 1) {
             count--;
@@ -240,4 +289,16 @@
             alert(res)
         })
     })
+
+    document.getElementById("createReview").addEventListener("click", () => {
+        fetchAPI("/store/review", "PUT", {
+            "message": document.getElementById("revComment").value,
+            "stars": 2,
+            product: product.id
+        }).then(res => {
+            document.getElementById("revComment").value = ""
+            updateReviews()
+            alert(res)
+        })
+    });
 </script>
