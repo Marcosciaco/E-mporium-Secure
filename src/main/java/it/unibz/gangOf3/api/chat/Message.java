@@ -25,6 +25,7 @@ public class Message extends HttpServlet {
 
     /**
      * Fetch already existing messages
+     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -47,7 +48,7 @@ public class Message extends HttpServlet {
         //Get Messages by filter
 
         if (filter.has("id")) {
-            try{
+            try {
                 queryResult.add(MessageRepository.getMessageById(filter.get("id").asInt()));
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
@@ -109,6 +110,7 @@ public class Message extends HttpServlet {
 
     /**
      * Send a message
+     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -153,6 +155,7 @@ public class Message extends HttpServlet {
 
     /**
      * Get all chat partners of a user
+     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -173,8 +176,8 @@ public class Message extends HttpServlet {
             ArrayNode data = mapper.createArrayNode();
             for (int chatPartnerId : chatPartners) {
                 try {
-                    data.add(UserRepository.getUserById(chatPartnerId).getEmail());
-                }catch (NotFoundException e) {
+                    data.add(UserRepository.getUserById(chatPartnerId).getUsername());
+                } catch (NotFoundException e) {
                     //Partner does not exist anymore, ignore
                 }
             }

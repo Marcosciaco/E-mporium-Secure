@@ -126,14 +126,24 @@
 
     document.getElementById("name").innerText = window.props.seller
 
-    //log the message of the textarea when clicking on the img
+    let seller_mail = "";
+    console.log(window.props.seller)
+    fetchAPI("/auth/user", "POST", {
+        username: window.props.seller
+    }).then(result => {
+        console.log(result)
+        seller_mail = result.email
+        updateMessages()
+    }).catch(e => {
+        alert(e.message)
+    })
 
     window.updateMessages = () => {
         fetchAPI("/chat/message", "POST", {
             filter: {
                 "latest": true,
                 "user1": getEmail(),
-                "user2": "sciacoracing@gmail.com"
+                "user2": seller_mail
             },
             max: 30
         }).then(res => {
@@ -156,11 +166,9 @@
         })
     }
 
-    updateMessages()
-
     document.getElementById('send').addEventListener('click', () => {
         fetchAPI("/chat/message", "PUT", {
-            "to": "sciacoracing@gmail.com",
+            "to": seller_mail,
             "message": document.getElementById('message').value
         }).then(() => {
             updateMessages()
