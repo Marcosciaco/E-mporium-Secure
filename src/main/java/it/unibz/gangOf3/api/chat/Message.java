@@ -69,22 +69,11 @@ public class Message extends HttpServlet {
             }
         }
 
-        if (filter.has("sender")) {
+        if (filter.has("user1") && filter.has("user2")) {
             try {
-                User sender = UserRepository.getUserByEmail(filter.get("sender").asText());
-                MessageRepository.filterBySender(sender, queryResult, max);
-            } catch (SQLException | NotFoundException e) {
-                response.set("status", mapper.valueToTree("error"));
-                response.set("message", mapper.valueToTree(e.getMessage()));
-                resp.getWriter().write(mapper.writeValueAsString(response));
-                return;
-            }
-        }
-
-        if (filter.has("receiver")) {
-            try {
-                User receiver = UserRepository.getUserByEmail(filter.get("receiver").asText());
-                MessageRepository.filterByReceiver(receiver, queryResult, max);
+                User u1 = UserRepository.getUserByEmail(filter.get("user1").asText());
+                User u2 = UserRepository.getUserByEmail(filter.get("user2").asText());
+                MessageRepository.filterByUsers(u1, u2, queryResult, max);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -155,6 +144,43 @@ public class Message extends HttpServlet {
             it.unibz.gangOf3.model.classes.Message messageInstance = MessageRepository.getMessageById(messageID);
             Feed.notify(messageInstance);
         } catch (Exception ex) {
+            response.set("status", mapper.valueToTree("error"));
+            response.set("message", mapper.valueToTree(ex.getMessage()));
+        }
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
+    }
+
+    /**
+     * Get all chat partners of a user
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ResponsePreprocessor.preprocessResponse(resp);
+
+        User user = AuthUtil.getAuthedUser(req, resp);
+        if (user == null) return; // AuthUtil already sent the response (401)
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode response = mapper.createObjectNode();
+
+        try {
+            LinkedList<Integer> chatPartners = MessageRepository.getChatPartners(user);
+            ArrayNode data = mapper.createArrayNode();
+            for (int chatPartnerId : chatPartners) {
+                try {
+                    data.add(UserRepository.getUserById(chatPartnerId).getEmail());
+                }catch (NotFoundException e) {
+                    //Partner does not exist anymore, ignore
+                }
+            }
+            response.set("status", mapper.valueToTree("ok"));
+            response.set("data", data);
+        } catch (SQLException | NotFoundException ex) {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(ex.getMessage()));
         }
