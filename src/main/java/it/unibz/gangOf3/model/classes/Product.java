@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -23,69 +25,101 @@ public class Product {
         return id;
     }
 
-    public String getName() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT name FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getString("name");
+    public String getName() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT name FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getString("name");
     }
 
-    public String getTag() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT tag FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getString("tag");
+    public String getTag() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT tag FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getString("tag");
     }
 
-    public String getDescription() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT description FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getString("description");
+    public String getDescription() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT description FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getString("description");
     }
 
-    public double getPrice() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT price FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getDouble("price");
+    public double getPrice() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT price FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getDouble("price");
     }
 
-    public String getCategory() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT category FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getString("category");
+    public String getCategory() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT category FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getString("category");
     }
 
-    public String getImg() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT image FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getString("img");
+    public String getImg() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT image FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getString("image");
     }
 
-    public User getOwner() throws SQLException {
-        return new User(
-            DatabaseUtil.getConnection()
-                .prepareStatement("SELECT owner FROM products WHERE id = " + id + ";")
-                .executeQuery()
-                .getInt("owner")
-        );
+    public User getOwner() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT owner FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        int ownerId = rs.getInt("owner");
+        return UserRepository.getUserById(ownerId);
     }
 
-    public int getStock() throws SQLException {
-        return DatabaseUtil.getConnection()
-            .prepareStatement("SELECT stock FROM products WHERE id = " + id + ";")
-            .executeQuery()
-            .getInt("stock");
+    public int getStock() throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT stock FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            throw new NotFoundException("Product not found");
+        }
+        return rs.getInt("stock");
     }
 
     public void updateRating() throws NotFoundException, SQLException {
         //Get the average rating of the product with productId
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT AVG(stars) AS avg FROM reviews WHERE product = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT AVG(stars) AS avg FROM reviews WHERE product = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next()) {
             throw new NotFoundException("Product not found");
         }
@@ -96,15 +130,21 @@ public class Product {
             avgStr = "NULL";
 
         //Update the rating in the products table
-        DatabaseUtil.getConnection()
-            .prepareStatement("UPDATE products SET stars = " + avgStr + " WHERE id = " + id + ";")
-            .executeUpdate();
+        PreparedStatement stmt2 = DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE products SET stars = ? WHERE id = ?;");
+        if (avg != 0)
+            stmt2.setDouble(1, avg);
+        else
+            stmt2.setNull(1, java.sql.Types.DOUBLE);
+        stmt2.setInt(2, id);
+        stmt2.executeUpdate();
     }
 
     public void delete() throws SQLException {
-        DatabaseUtil.getConnection()
-            .prepareStatement("DELETE FROM products WHERE id = " + id + ";")
-            .executeUpdate();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("DELETE FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
     }
 
     public ObjectNode getAsJSON(ArrayNode fields, ObjectMapper mapper) throws SQLException, NotFoundException {

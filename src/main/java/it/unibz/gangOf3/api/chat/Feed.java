@@ -8,6 +8,8 @@ import it.unibz.gangOf3.util.AuthUtil;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,9 +19,10 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
+@WebServlet(urlPatterns = "/api/chat/feed", asyncSupported = true)
 public class Feed extends HttpServlet {
 
-    private static final ConcurrentHashMap<User, AsyncContext> feededUsers = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, AsyncContext> feededUsers = new ConcurrentHashMap<>();
 
     /**
      * "Server Sent Events" endpoint for incoming chat messages
@@ -42,7 +45,11 @@ public class Feed extends HttpServlet {
         AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(0);
 
-        feededUsers.put(user, asyncContext);
+        try {
+            feededUsers.put(user.getID(), asyncContext);
+        } catch (SQLException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
         resp.flushBuffer();
     }
 
@@ -57,16 +64,25 @@ public class Feed extends HttpServlet {
         } catch (SQLException | NotFoundException e) {
             throw new RuntimeException(e);
         }
-        if (feededUsers.containsKey(receiver)) { //receiver is currently online
-            AsyncContext asyncContext = feededUsers.get(receiver);
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                PrintWriter writer = asyncContext.getResponse().getWriter();
-                writer.write("data: " + mapper.writeValueAsString(message.getAsJson(mapper)) + "\n\n");
-                writer.flush();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+        try {
+            System.out.println("Notifying user: " + receiver.getUsername() + " about message: " + message.getMessage());
+        } catch (SQLException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            if (feededUsers.containsKey(receiver.getID())) {
+                AsyncContext asyncContext = feededUsers.get(receiver.getID());
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    PrintWriter writer = asyncContext.getResponse().getWriter();
+                    writer.write("data: " + mapper.writeValueAsString(message.getAsJson(mapper)) + "\n\n");
+                    writer.flush();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
+        } catch (SQLException | NotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

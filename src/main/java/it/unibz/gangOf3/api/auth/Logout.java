@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Logout extends HttpServlet {
@@ -31,9 +32,10 @@ public class Logout extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            DatabaseUtil.getConnection()
-                .prepareStatement("UPDATE users SET sessionToken = NULL WHERE sessionToken = '" + sessionID + "';")
-                .execute();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("UPDATE users SET sessionToken = NULL WHERE sessionToken = ?;");
+            stmt.setString(1, sessionID);
+            stmt.execute();
             response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException e) {
             response.set("status", mapper.valueToTree("error"));

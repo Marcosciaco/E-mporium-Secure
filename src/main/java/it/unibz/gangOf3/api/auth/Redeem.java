@@ -1,6 +1,5 @@
 package it.unibz.gangOf3.api.auth;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.util.DatabaseUtil;
@@ -11,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.util.regex.Pattern;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
@@ -48,15 +48,18 @@ public class Redeem extends HttpServlet {
                     if (!pattern.matcher(password).matches()) {
                         throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
                     }
-                    DatabaseUtil.getConnection()
-                        .prepareStatement("UPDATE users SET password = '" + password + "', forgotToken = NULL WHERE forgotToken = '" + bodyJson.get("token").asText() + "';")
-                        .execute();
+                    PreparedStatement stmt = DatabaseUtil.getConnection()
+                        .prepareStatement("UPDATE users SET password = ?, forgotToken = NULL WHERE forgotToken = ?;");
+                    stmt.setString(1, password);
+                    stmt.setString(2, bodyJson.get("token").asText());
+                    stmt.execute();
                     response.set("status", mapper.valueToTree("ok"));
                     break;
                 case "activate":
-                    DatabaseUtil.getConnection()
-                        .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = '" + bodyJson.get("token").asText() + "';")
-                        .execute();
+                    PreparedStatement stmt2 = DatabaseUtil.getConnection()
+                        .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = ?;");
+                    stmt2.setString(1, bodyJson.get("token").asText());
+                    stmt2.execute();
                     response.set("status", mapper.valueToTree("ok"));
                     break;
                 default:

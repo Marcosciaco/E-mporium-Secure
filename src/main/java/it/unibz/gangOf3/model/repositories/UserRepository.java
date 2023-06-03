@@ -10,6 +10,7 @@ import jakarta.mail.MessagingException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -29,29 +30,30 @@ public class UserRepository {
     }
 
     public static User getUserByEmail(String email) throws SQLException, NotFoundException {
-        email = "'" + email + "'";
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT email FROM users WHERE email = " + email + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT email FROM users WHERE email = ?;");
+        stmt.setString(1, email);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("User not found");
         return new User(resultSet.getString("email"));
     }
 
     public static User getUserBySessionId(String sessionId) throws SQLException, NotFoundException {
-        sessionId = "'" + sessionId + "'";
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT email FROM users WHERE sessionToken = " + sessionId + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT email FROM users WHERE sessionToken = ?;");
+        stmt.setString(1, sessionId);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("User not found");
         return new User(resultSet.getString("email"));
     }
 
     public static User getUserById(int userId) throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT email FROM users WHERE id = " + userId + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT email FROM users WHERE id = ?;");
+        stmt.setInt(1, userId);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("User not found");
         return new User(userId);

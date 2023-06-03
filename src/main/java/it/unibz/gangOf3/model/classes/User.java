@@ -11,14 +11,12 @@ import jakarta.mail.MessagingException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class User {
-
-    private static int loginCounter = 0;
-
 
     private String email;
     private int id;
@@ -33,18 +31,20 @@ public class User {
 
     public String getEmail() throws SQLException {
         if (email == null) {
-            email = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT email FROM users WHERE id = " + id + ";")
-                .executeQuery()
-                .getString("email");
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT email FROM users WHERE id = ?;");
+            stmt.setInt(1, id);
+            ResultSet resultSet = stmt.executeQuery();
+            email = resultSet.getString("email");
         }
         return email;
     }
 
     public String getUsername() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT username FROM users WHERE id = '" + getID() + "';")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT username FROM users WHERE id = ?;");
+        stmt.setInt(1, getID());
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next()) {
             throw new NotFoundException("User not found");
         }
@@ -53,9 +53,10 @@ public class User {
 
     public int getID() throws SQLException, NotFoundException {
         if (id == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM users WHERE email = '" + email + "';")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM users WHERE email = ?;");
+            stmt.setString(1, email);
+            ResultSet resultSet = stmt.executeQuery();
             if (!resultSet.next()) {
                 throw new NotFoundException("User not found");
             }
@@ -67,25 +68,27 @@ public class User {
     public ObjectNode login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException, NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT password, registrationToken FROM users WHERE email = '" + email + "';")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT password, registrationToken FROM users WHERE email = ?;");
+        stmt.setString(1, getEmail());
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next()) {
             throw new InvalidPasswordException("Invalid email or password");
         }
         String dbPassword = resultSet.getString("password");
         String registrationToken = resultSet.getString("registrationToken");
-        //FIXME switch the order of the following if statements
-        if (registrationToken != null) {
-            throw new UnconfirmedRegistrationException("Please confirm your email");
-        }
         if (!dbPassword.equals(password)) {
             throw new InvalidPasswordException("Invalid email or password");
         }
+        if (registrationToken != null) {
+            throw new UnconfirmedRegistrationException("Please confirm your email");
+        }
         String sessionUUID = UUID.randomUUID().toString();
-        DatabaseUtil.getConnection()
-            .prepareStatement("UPDATE users SET sessionToken = '" + sessionUUID + "' WHERE email = '" + email + "';")
-            .execute();
+        PreparedStatement stmt2 = DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE users SET sessionToken = ? WHERE email = ?;");
+        stmt2.setString(1, sessionUUID);
+        stmt2.setString(2, getEmail());
+        stmt2.execute();
         result.put("token", sessionUUID);
         result.put("email", getEmail());
         result.put("username", getUsername());
@@ -94,9 +97,11 @@ public class User {
 
     public void forgotPassword() throws SQLException, IOException, MessagingException, NotFoundException {
         String resetUUID = UUID.randomUUID().toString();
-        DatabaseUtil.getConnection()
-            .prepareStatement("UPDATE users SET forgotToken = '" + resetUUID + "' WHERE email = '" + email + "';")
-            .execute();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE users SET forgotToken = ? WHERE email = ?;");
+        stmt.setString(1, resetUUID);
+        stmt.setString(2, getEmail());
+        stmt.execute();
         InputStream emailTemplate = getClass().getClassLoader().getResourceAsStream("backend/email/reset_password.html");
         String emailBody = new String(emailTemplate.readAllBytes());
         emailBody = emailBody

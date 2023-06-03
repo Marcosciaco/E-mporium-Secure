@@ -1,5 +1,6 @@
 package it.unibz.gangOf3.util;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseInsertionUtil {
@@ -15,14 +16,17 @@ public class DatabaseInsertionUtil {
         sql.delete(sql.length() - 2, sql.length());
         sql.append(") VALUES (");
         for (String value : values) {
-            sql.append("'").append(value).append("', ");
+            sql.append("?").append(", ");
         }
         sql.delete(sql.length() - 2, sql.length());
         sql.append(");");
 
-        DatabaseUtil.getConnection()
-            .prepareStatement(sql.toString())
-            .executeUpdate();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement(sql.toString());
+        for (int i = 0; i < values.length; i++) {
+            stmt.setString(i + 1, values[i]);
+        }
+        stmt.executeUpdate();
     }
 
 }

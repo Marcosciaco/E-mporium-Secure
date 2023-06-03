@@ -7,6 +7,7 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -25,9 +26,10 @@ public class OrderRepository {
     }
 
     public static Order getOrderById(int id) throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT id FROM orders WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM orders WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Order not found");
         return new Order(id);
@@ -36,9 +38,10 @@ public class OrderRepository {
 
     public static void filterOrdersByBuyer(User buyer, LinkedList<Order> source) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM orders WHERE buyer = " + buyer.getID() + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM orders WHERE buyer = ?;");
+            stmt.setInt(1, buyer.getID());
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Order(resultSet.getInt("id")));
             }
@@ -55,11 +58,12 @@ public class OrderRepository {
 
     public static void filterOrdersBySeller(User seller, LinkedList<Order> source) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
+            PreparedStatement stmt = DatabaseUtil.getConnection()
                 .prepareStatement("SELECT orders.id " +
                     "FROM orders JOIN products p ON p.id = orders.product " +
-                    "WHERE owner = " + seller.getID() + ";")
-                .executeQuery();
+                    "WHERE owner = ?;");
+            stmt.setInt(1, seller.getID());
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Order(resultSet.getInt("id")));
             }
@@ -76,9 +80,10 @@ public class OrderRepository {
 
     public static void filterOrdersByProduct(Product product, LinkedList<Order> source) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM orders WHERE product = " + product.getId() + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM orders WHERE product = ?;");
+            stmt.setInt(1, product.getId());
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()){
                 source.add(new Order(resultSet.getInt("id")));
             }

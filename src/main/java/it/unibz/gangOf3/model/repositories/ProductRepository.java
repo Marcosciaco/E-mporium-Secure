@@ -6,6 +6,7 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -44,9 +45,10 @@ public class ProductRepository {
      * @throws NotFoundException
      */
     public static Product getProductById(int id) throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT id FROM products WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM products WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Product not found");
         return new Product(id);
@@ -63,11 +65,18 @@ public class ProductRepository {
      *                    If -1, all products will be loaded
      * @throws SQLException
      */
-    public static void filterProductsByQuery(String query, LinkedList<Product> source, int maxProducts) throws SQLException {
+    public static void filterProductsByQuery(String query, LinkedList<Product> source, int maxProducts) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM products WHERE name LIKE '%" + query + "%' OR tag LIKE '%" + query + "%' OR description LIKE '%" + query + "%' " + (maxProducts != -1 ? "LIMIT " + maxProducts : "" ) +  ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM products WHERE name LIKE ? OR tag LIKE ? OR description LIKE ? LIMIT ?;");
+            stmt.setString(1, "%" + query + "%");
+            stmt.setString(2, "%" + query + "%");
+            stmt.setString(3, "%" + query + "%");
+            if (maxProducts != -1)
+                stmt.setInt(4, maxProducts);
+            else
+                stmt.setInt(4, 1000000000); //Here you can see a quick fix for the problem of the limit
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Product(resultSet.getInt("id")));
             }
@@ -90,11 +99,16 @@ public class ProductRepository {
      * @param maxProducts The maximum number of products to load, -1 for no limit
      * @throws SQLException
      */
-    public static void filterProductsByCategory(String category, LinkedList<Product> source, int maxProducts) throws SQLException {
+    public static void filterProductsByCategory(String category, LinkedList<Product> source, int maxProducts) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM products WHERE category = '" + category + "' " + (maxProducts != -1 ? "LIMIT " + maxProducts : "" ) +  ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM products WHERE category = ? LIMIT ?;");
+            stmt.setString(1, category);
+            if (maxProducts != -1)
+                stmt.setInt(2, maxProducts);
+            else
+                stmt.setInt(2, 1000000000); //Here you can see a quick fix for the problem of the limit
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Product(resultSet.getInt("id")));
             }
@@ -117,11 +131,17 @@ public class ProductRepository {
      * @param maxProducts The maximum number of products to load, -1 for no limit
      * @throws SQLException
      */
-    public static void filterProductsByPrice(double min, double max, LinkedList<Product> source, int maxProducts) throws SQLException {
+    public static void filterProductsByPrice(double min, double max, LinkedList<Product> source, int maxProducts) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM products WHERE price >= " + min + " AND price <= " + max + " " + (maxProducts != -1 ? "LIMIT " + maxProducts : "" ) +  ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM products WHERE price >= ? AND price <= ? LIMIT ?;");
+            stmt.setDouble(1, min);
+            stmt.setDouble(2, max);
+            if (maxProducts != -1)
+                stmt.setInt(3, maxProducts);
+            else
+                stmt.setInt(3, 1000000000); //Here you can see a quick fix for the problem of the limit
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Product(resultSet.getInt("id")));
             }
@@ -145,9 +165,14 @@ public class ProductRepository {
      */
     public static void filterProductsByOwner(User owner, LinkedList<Product> source, int maxProducts) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM products WHERE owner = " + owner.getID() + " " + (maxProducts != -1 ? "LIMIT " + maxProducts : "") + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM products WHERE owner = ? LIMIT ?;");
+            stmt.setInt(1, owner.getID());
+            if (maxProducts != -1)
+                stmt.setInt(2, maxProducts);
+            else
+                stmt.setInt(2, 1000000000); //Here you can see a quick fix for the problem of the limit
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Product(resultSet.getInt("id")));
             }
@@ -168,12 +193,13 @@ public class ProductRepository {
      * @param source The list to add the products to
      * @param max The maximum number of products to add
      */
-    public static void getRandomProducts(LinkedList<Product> source, int max) throws SQLException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT id FROM products ORDER BY RANDOM() LIMIT " + max + ";")
-            .executeQuery();
+    public static void getRandomProducts(LinkedList<Product> source, int max) throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM products ORDER BY RANDOM() LIMIT ?;");
+        stmt.setInt(1, max);
+        ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            source.add(new Product(resultSet.getInt("id")));
+            source.add(getProductById(resultSet.getInt("id")));
         }
     }
 }

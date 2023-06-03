@@ -6,6 +6,7 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -25,9 +26,10 @@ public class Message {
 
     public String getMessage() throws SQLException, NotFoundException {
         if (message == null){
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT message from chat WHERE id = " + id + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT message from chat WHERE id = ?;");
+            stmt.setInt(1, id);
+            ResultSet resultSet = stmt.executeQuery();
             if (!resultSet.next())
                 throw new NotFoundException("Message not found");
             message = resultSet.getString("message");
@@ -36,9 +38,10 @@ public class Message {
     }
 
     public User getFrom() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT user1 from chat WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT user1 from chat WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Message not found");
         int userID = resultSet.getInt("user1");
@@ -46,9 +49,10 @@ public class Message {
     }
 
     public User getTo() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT user2 from chat WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT user2 from chat WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Message not found");
         int userID = resultSet.getInt("user2");
@@ -56,9 +60,10 @@ public class Message {
     }
 
     public Timestamp getTimestamp() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT time from chat WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT time from chat WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Message not found");
         return resultSet.getTimestamp("time");
@@ -66,12 +71,10 @@ public class Message {
 
     public ObjectNode getAsJson(ObjectMapper mapper) throws SQLException, NotFoundException, ParseException {
         ObjectNode node = mapper.createObjectNode();
-        node.put("from", getFrom().getID());
-        node.put("to", getTo().getID());
+        node.put("from", getFrom().getEmail());
+        node.put("to", getTo().getEmail());
         node.put("message", getMessage());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        node.put("timestamp", getTimestamp().toLocalDateTime().format(DateTimeFormatter.ISO_INSTANT));
+        node.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(getTimestamp().toInstant()));
         return node;
     }
 

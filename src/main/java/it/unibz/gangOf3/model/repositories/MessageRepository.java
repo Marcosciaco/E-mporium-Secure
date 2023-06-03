@@ -6,6 +6,7 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,9 +25,10 @@ public class MessageRepository {
     }
 
     public static Message getMessageById(int messageId) throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT id FROM chat WHERE id = " + messageId + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM chat WHERE id = ?;");
+        stmt.setInt(1, messageId);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next()) {
             throw new NotFoundException("Message not found");
         }
@@ -35,9 +37,11 @@ public class MessageRepository {
 
     public static void filterBySince(Timestamp since, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM chat WHERE time >= '" + since.toString() + "' LIMIT " + max + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM chat WHERE time >= ? LIMIT ?;");
+            stmt.setTimestamp(1, since);
+            stmt.setInt(2, max);
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()){
                 source.add(new Message(resultSet.getInt("id")));
             }
@@ -70,18 +74,23 @@ public class MessageRepository {
         }
     }
 
-    public static void filterBySender(User sender, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
+    public static void filterByUsers(User user1, User user2, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
         if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM chat WHERE user1 = '" + sender.getID() + "' LIMIT " + max + ";")
-                .executeQuery();
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM chat WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)  LIMIT ?;");
+            stmt.setInt(1, user1.getID());
+            stmt.setInt(2, user2.getID());
+            stmt.setInt(3, user2.getID());
+            stmt.setInt(4, user1.getID());
+            stmt.setInt(5, max);
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()){
                 source.add(new Message(resultSet.getInt("id")));
             }
         } else {
             LinkedList<Message> toRemove = new LinkedList<>();
             for (Message message : source) {
-                if (!message.getFrom().equals(sender)){
+                if (!(message.getFrom().equals(user1) && message.getTo().equals(user2)) && !(message.getFrom().equals(user2) && message.getTo().equals(user1))){
                     toRemove.add(message);
                 }
             }
@@ -89,23 +98,23 @@ public class MessageRepository {
         }
     }
 
-    public static void filterByReceiver(User receiver, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
-        if (source.size() == 0) {
-            ResultSet resultSet = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM chat WHERE user2 = '" + receiver.getID() + "' LIMIT " + max + ";")
-                .executeQuery();
-            while (resultSet.next()){
-                source.add(new Message(resultSet.getInt("id")));
+    public static LinkedList<Integer> getChatPartners(User user) throws SQLException, NotFoundException {
+        LinkedList<Integer> users = new LinkedList<>();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT DISTINCT user1, user2 FROM chat WHERE user1 = ? OR user2 = ?;");
+        stmt.setInt(1, user.getID());
+        stmt.setInt(2, user.getID());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet.next()){
+            int user1 = resultSet.getInt("user1");
+            int user2 = resultSet.getInt("user2");
+            if (user1 != user.getID() && !users.contains(user1)){
+                users.add(user1);
+            } else if (user2 != user.getID() && !users.contains(user2)){
+                users.add(user2);
             }
-        } else {
-            LinkedList<Message> toRemove = new LinkedList<>();
-            for (Message message : source) {
-                if (!message.getTo().equals(receiver)){
-                    toRemove.add(message);
-                }
-            }
-            source.removeAll(toRemove);
         }
+        return users;
     }
 
 }

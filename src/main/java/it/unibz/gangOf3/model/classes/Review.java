@@ -3,8 +3,11 @@ package it.unibz.gangOf3.model.classes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.repositories.ProductRepository;
+import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -17,37 +20,40 @@ public class  Review {
     }
 
     public User getWriter() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT user FROM reviews WHERE id = " + id + ";")
-            .executeQuery();
-        if (!resultSet.next())
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT user FROM reviews WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next())
             throw new NotFoundException("Writer of review not found");
-        return new User(resultSet.getInt("user"));
+        return UserRepository.getUserById(rs.getInt("user"));
     }
 
     public Product getProduct() throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT product FROM reviews WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT product FROM reviews WHERE id = " + id + ";");
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Product of review not found");
-        return new Product(resultSet.getInt("product"));
+        return ProductRepository.getProductById(resultSet.getInt("product"));
     }
 
     public void delete() throws SQLException, NotFoundException {
         Product product = getProduct();
 
-        DatabaseUtil.getConnection()
-            .prepareStatement("DELETE FROM reviews WHERE id = " + id + ";")
-            .executeUpdate();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("DELETE FROM reviews WHERE id = ?;");
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
 
         product.updateRating();
     }
 
     public ObjectNode toJSON(ObjectMapper mapper) throws SQLException, NotFoundException {
-        ResultSet resultSet = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT * FROM reviews WHERE id = " + id + ";")
-            .executeQuery();
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT * FROM reviews WHERE id = ?;");
+        stmt.setInt(1, id);
+        ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next())
             throw new NotFoundException("Review not found");
         ObjectNode review = mapper.createObjectNode();
