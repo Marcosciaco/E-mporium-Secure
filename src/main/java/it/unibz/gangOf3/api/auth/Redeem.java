@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
@@ -42,8 +43,13 @@ public class Redeem extends HttpServlet {
                         resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
                         return;
                     }
+                    String password = bodyJson.get("password").asText().trim();
+                    Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+                    if (!pattern.matcher(password).matches()) {
+                        throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
+                    }
                     DatabaseUtil.getConnection()
-                        .prepareStatement("UPDATE users SET password = '" + bodyJson.get("password").asText() + "', forgotToken = NULL WHERE forgotToken = '" + bodyJson.get("token").asText() + "';")
+                        .prepareStatement("UPDATE users SET password = '" + password + "', forgotToken = NULL WHERE forgotToken = '" + bodyJson.get("token").asText() + "';")
                         .execute();
                     response.set("status", mapper.valueToTree("ok"));
                     break;

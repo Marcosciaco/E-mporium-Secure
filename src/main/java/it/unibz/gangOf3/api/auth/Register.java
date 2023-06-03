@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
 
@@ -33,10 +34,16 @@ public class Register extends HttpServlet {
 
         //create user
         try {
+            String password = bodyJson.get("password").asText().trim();
+            Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+            if (!pattern.matcher(password).matches()) {
+                throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
+            }
+
             UserRepository.createUser(
                 bodyJson.get("username").asText(),
                 bodyJson.get("email").asText(),
-                bodyJson.get("password").asText(),
+                password,
                 bodyJson.get("type").asText(),
                 bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText() : null,
                 bodyJson.has("emergencyPhone") ? bodyJson.get("emergencyPhone").asText() : null

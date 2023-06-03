@@ -7,7 +7,7 @@
 
 - [X] Use HTTPS
 - [X] Use UUIDs for the session token
-- [ ] Add password strength checker (for register and reset password)
+- [X] Add password strength checker (for register and reset password, frontend and backend) (TOTEST)
 - [X] Change CORS header and X-Frame-Options header
 - [ ] Add SQL injection protection
 - [ ] Add CSRF protection by using a token

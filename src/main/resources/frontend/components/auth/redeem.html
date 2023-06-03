@@ -84,8 +84,10 @@
             return;
         }
 
-        if (password1.length < 8) {
-            alert('Password must be at least 8 characters long!');
+        //check if password contains at least one number, one lowercase and one uppercase letter, and at least 8 characters
+        const re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+        if (!re.test(password1.trim())) {
+            alert('Your password must contain at least one number, one lowercase and one uppercase letter, and at least 8 characters');
             return;
         }
 
