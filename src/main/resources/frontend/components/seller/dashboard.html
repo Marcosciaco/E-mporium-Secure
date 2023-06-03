@@ -203,6 +203,8 @@
         max: -1
     }).then(result => {
         document.getElementById("products").innerText = result.length
+    }).catch(e => {
+        alert(e.message)
     })
 
     fetchAPI("/store/order", "POST", {
@@ -216,7 +218,6 @@
         max: -1
     }).then(result => {
         document.getElementById("orders").innerText = result.length
-        console.log(result)
         result.forEach(res => {
             fetchAPI("/store/product", "POST", {
                 filter: {
@@ -230,7 +231,6 @@
                 max: -1
             }).then(resp => {
                 const prod = resp[0]
-                console.log(prod)
                 const sale = document.createElement("div");
                 sale.className = "sale";
                 const info = document.createElement("div");
@@ -251,6 +251,8 @@
                 document.getElementById("sales").appendChild(sale);
                 totalSales += res.quantity * prod.price
                 document.getElementById("totalSales").innerText = "$ " + totalSales
+            }).catch(e => {
+                alert(e.message)
             })
         })
     })

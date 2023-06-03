@@ -14,7 +14,7 @@
         <div class="row" style="justify-content: space-between">
             <div class="green" id="category">sweets</div>
             <div class="green" id="contactSeller">
-                <div id="owner" style="margin-right: 5px"></div>
+                <div id="owner"></div>
                 <div class="mail"></div>
             </div>
         </div>
@@ -25,8 +25,8 @@
         </div>
         <div class="subtitle">Reviews</div>
         <div class="reviews" id="reviews"></div>
-        <div class="row" style="margin: 5px">
-            <input class="green_outline" id="revComment" style="width: 70%" type="text"/>
+        <div class="row">
+            <input class="green_outline comment" id="revComment" type="text"/>
             <div class="rating">
                 <input id="star-1" name="star" type="radio" value="1">
                 <label for="star-1">1 star</label>
@@ -71,6 +71,14 @@
 </div>
 
 <style>
+
+    #owner {
+        margin-right: 5px
+    }
+
+    .comment {
+        width: 70%
+    }
 
     .rating {
         display: flex;
@@ -353,7 +361,6 @@
         fetchAPI("/store/review", "POST", {
             "product": product.id
         }).then(res => {
-
             document.getElementById("reviews").innerHTML = ""
             if (res.length === 0) {
                 document.getElementById("reviews").innerHTML = `
@@ -383,6 +390,8 @@
                 }
                 document.getElementById("reviews").appendChild(reviewEntry)
             }
+        }).catch(e => {
+            alert(e.message)
         })
     }
 
@@ -417,8 +426,10 @@
         fetchAPI("/store/order", "PUT", {
             "product": product.id,
             "quantity": count
-        }).then(res => {
-            alert(res)
+        }).then(() => {
+            alert("Purchase was successful")
+        }).catch(e => {
+            alert(e.message)
         })
     })
 
@@ -426,7 +437,6 @@
         let stars = 0;
 
         for (let i = 5; i >= 1; i--) {
-            console.log(document.getElementById("star-" + i).checked)
             if (document.getElementById("star-" + i).checked) {
                 stars = i
                 break
@@ -437,10 +447,12 @@
             "message": document.getElementById("revComment").value,
             "stars": stars,
             product: product.id
-        }).then(res => {
+        }).then(() => {
             document.getElementById("revComment").value = ""
             updateReviews()
-            alert(res)
+            alert("Review created successfully")
+        }).catch(e => {
+            alert(e.message)
         })
     });
 

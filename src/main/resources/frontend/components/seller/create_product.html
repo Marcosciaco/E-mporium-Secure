@@ -63,9 +63,10 @@
                 image: reader.result
             }
 
-            fetchAPI("store/product", "PUT", data).then(json => {
-                console.log(json)
+            fetchAPI("store/product", "PUT", data).then(() => {
                 alert("Product created successfully")
+            }).catch(e => {
+                alert(e.message)
             })
         }
     }

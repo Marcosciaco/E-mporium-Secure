@@ -1,18 +1,19 @@
 <h1>Join the Trip</h1>
 <form id="form-signin">
     <label for="form-email">Email</label>
-    <input id="form-email" type="email" name="username" required>
+    <input id="form-email" name="username" required type="email">
     <label for="form-password">Password</label>
-    <input id="form-password" type="password" name="password" required>
+    <input id="form-password" name="password" required type="password">
     <div class="remember-row">
         <div class="remember-me">
             <label class="checkbox-container">
-                <input id="remember-me" type="checkbox" name="remember-me">
+                <input id="remember-me" name="remember-me" type="checkbox">
                 <span class="checkmark"></span>
             </label>
             <label for="remember-me">Remember me</label>
         </div>
-        <span class="forgot-pwd" style="margin-bottom: 0"><a href="javascript:navigate_forgot()">Forgot password?</a></span>
+        <span class="forgot-pwd" style="margin-bottom: 0"><a
+            href="javascript:navigate_forgot()">Forgot password?</a></span>
     </div>
     <button type="submit">Login</button>
 </form>
@@ -138,7 +139,7 @@
             }));
             loadComponent(document.getElementById('app'), 'screens/home');
         }).catch(err => {
-            alert(err);
+            alert(err.message);
         });
     });
 </script>

@@ -176,14 +176,22 @@
         if (options.hasOwnProperty('activityContainer')) {
             options.loadingContainer.style.display = 'none';
         }
-        return fetch('/api/' + path, {
+
+        const req = method === "GET" ? {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
+            },
+        } : {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
             },
             body: JSON.stringify(body)
-        }).then(response => response.json())
+        }
+        return fetch('/api/' + path, req).then(response => response.json())
             .then(json => {
                 if (options.hasOwnProperty('loadingContainer')) {
                     options.loadingContainer.style.display = 'none';

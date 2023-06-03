@@ -46,15 +46,13 @@
         fetchAPI('/auth/redeem', 'POST', {
             token,
             type: 'activate'
+        }).then(() => {
+            document.getElementById('form-header').innerText = 'Success';
+            document.getElementById('form-text').innerText = 'Your account has been activated! You can close this tab now.';
+        }).catch(err => {
+            document.getElementById('form-header').innerText = 'Error';
+            document.getElementById('form-text').innerText = err.message;
         })
-            .then(() => {
-                document.getElementById('form-header').innerText = 'Success';
-                document.getElementById('form-text').innerText = 'Your account has been activated! You can close this tab now.';
-            })
-            .catch(err => {
-                document.getElementById('form-header').innerText = 'Error';
-                document.getElementById('form-text').innerText = err.message;
-            })
     }
 
     function redeemForgot(token) {
@@ -114,15 +112,13 @@
             token: window.token,
             type: 'forgot',
             password: password1
+        }).then(() => {
+            document.getElementById('form-header').innerText = 'Success';
+            document.getElementById('form-paragraph').style.removeProperty('display');
+            document.getElementById('form-text').innerText = 'Your password has been reset! You can close this tab now.';
+            document.getElementById('form-reset').style.display = 'none';
+        }).catch(err => {
+            alert(err.message);
         })
-            .then(() => {
-                document.getElementById('form-header').innerText = 'Success';
-                document.getElementById('form-paragraph').style.removeProperty('display');
-                document.getElementById('form-text').innerText = 'Your password has been reset! You can close this tab now.';
-                document.getElementById('form-reset').style.display = 'none';
-            })
-            .catch(err => {
-                alert(err.message);
-            })
     })
 </script>
