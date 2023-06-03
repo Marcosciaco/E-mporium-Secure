@@ -240,6 +240,17 @@
         const storage = JSON.parse(localStorage.getItem("login"))
         return storage.email;
     }
+
+    window.messageListener = () => {
+        const es = new EventSource("/api/chat/feed?token=" + JSON.parse(localStorage.getItem("login")).token)
+        es.onmessage = (e) => {
+            const data = JSON.parse(e.data)
+            alert("Message from " + data.from + ": " + data.message)
+        }
+    }
+
+    if (JSON.parse(localStorage.getItem("login")).email !== undefined)
+        messageListener()
 </script>
 </body>
 </html>
