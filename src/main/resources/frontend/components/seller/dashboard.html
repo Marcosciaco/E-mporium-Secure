@@ -26,6 +26,10 @@
         <div class="title">Latest sales</div>
         <div class="sales" id="sales"></div>
     </div>
+    <div class="latest-sales">
+        <div class="title">Products</div>
+        <div class="products" id="productList"></div>
+    </div>
 </div>
 <style>
 
@@ -191,19 +195,51 @@
 
     var totalSales = 0
 
+    window.deleteProduct = (id) => {
+        fetchAPI("/store/product", "DELETE", {
+            id: id
+        }).then(() => {
+            refreshProducts()
+        }).catch(e => {
+            alert(e.message)
+        })
+    }
+
     document.getElementById("username").textContent = getUsername()
 
-    fetchAPI("/store/product", "POST", {
-        filter: {
-            seller: getEmail()
-        },
-        fields: [
-            "id"
-        ],
-        max: -1
-    }).then(result => {
-        document.getElementById("products").innerText = result.length
-    })
+    refreshProducts()
+
+    function refreshProducts() {
+        fetchAPI("/store/product", "POST", {
+            filter: {
+                seller: getEmail()
+            },
+            fields: [
+                "id",
+                "name",
+                "price"
+            ],
+            max: -1
+        }).then(result => {
+            document.getElementById("products").innerText = result.length
+            document.getElementById("productList").innerHTML = ""
+            result.forEach(prod => {
+                const sale = document.createElement("div");
+                sale.className = "sale";
+                sale.innerHTML = `
+                <span>${prod.id}</span>
+                <span>${prod.name}</span>
+                <span>${prod.price}</span>
+                <button onclick="deleteProduct(${prod.id})">delete</button>
+            `
+                document.getElementById("productList").appendChild(sale);
+            })
+        }).catch(e => {
+            document.getElementById("productList").innerHTML = ""
+            document.getElementById("products").innerText = "0"
+            alert(e.message)
+        })
+    }
 
     fetchAPI("/store/order", "POST", {
         filter: {
@@ -216,7 +252,6 @@
         max: -1
     }).then(result => {
         document.getElementById("orders").innerText = result.length
-        console.log(result)
         result.forEach(res => {
             fetchAPI("/store/product", "POST", {
                 filter: {
@@ -230,7 +265,6 @@
                 max: -1
             }).then(resp => {
                 const prod = resp[0]
-                console.log(prod)
                 const sale = document.createElement("div");
                 sale.className = "sale";
                 const info = document.createElement("div");
@@ -251,6 +285,8 @@
                 document.getElementById("sales").appendChild(sale);
                 totalSales += res.quantity * prod.price
                 document.getElementById("totalSales").innerText = "$ " + totalSales
+            }).catch(e => {
+                alert(e.message)
             })
         })
     })

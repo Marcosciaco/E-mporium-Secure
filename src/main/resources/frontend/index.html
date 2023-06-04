@@ -130,7 +130,20 @@
             opacity: 0;
         }
     }
+
+    .chat {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        background-color: white;
+        border-radius: 10px 0 0 0;
+        z-index: 1000;
+        display: none;
+    }
 </style>
+<div class="chat" id="chat">
+
+</div>
 <div id="app"></div>
 <div id="snackbar"></div>
 <script>
@@ -163,14 +176,22 @@
         if (options.hasOwnProperty('activityContainer')) {
             options.loadingContainer.style.display = 'none';
         }
-        return fetch('/api/' + path, {
+
+        const req = method === "GET" ? {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
+            },
+        } : {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
             },
             body: JSON.stringify(body)
-        }).then(response => response.json())
+        }
+        return fetch('/api/' + path, req).then(response => response.json())
             .then(json => {
                 if (options.hasOwnProperty('loadingContainer')) {
                     options.loadingContainer.style.display = 'none';
@@ -184,7 +205,6 @@
                 return json.data || {};
             })
     }
-
 
     window.navigatePath = (path, query) => {
         const pathParts = path.split('/');
@@ -220,6 +240,17 @@
         const storage = JSON.parse(localStorage.getItem("login"))
         return storage.email;
     }
+
+    window.messageListener = () => {
+        const es = new EventSource("/api/chat/feed?token=" + JSON.parse(localStorage.getItem("login")).token)
+        es.onmessage = (e) => {
+            const data = JSON.parse(e.data)
+            alert("Message from " + data.from + ": " + data.message)
+        }
+    }
+
+    if (JSON.parse(localStorage.getItem("login")).email !== undefined)
+        messageListener()
 </script>
 </body>
 </html>

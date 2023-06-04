@@ -3,11 +3,11 @@
     <div class="row">
         <span class="category">Gummy Bears</span>
         <div class="rating">
-            <div class="star star-1"></div>
-            <div class="star star-2"></div>
-            <div class="star star-3"></div>
-            <div class="star star-4"></div>
-            <div class="star star-5"></div>
+            <div class="star" star="1"></div>
+            <div class="star" star="2"></div>
+            <div class="star" star="3"></div>
+            <div class="star" star="4"></div>
+            <div class="star" star="5"></div>
         </div>
     </div>
     <div class="row">
@@ -31,7 +31,7 @@
         mask: url("/frontend/assets?name=images/star.svg") no-repeat center;
     }
 
-    .star-1, .star-2, .star-3 {
+    .active {
         background-color: #FFDF00;
     }
 
@@ -75,14 +75,52 @@
 <script>
     const cardId = window.props.cardId;
     const product = window.props.product;
-    const card = document.getElementById(`card${cardId+1}`);
+    const card = document.getElementById(`card${cardId + 1}`);
 
     const title = card.querySelector('.row .card-title');
     title.innerText = product.name;
+
+    const image = card.querySelector('.prod-image');
+    image.src = product.img;
 
     const price = card.querySelector('.row .card-price');
     price.innerText = product.price + '$';
 
     const tag = card.querySelector('.row .category');
     tag.innerText = product.category;
+
+    for (let i = 1; i <= 3; i++) {
+        const star = card.querySelector(`.row .rating .star[star="${i}"]`)
+        star.classList.add("active")
+    }
+
+    document.getElementById(`card${cardId + 1}`).addEventListener("click", () => {
+        const dialog = document.getElementById("dialog")
+        dialog.style.display = "flex"
+        fetchAPI('store/product', 'POST', {
+            "filter": {
+                "id": product.id
+            },
+            "fields": [
+                "id",
+                "name",
+                "description",
+                "category",
+                "price",
+                "owner",
+                "stars",
+                "img"
+            ],
+            "max": 1
+        }).then(json => {
+            const prod = json[0]
+            loadComponent(dialog, "components/product/product_detail", {
+                props: {
+                    product: prod
+                }
+            })
+        }).catch(err => {
+            alert(err.message)
+        });
+    })
 </script>

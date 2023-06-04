@@ -1,6 +1,6 @@
 # Things to do for insecure version
 
-- [ ] Connect frontend
+- [X] Connect frontend
 - [ ] Refactor emails
 
 # Things to do for secure version

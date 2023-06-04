@@ -114,6 +114,13 @@ public class Product {
         return rs.getInt("stock");
     }
 
+    public int getStars() throws SQLException {
+        return DatabaseUtil.getConnection()
+            .prepareStatement("SELECT stars FROM products WHERE id = " + id + ";")
+            .executeQuery()
+            .getInt("stars");
+    }
+
     public void updateRating() throws NotFoundException, SQLException {
         //Get the average rating of the product with productId
         PreparedStatement stmt = DatabaseUtil.getConnection()
@@ -160,8 +167,9 @@ public class Product {
                 case "price" -> node.put(fieldName, getPrice());
                 case "category" -> node.put(fieldName, getCategory());
                 case "img" -> node.put(fieldName, getImg());
-                case "owner" -> node.put(fieldName, getOwner().getID());
+                case "owner" -> node.put(fieldName, getOwner().getUsername());
                 case "stock" -> node.put(fieldName, getStock());
+                case "stars" -> node.put(fieldName, getStars());
             }
         }
         return node;

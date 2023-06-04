@@ -1,14 +1,14 @@
 package it.unibz.gangOf3.api.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.classes.Message;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.util.AuthUtil;
+import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +26,7 @@ public class Feed extends HttpServlet {
 
     /**
      * "Server Sent Events" endpoint for incoming chat messages
+     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -39,8 +40,17 @@ public class Feed extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("connection", "keep-alive");
 
-        User user = AuthUtil.getAuthedUser(req, resp);
-        if (user == null) return; // AuthUtil already sent the response (401)
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode response = mapper.createObjectNode();
+
+        User user = null;
+        try {
+            user = UserRepository.getUserBySessionId(req.getParameter("token"));
+        } catch (SQLException | NotFoundException e) {
+            response.set("status", mapper.valueToTree("error"));
+            response.set("message", mapper.valueToTree(e.getMessage()));
+            resp.getWriter().write(mapper.writeValueAsString(response));
+        }
 
         AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(0);
@@ -55,6 +65,7 @@ public class Feed extends HttpServlet {
 
     /**
      * Send a "server sent event" to asynchronously feed incoming messages to the user
+     *
      * @param message message to feed
      */
     public static void notify(Message message) {

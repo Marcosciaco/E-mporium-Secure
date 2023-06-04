@@ -2,8 +2,8 @@ package it.unibz.gangOf3.model.repositories;
 
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.classes.User;
-import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
 import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import jakarta.mail.MessagingException;
@@ -37,6 +37,16 @@ public class UserRepository {
         if (!resultSet.next())
             throw new NotFoundException("User not found");
         return new User(resultSet.getString("email"));
+    }
+
+    public static User getUserByUsername(String username) throws SQLException, NotFoundException {
+        username = "'" + username + "'";
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM users WHERE username = " + username + ";")
+            .executeQuery();
+        if (!resultSet.next())
+            throw new NotFoundException("User not found");
+        return new User(resultSet.getInt("id"));
     }
 
     public static User getUserBySessionId(String sessionId) throws SQLException, NotFoundException {

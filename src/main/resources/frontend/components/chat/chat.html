@@ -1,53 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 <div class="chat-card">
     <div class="header">
-        <img class="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
-        <div class="name">Lisa Mussner</div>
-        <img alt="avatar" class="avatar active" src="https://i.imgur.com/8Km9tLL.jpg">
+        <img class="back" id="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
+        <div class="name" id="name">Lisa Mussner</div>
     </div>
-    <div class="messages" id="messages">
-        <div>
-            <div class="message-item">
-                <span class="message-username">Test</span>
-                <span class="message-text">Hello</span>
-            </div>
-        </div>
-        <div class="sender">
-            <div class="message-item">
-                <span class="message-username">Test</span>
-                <span class="message-text">Hello</span>
-            </div>
-        </div>
-    </div>
+    <div class="messages" id="messages"></div>
     <div class="footer">
-        <textarea id="message" class="message"></textarea>
-        <img class="back" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
+        <input class="message" id="message" type="text"/>
+        <img class="back green_outline" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
     </div>
 
 </div>
 <style>
-    .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-
-    .active {
-        border: 2px solid #2CB543;
-    }
-
     .header {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-between !important;
+        width: 100%;
         padding: 10px;
         border-bottom: 1px solid #eee;
     }
@@ -91,12 +60,12 @@
     }
 
     .messages::-webkit-scrollbar-thumb {
-        background: #2CB543;
+        background: #7BE495;
         border-radius: 10px;
     }
 
     .messages::-webkit-scrollbar-thumb:hover {
-        background: #2CB543;
+        background: #7BE495;
     }
 
     .footer {
@@ -110,9 +79,10 @@
 
     .message {
         width: 100%;
-        height: 50px;
+        height: 30px;
         border-radius: 10px;
         border: 1px solid #eee;
+        text-overflow: ellipsis;
         padding: 10px;
         resize: none;
         outline: none;
@@ -125,13 +95,17 @@
         margin-bottom: 10px;
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
         width: 80%;
-        marg
+        overflow: hidden;
     }
 
     .message-username {
         font-weight: bold;
+        width: 100%;
+        overflow: hidden;
         margin: 0 5px 5px 5px;
-        border-bottom: 1px solid #eee;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border-bottom: 1px solid gray;
     }
 
     .message-text {
@@ -140,32 +114,72 @@
 
     .sender {
         justify-content: flex-end;
-        color: white;
+        color: black;
         display: flex;
     }
 
     .sender .message-item {
-        background-color: #2CB543;
+        background-color: #7BE495;
     }
 </style>
 <script>
-    const messages = ["Hello", "How are you?", "I am fine", "Thank you", "Goodbye"];
-    var message = document.getElementById('messages');
-    for (let i = 0; i < messages.length; i++) {
-        let div = document.createElement('div');
-        div.innerHTML = '<div class="message-item">\n' +
-            '                <span class="message-username">Test</span>\n' +
-            '                <span class="message-text">' + messages[i] + '</span>\n' +
-            '            </div>';
-        message.appendChild(div);
+
+    document.getElementById("name").innerText = window.props.seller
+
+    let seller_mail = "";
+    console.log(window.props.seller)
+    fetchAPI("/auth/user", "POST", {
+        username: window.props.seller
+    }).then(result => {
+        console.log(result)
+        seller_mail = result.email
+        updateMessages()
+    }).catch(e => {
+        alert(e.message)
+    })
+
+    window.updateMessages = () => {
+        fetchAPI("/chat/message", "POST", {
+            filter: {
+                "latest": true,
+                "user1": getEmail(),
+                "user2": seller_mail
+            },
+            max: 30
+        }).then(res => {
+            const messages = document.getElementById('messages');
+            messages.innerHTML = ""
+            for (let message of res) {
+                let div = document.createElement('div');
+                if (message.from === getEmail()) {
+                    div.classList.add("sender")
+                }
+                div.innerHTML = '<div class="message-item">\n' +
+                    '                <span class="message-username">' + message.from + '</span>\n' +
+                    '                <span class="message-text">' + message.message + '</span>\n' +
+                    '            </div>';
+                messages.appendChild(div);
+            }
+            messages.scrollTo(0, messages.scrollHeight);
+        }).catch(e => {
+            alert(e.message)
+        })
     }
 
-    //log the message of the textarea when clicking on the img
     document.getElementById('send').addEventListener('click', () => {
-        let message = document.getElementById('message').value
-        ;
-        console.log(message);
+        fetchAPI("/chat/message", "PUT", {
+            "to": seller_mail,
+            "message": document.getElementById('message').value
+        }).then(() => {
+            updateMessages()
+            document.getElementById("message").value = ""
+        }).catch(e => {
+            alert(e.message)
+        })
     });
+
+    document.getElementById("back").addEventListener("click", () => {
+        const chat = document.getElementById("chat")
+        loadComponent(chat, "components/chat/user-list")
+    })
 </script>
-</body>
-</html>

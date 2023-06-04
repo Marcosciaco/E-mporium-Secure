@@ -37,20 +37,21 @@
             "description",
             "category",
             "price",
+            "img"
         ],
-        "max": 7
+        "max": 6
     }).then(json => {
         if (!Array.isArray(json))
             throw new Error("Invalid response from server")
 
         json.forEach((product, index) => {
-            console.log('Product ' + index, product)
-            const card = document.getElementById(`card${index + 1}`);
+            let indexOffset = index < 3 ? 3 : -3;
+            const card = document.getElementById(`card${(indexOffset + index) + 1}`);
             card.style.removeProperty('display');
-            document.getElementById(`card${index + 1}`).setAttribute('card-id', index)
+            document.getElementById(`card${(indexOffset + index) + 1}`).setAttribute('card-id', (indexOffset + index))
             loadComponent(card, 'components/home/card', {
                 props: {
-                    cardId: index,
+                    cardId: indexOffset + index,
                     product
                 }
             });

@@ -14,7 +14,8 @@
                      onclick="document.getElementById('form-vc-input').checked = !document.getElementById('form-vc-input').checked; onVendorCustomerToggle()">
                     <div class="form-vc-selector-inner" id="form-vc-selector-inner"></div>
                 </div>
-                <input id="form-vc-input" name="vendor_customer_selector" onchange="onVendorCustomerToggle()" style="display: none"
+                <input id="form-vc-input" name="vendor_customer_selector" onchange="onVendorCustomerToggle()"
+                       style="display: none"
                        type="checkbox">
                 <h1><label for="form-vc-input">Buyer</label></h1>
             </div>
@@ -146,16 +147,14 @@
         fetchAPI('auth/register', 'POST', formData, {
             loadingContainer: document.getElementById('form-loading'),
             activityContainer: document.getElementById('form')
-        })
-            .then((res) => {
-                const form = document.getElementById('form');
-                loadComponent(form, 'components/auth/check_email');
-                form.classList.remove('form-animation');
-                void form.offsetWidth;
-                form.classList.add('form-animation');
-            })
-            .catch((err) => {
-                console.error(err.message);
-            });
+        }).then(() => {
+            const form = document.getElementById('form');
+            loadComponent(form, 'components/auth/check_email');
+            form.classList.remove('form-animation');
+            void form.offsetWidth;
+            form.classList.add('form-animation');
+        }).catch((err) => {
+            alert(err.message);
+        });
     });
 </script>

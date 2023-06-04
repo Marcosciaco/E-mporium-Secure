@@ -1,28 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 <div class="chat-card">
     <div class="header">
+        <img class="search-icon" id="closeChat" src="/frontend/assets?name=icons/close.svg">
+        <input class="search-field" id="search_users" type="text"/>
         <img class="search-icon" src="/frontend/assets?name=icons/search.svg">
-        <input class="search-field" type="text"/>
     </div>
-    <div class="users" id="users">
-        <script>
-            var arr =
-                ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
-            for (var i = 0; i < arr.length; i++) {
-                var node = document.createElement("DIV");
-                node.className = "item";
-                var textnode = document.createTextNode(arr[i]);
-                node.appendChild(textnode);
-                document.getElementById("users").appendChild(node);
-            }
-        </script>
-    </div>
+    <div class="users" id="users"></div>
 </div>
 <style>
 
@@ -38,7 +20,7 @@
         font-weight: bold;
     }
 
-    .item {
+    .items {
         display: flex;
         width: 100%;
         flex-direction: row;
@@ -48,6 +30,12 @@
         padding: 10px;
         border: 2px solid #7BE495;
         margin-bottom: 10px;
+    }
+
+    .items:hover {
+        background-color: #7BE495;
+        color: black;
+        cursor: pointer;
     }
 
     .search-field {
@@ -91,5 +79,42 @@
         overflow-y: scroll;
     }
 </style>
-</body>
-</html>
+<script>
+    function search_users(usr) {
+        fetchAPI("/chat/message", "GET").then(res => {
+            res.forEach(user => {
+                const users = document.getElementById("users")
+                users.innerHTML = ""
+                if (user.includes(usr)) {
+                    const node = document.createElement("div");
+                    node.className = "items";
+                    node.addEventListener("click", () => {
+                        const chat = document.getElementById("chat")
+                        chat.style.display = "block"
+                        loadComponent(chat, "components/chat/chat", {
+                            props: {
+                                seller: user
+                            }
+                        })
+                    })
+                    const textNode = document.createTextNode(user);
+                    node.appendChild(textNode);
+                    users.appendChild(node);
+                }
+            })
+        }).catch(e => {
+            alert(e.message)
+        })
+    }
+
+    search_users("")
+
+    document.getElementById("closeChat").addEventListener("click", () => {
+        document.getElementById("chat").style.display = "none"
+    })
+
+    const search = document.getElementById("search_users")
+    search.addEventListener("keyup", () => {
+        search_users(search.value)
+    })
+</script>
