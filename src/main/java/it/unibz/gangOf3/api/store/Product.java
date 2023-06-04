@@ -93,7 +93,7 @@ public class Product extends HttpServlet {
         if(filter.has("random")) {
             try {
                 ProductRepository.getRandomProducts(queryResult, max);
-            } catch (SQLException e) {
+            } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
                 resp.getWriter().write(mapper.writeValueAsString(response));
@@ -116,7 +116,7 @@ public class Product extends HttpServlet {
         if (filter.has("query")) {
             try {
                 ProductRepository.filterProductsByQuery(filter.get("query").asText(), queryResult, max);
-            } catch (SQLException e) {
+            } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
                 resp.getWriter().write(mapper.writeValueAsString(response));
@@ -128,7 +128,7 @@ public class Product extends HttpServlet {
         if (filter.has("category")) {
             try {
                 ProductRepository.filterProductsByCategory(filter.get("category").asText(), queryResult, max);
-            } catch (SQLException e) {
+            } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
                 resp.getWriter().write(mapper.writeValueAsString(response));
@@ -140,7 +140,7 @@ public class Product extends HttpServlet {
         if (filter.has("price")) {
             try {
                 ProductRepository.filterProductsByPrice(filter.get("price").get("min").asDouble(), filter.get("price").get("max").asDouble(), queryResult, max);
-            } catch (SQLException e) {
+            } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
                 resp.getWriter().write(mapper.writeValueAsString(response));
