@@ -39,11 +39,11 @@
     })
 
     window.createProduct = () => {
-        var name = document.getElementById("name").value
-        var tag = document.getElementById("tag").value
-        var description = document.getElementById("description").value
+        var name = document.getElementById("name").value.trim()
+        var tag = document.getElementById("tag").value.trim()
+        var description = document.getElementById("description").value.trim()
         var price = document.getElementById("price").value
-        var category = document.getElementById("category").value
+        var category = document.getElementById("category").value.trim()
         var stock = document.getElementById("stock").value
         var fileInput = document.getElementById("image");
 
@@ -51,6 +51,23 @@
         var reader = new FileReader();
 
         reader.readAsDataURL(file);
+
+        if (name.length < 3 || tag.length < 3 || description.length < 3 || category.length < 3) {
+            alert("Please enter at least 3 characters for each text field")
+            return
+        }
+
+        //check if price is a number
+        if (isNaN(price)) {
+            alert("Please enter a valid price")
+            return
+        }
+
+        //check if stock is a number
+        if (isNaN(stock)) {
+            alert("Please enter a valid stock")
+            return
+        }
 
         reader.onloadend = function () {
             var data = {

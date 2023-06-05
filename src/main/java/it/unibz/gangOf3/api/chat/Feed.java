@@ -61,7 +61,6 @@ public class Feed extends HttpServlet {
         } catch (SQLException | NotFoundException e) {
             throw new RuntimeException(e);
         }
-        resp.flushBuffer();
     }
 
     /**

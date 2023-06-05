@@ -9,8 +9,8 @@
 - [X] Check for security on all endpoints separately
 - [X] Add XSS protection stored
 - [ ] Add CSRF protection by using a token
-- [ ] Add XSS protection reflected
 - [ ] Use password hashing
+- [ ] Add XSS protection reflected
 - [ ] Sign orders
 - [ ] Encrypt chat messages
 - [ ] Update readme

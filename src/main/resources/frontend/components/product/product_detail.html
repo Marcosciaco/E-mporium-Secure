@@ -434,6 +434,12 @@
     })
 
     document.getElementById("createReview").addEventListener("click", () => {
+        const msg = document.getElementById("revComment").value.trim();
+        if (msg.length < 3) {
+            alert("Review must be at least 3 characters long")
+            return
+        }
+
         let stars = 0;
 
         for (let i = 5; i >= 1; i--) {

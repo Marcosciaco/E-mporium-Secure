@@ -22,11 +22,19 @@ public class UserRepository {
             throw new IllegalArgumentException("Invalid username or type");
 
         //Check password
-        Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
-        if (!pattern.matcher(password).matches())
+        Pattern passwordPattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
+        if (!passwordPattern.matcher(password).matches())
             throw new IllegalArgumentException("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
 
-        //TODO: regex check for emails and phone
+        Pattern emailPattern = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+        if (!emailPattern.matcher(email).matches())
+            throw new IllegalArgumentException("Invalid email");
+        if (!"".equals(emergencyEmail) && !emailPattern.matcher(emergencyEmail).matches())
+            throw new IllegalArgumentException("Invalid emergency email");
+
+        Pattern phonePattern = Pattern.compile("^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$");
+        if (!"".equals(emergencyPhone) && !phonePattern.matcher(emergencyPhone).matches())
+            throw new IllegalArgumentException("Invalid emergency phone");
 
         type = String.valueOf("seller".equals(type));
         String registrationTokenUUID = UUID.randomUUID().toString();

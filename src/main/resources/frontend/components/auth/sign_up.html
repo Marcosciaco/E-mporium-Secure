@@ -135,13 +135,35 @@
             return;
         }
 
+        if (document.getElementById('form-username').value.trim().length < 3) {
+            alert('Your username must be at least 3 characters long');
+            return;
+        }
+
+        //check email
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!emailRegex.test(document.getElementById('form-email').value.trim())) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        if (!emailRegex.test(document.getElementById('form-emergency-email').value.trim())) {
+            alert('Please enter a valid emergency email address');
+            return;
+        }
+
+        const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+        if (!phoneRegex.test(document.getElementById('form-emergency-phone').value.trim())) {
+            alert('Please enter a valid emergency phone number');
+            return;
+        }
+
         const formData = {
             username: document.getElementById('form-username').value.trim(),
             email: document.getElementById('form-email').value.trim(),
             password: document.getElementById('form-password').value.trim(),
             emergencyEmail: document.getElementById('form-emergency-email').value.trim(),
             emergencyPhone: document.getElementById('form-emergency-phone').value.trim(),
-            type: document.getElementById('form-vc-input').checked ? 'seller' : 'customer'
+            type: document.getElementById('form-vc-input').checked ? 'seller' : 'buyer'
         };
 
         fetchAPI('auth/register', 'POST', formData, {
