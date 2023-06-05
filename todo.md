@@ -7,7 +7,7 @@
 - [X] Add SQL injection protection
 - [X] Secure Rest API
 - [X] Check for security on all endpoints separately
-- [ ] Add XSS protection stored
+- [X] Add XSS protection stored
 - [ ] Add CSRF protection by using a token
 - [ ] Add XSS protection reflected
 - [ ] Use password hashing

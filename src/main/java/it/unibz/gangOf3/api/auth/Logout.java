@@ -45,5 +45,7 @@ public class Logout extends HttpServlet {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }
+
+        resp.getWriter().write(mapper.writeValueAsString(response));
     }
 }

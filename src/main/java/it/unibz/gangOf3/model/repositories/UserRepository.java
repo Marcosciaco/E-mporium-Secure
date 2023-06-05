@@ -19,7 +19,7 @@ public class UserRepository {
 
     public static void createUser(String username, String email, String password, String type, String emergencyEmail, String emergencyPhone) throws UserAlreadyExistsException, SQLException, IOException, MessagingException {
         if (username.length() < 3 || !(type.equals("seller") || type.equals("buyer")))
-            throw new IllegalArgumentException("Username must be at least 3 characters long");
+            throw new IllegalArgumentException("Invalid username or type");
 
         //Check password
         Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
@@ -42,7 +42,7 @@ public class UserRepository {
         try {
             insertStmt.executeUpdate();
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1062) {
+            if (e.getErrorCode() == 19) {
                 throw new UserAlreadyExistsException("User already exists");
             }
             throw e;

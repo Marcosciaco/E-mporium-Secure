@@ -15,7 +15,7 @@ import java.util.LinkedList;
 public class OrderRepository {
 
     public static int createOrder(User buyer, Product product, int quantity) throws SQLException, NotFoundException, InvalidQuantityException {
-        if (quantity > product.getStock())
+        if (quantity >= product.getStock())
             throw new InvalidQuantityException("Not enough products in stock");
         if (quantity < 1)
             throw new InvalidQuantityException("Quantity must be greater than 0");
@@ -58,9 +58,11 @@ public class OrderRepository {
             PreparedStatement stmt = DatabaseUtil.getConnection()
                 .prepareStatement("SELECT orders.id " +
                     "FROM orders JOIN products p ON p.id = orders.product " +
-                    "WHERE owner = ? AND buyer = ?;");
+                    "WHERE (p.owner = ? AND orders.buyer = ?) OR (orders.buyer = ? AND orders.buyer = ?);");
             stmt.setInt(1, requestor.getID());
             stmt.setInt(2, buyer.getID());
+            stmt.setInt(3, requestor.getID());
+            stmt.setInt(4, buyer.getID());
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Order(resultSet.getInt("id")));
@@ -81,9 +83,13 @@ public class OrderRepository {
             PreparedStatement stmt = DatabaseUtil.getConnection()
                 .prepareStatement("SELECT orders.id " +
                     "FROM orders JOIN products p ON p.id = orders.product " +
-                    "WHERE owner = ? AND buyer = ?;");
+                    "WHERE (p.owner = ? AND orders.buyer = ?) OR (p.owner = ? AND p.owner = ?);");
+            System.out.println("Seller: " + seller.getID());
+            System.out.println("Requestor: " + requestor.getID());
             stmt.setInt(1, seller.getID());
             stmt.setInt(2, requestor.getID());
+            stmt.setInt(3, seller.getID());
+            stmt.setInt(4, requestor.getID());
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 source.add(new Order(resultSet.getInt("id")));

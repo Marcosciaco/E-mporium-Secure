@@ -40,10 +40,10 @@ public class Register extends HttpServlet {
         try {
             UserRepository.createUser(
                 sanitize(bodyJson.get("username").asText("").trim()),
-                sanitize(bodyJson.get("email").asText("").trim()),
+                bodyJson.get("email").asText(""),
                 bodyJson.get("password").asText("").trim(),
                 bodyJson.get("type").asText("").trim(),
-                bodyJson.has("emergencyEmail") ? sanitize(bodyJson.get("emergencyEmail").asText("").trim()) : null,
+                bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText("").trim() : null,
                 bodyJson.has("emergencyPhone") ? sanitize(bodyJson.get("emergencyPhone").asText("").trim()) : null
             );
             response.set("status", mapper.valueToTree("ok"));
