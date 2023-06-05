@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Register extends HttpServlet {
 
@@ -38,12 +39,12 @@ public class Register extends HttpServlet {
         //create user
         try {
             UserRepository.createUser(
-                bodyJson.get("username").asText("").trim(),
-                bodyJson.get("email").asText("").trim(),
+                sanitize(bodyJson.get("username").asText("").trim()),
+                sanitize(bodyJson.get("email").asText("").trim()),
                 bodyJson.get("password").asText("").trim(),
                 bodyJson.get("type").asText("").trim(),
-                bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText("").trim() : null,
-                bodyJson.has("emergencyPhone") ? bodyJson.get("emergencyPhone").asText("").trim() : null
+                bodyJson.has("emergencyEmail") ? sanitize(bodyJson.get("emergencyEmail").asText("").trim()) : null,
+                bodyJson.has("emergencyPhone") ? sanitize(bodyJson.get("emergencyPhone").asText("").trim()) : null
             );
             response.set("status", mapper.valueToTree("ok"));
 

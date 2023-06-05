@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Review extends HttpServlet {
 
@@ -81,7 +82,7 @@ public class Review extends HttpServlet {
                 user,
                 bodyJson.get("product").asInt(),
                 bodyJson.get("stars").asInt(5),
-                bodyJson.get("message").asText("").trim()
+                sanitize(bodyJson.get("message").asText("").trim())
             );
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception ex) {

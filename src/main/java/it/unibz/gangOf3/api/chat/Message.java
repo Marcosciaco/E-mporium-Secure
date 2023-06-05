@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Message extends HttpServlet {
 
@@ -141,7 +142,7 @@ public class Message extends HttpServlet {
             int messageID = MessageRepository.createMessage(
                 user,
                 to,
-                bodyJson.get("message").asText("").trim()
+                sanitize(bodyJson.get("message").asText("").trim())
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();

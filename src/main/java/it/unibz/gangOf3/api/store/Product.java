@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Product extends HttpServlet {
 
@@ -42,13 +43,13 @@ public class Product extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
-        String name = bodyJson.get("name").asText("").trim();
-        String tag = bodyJson.get("tag").asText("").trim();
-        String description = bodyJson.get("description").asText("").trim();
+        String name = sanitize(bodyJson.get("name").asText("").trim());
+        String tag = sanitize(bodyJson.get("tag").asText("").trim());
+        String description = sanitize(bodyJson.get("description").asText("").trim());
         double price = bodyJson.get("price").asDouble(1.00);
-        String category = bodyJson.get("category").asText("").trim();
+        String category = sanitize(bodyJson.get("category").asText("").trim());
         int stock = bodyJson.get("stock").asInt();
-        String image = bodyJson.get("image").asText("").trim();
+        String image = sanitize(bodyJson.get("image").asText("").trim());
 
         try{
             int productID = ProductRepository.createProduct(
