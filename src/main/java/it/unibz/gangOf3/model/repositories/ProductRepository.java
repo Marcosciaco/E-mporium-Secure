@@ -28,6 +28,10 @@ public class ProductRepository {
         if (name.length() < 3 || tag.length() < 3 || description.length() < 3 || price < 0 || category.length() < 3 || stock < 1 || image.length() < 3)
             throw new IllegalArgumentException("Invalid product data");
 
+        if (!image.startsWith("data:image/")) {
+            throw new IllegalArgumentException("Invalid image URL");
+        }
+
         PreparedStatement insertStmt = DatabaseUtil.getConnection()
             .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner, stock, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
         insertStmt.setString(1, name);
