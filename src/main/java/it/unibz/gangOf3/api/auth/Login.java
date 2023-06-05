@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.CSRFHandler.initCSRF;
 
 public class Login extends HttpServlet {
 
@@ -37,6 +38,7 @@ public class Login extends HttpServlet {
         try {
             User user = UserRepository.getUserByEmail(bodyJson.get("email").asText("").trim());
             ObjectNode loginData = user.login(bodyJson.get("password").asText("").trim());
+            initCSRF(loginData.get("token").asText(), resp);
             response.set("status", mapper.valueToTree("ok"));
             response.set("data", loginData);
         } catch (Exception e) {

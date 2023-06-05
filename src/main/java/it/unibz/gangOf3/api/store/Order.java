@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.CSRFHandler.handleCSRF;
 
 public class Order extends HttpServlet {
 
@@ -36,6 +37,7 @@ public class Order extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
@@ -127,6 +129,7 @@ public class Order extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"product", "quantity"});
         if (bodyJson == null) return; // parseBody already sent the response (400)

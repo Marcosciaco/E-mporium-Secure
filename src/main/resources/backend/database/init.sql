@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     type BOOLEAN DEFAULT FALSE,
     emergencyEmail VARCHAR(255) DEFAULT NULL,
     emergencyPhone VARCHAR(255) DEFAULT NULL,
-    forgotToken VARCHAR(36) DEFAULT NULL,
-    registrationToken VARCHAR(36) DEFAULT NULL,
-    sessionToken VARCHAR(36) DEFAULT NULL
+    forgotToken VARCHAR(36) DEFAULT NULL UNIQUE,
+    registrationToken VARCHAR(36) DEFAULT NULL UNIQUE,
+    sessionToken VARCHAR(36) DEFAULT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS products (

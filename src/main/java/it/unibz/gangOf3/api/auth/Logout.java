@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import static it.unibz.gangOf3.util.security.CSRFHandler.endCSRF;
+
 public class Logout extends HttpServlet {
 
     /**
@@ -40,6 +42,7 @@ public class Logout extends HttpServlet {
                 .prepareStatement("UPDATE users SET sessionToken = NULL WHERE sessionToken = ?;");
             stmt.setString(1, sessionID);
             stmt.execute();
+            endCSRF(sessionID, resp);
             response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException e) {
             response.set("status", mapper.valueToTree("error"));

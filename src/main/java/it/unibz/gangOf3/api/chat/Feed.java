@@ -19,6 +19,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static it.unibz.gangOf3.util.security.CSRFHandler.handleCSRF;
+
 @WebServlet(urlPatterns = "/api/chat/feed", asyncSupported = true)
 public class Feed extends HttpServlet {
 
@@ -35,6 +37,7 @@ public class Feed extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         resp.setContentType("text/event-stream");
         resp.setCharacterEncoding("UTF-8");

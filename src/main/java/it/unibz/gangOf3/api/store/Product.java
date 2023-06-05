@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.CSRFHandler.handleCSRF;
 import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Product extends HttpServlet {
@@ -33,6 +34,7 @@ public class Product extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"name", "tag", "description", "price", "category"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
@@ -84,6 +86,7 @@ public class Product extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields", "max"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
@@ -202,6 +205,7 @@ public class Product extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"id"});
         if (bodyJson == null) return; // parseBody already sent the response (400)

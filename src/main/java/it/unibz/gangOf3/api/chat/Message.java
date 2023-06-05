@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
+import static it.unibz.gangOf3.util.security.CSRFHandler.handleCSRF;
 import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
 
 public class Message extends HttpServlet {
@@ -126,6 +127,7 @@ public class Message extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"to", "message"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
@@ -170,6 +172,7 @@ public class Message extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         User user = AuthUtil.getAuthedUser(req, resp);
         if (user == null) return; // AuthUtil already sent the response (401)
