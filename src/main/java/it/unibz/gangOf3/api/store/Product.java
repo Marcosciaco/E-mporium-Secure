@@ -42,16 +42,24 @@ public class Product extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
+        String name = bodyJson.get("name").asText("").trim();
+        String tag = bodyJson.get("tag").asText("").trim();
+        String description = bodyJson.get("description").asText("").trim();
+        double price = bodyJson.get("price").asDouble(1.00);
+        String category = bodyJson.get("category").asText("").trim();
+        int stock = bodyJson.get("stock").asInt();
+        String image = bodyJson.get("image").asText("").trim();
+
         try{
             int productID = ProductRepository.createProduct(
                 user,
-                bodyJson.get("name").asText(),
-                bodyJson.get("tag").asText(),
-                bodyJson.get("description").asText(),
-                bodyJson.get("price").asDouble(),
-                bodyJson.get("category").asText(),
-                bodyJson.get("stock").asInt(),
-                bodyJson.get("image").asText()
+                name,
+                tag,
+                description,
+                price,
+                category,
+                stock,
+                image
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();
@@ -84,7 +92,7 @@ public class Product extends HttpServlet {
 
         ObjectNode filter = (ObjectNode) bodyJson.get("filter");
         ArrayNode fields = (ArrayNode) bodyJson.get("fields");
-        int max = bodyJson.get("max").asInt();
+        int max = bodyJson.get("max").asInt(1);
 
         LinkedList<it.unibz.gangOf3.model.classes.Product> queryResult = new LinkedList<>();
 
@@ -207,18 +215,17 @@ public class Product extends HttpServlet {
 
         try{
             it.unibz.gangOf3.model.classes.Product product = ProductRepository.getProductById(id);
-//            FIXME check if user is owner of product
-//            if (product.getOwner().getID() != user.getID()) {
-//                response.set("status", mapper.valueToTree("error"));
-//                response.set("message", mapper.valueToTree("You are not the owner of this product"));
-//                resp.getWriter().write(response.toString());
-//                return;
-//            }
+            if (!product.getOwner().equals(user)) {
+                response.set("status", mapper.valueToTree("error"));
+                response.set("message", mapper.valueToTree("You are not the owner of this product"));
+                resp.getWriter().write(response.toString());
+                return;
+            }
             product.delete();
             response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException | NotFoundException e) {
             response.set("status", mapper.valueToTree("error"));
-            response.set("message", mapper.valueToTree("No products found"));
+            response.set("message", mapper.valueToTree(e.getMessage()));
         }
 
         resp.getWriter().write(mapper.writeValueAsString(response));

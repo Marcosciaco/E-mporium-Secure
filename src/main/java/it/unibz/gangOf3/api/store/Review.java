@@ -80,8 +80,8 @@ public class Review extends HttpServlet {
             ReviewRepository.createReview(
                 user,
                 bodyJson.get("product").asInt(),
-                bodyJson.get("stars").asInt(), //FIXME check if stars is between 1 and 5
-                bodyJson.get("message").asText()
+                bodyJson.get("stars").asInt(5),
+                bodyJson.get("message").asText("").trim()
             );
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception ex) {
@@ -114,13 +114,12 @@ public class Review extends HttpServlet {
 
         try{
             it.unibz.gangOf3.model.classes.Review review = ReviewRepository.getReviewById(bodyJson.get("id").asInt());
-//            FIXME check if user has written the review
-//            if (review.getWriter().getID() != user.getID()) {
-//                response.set("status", mapper.valueToTree("error"));
-//                response.set("message", mapper.valueToTree("You are not the owner of this product"));
-//                resp.getWriter().write(response.toString());
-//                return;
-//            }
+            if (!review.getWriter().equals(user)) {
+                response.set("status", mapper.valueToTree("error"));
+                response.set("message", mapper.valueToTree("You are not the creator of this review"));
+                resp.getWriter().write(response.toString());
+                return;
+            }
             review.delete();
             response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException | NotFoundException e) {

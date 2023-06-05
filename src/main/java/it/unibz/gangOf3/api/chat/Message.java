@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.model.exceptions.NotAuthorizedException;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.MessageRepository;
 import it.unibz.gangOf3.model.repositories.UserRepository;
@@ -38,19 +39,25 @@ public class Message extends HttpServlet {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "max"}); //max per sender - receiver - couple
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
+        User user = AuthUtil.getAuthedUser(req, resp);
+        if (user == null) return; // authorize already sent the response (401)
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
         ObjectNode filter = (ObjectNode) bodyJson.get("filter");
-        int max = bodyJson.get("max").asInt();
+        int max = bodyJson.get("max").asInt(1);
         LinkedList<it.unibz.gangOf3.model.classes.Message> queryResult = new LinkedList<>();
 
         //Get Messages by filter
 
         if (filter.has("id")) {
             try {
-                queryResult.add(MessageRepository.getMessageById(filter.get("id").asInt()));
-            } catch (SQLException | NotFoundException e) {
+                it.unibz.gangOf3.model.classes.Message msg = MessageRepository.getMessageById(filter.get("id").asInt());
+                if (!msg.getFrom().equals(user) && !msg.getTo().equals(user))
+                    throw new NotAuthorizedException("You are not authorized to access this message");
+                queryResult.add(msg);
+            } catch (SQLException | NotFoundException | NotAuthorizedException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
                 resp.getWriter().write(mapper.writeValueAsString(response));
@@ -61,7 +68,7 @@ public class Message extends HttpServlet {
         if (filter.has("since")) {
             try {
                 Timestamp timestamp = Timestamp.valueOf(filter.get("since").asText());
-                MessageRepository.filterBySince(timestamp, queryResult, max);
+                MessageRepository.filterBySince(user, timestamp, queryResult, max);
             } catch (Exception ex) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(ex.getMessage()));
@@ -70,11 +77,10 @@ public class Message extends HttpServlet {
             }
         }
 
-        if (filter.has("user1") && filter.has("user2")) {
+        if (filter.has("user2")) {
             try {
-                User u1 = UserRepository.getUserByEmail(filter.get("user1").asText());
                 User u2 = UserRepository.getUserByEmail(filter.get("user2").asText());
-                MessageRepository.filterByUsers(u1, u2, queryResult, max);
+                MessageRepository.filterByUsers(user, u2, queryResult, max);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -83,7 +89,7 @@ public class Message extends HttpServlet {
             }
         }
 
-        if (filter.has("latest")) { //FIXME move to bottom
+        if (filter.has("latest")) {
             try {
                 MessageRepository.filterByLatest(queryResult, max);
             } catch (SQLException ex) {
@@ -131,11 +137,11 @@ public class Message extends HttpServlet {
 
         try {
             //Create message
-            User to = UserRepository.getUserByEmail(bodyJson.get("to").asText());
+            User to = UserRepository.getUserByEmail(bodyJson.get("to").asText("").trim());
             int messageID = MessageRepository.createMessage(
                 user,
                 to,
-                bodyJson.get("message").asText()
+                bodyJson.get("message").asText("").trim()
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();
@@ -155,7 +161,6 @@ public class Message extends HttpServlet {
 
     /**
      * Get all chat partners of a user
-     *
      * @param req
      * @param resp
      * @throws ServletException

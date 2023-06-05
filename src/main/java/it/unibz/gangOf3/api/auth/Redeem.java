@@ -35,7 +35,7 @@ public class Redeem extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            String type = bodyJson.get("type").asText();
+            String type = bodyJson.get("type").asText("").trim();
             switch (type) {
                 case "forgot":
                     if (!bodyJson.has("password")) {
@@ -43,22 +43,25 @@ public class Redeem extends HttpServlet {
                         resp.getWriter().write("{\"status\": \"error\", \"message\": \"Missing required fields\"}");
                         return;
                     }
-                    String password = bodyJson.get("password").asText().trim();
+                    //Check password strength
+                    String password = bodyJson.get("password").asText("").trim();
                     Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
                     if (!pattern.matcher(password).matches()) {
                         throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
                     }
+                    //Update password
                     PreparedStatement stmt = DatabaseUtil.getConnection()
                         .prepareStatement("UPDATE users SET password = ?, forgotToken = NULL WHERE forgotToken = ?;");
                     stmt.setString(1, password);
-                    stmt.setString(2, bodyJson.get("token").asText());
+                    stmt.setString(2, bodyJson.get("token").asText("").trim());
                     stmt.execute();
+                    //Set response
                     response.set("status", mapper.valueToTree("ok"));
                     break;
                 case "activate":
                     PreparedStatement stmt2 = DatabaseUtil.getConnection()
                         .prepareStatement("UPDATE users SET registrationToken = NULL WHERE registrationToken = ?;");
-                    stmt2.setString(1, bodyJson.get("token").asText());
+                    stmt2.setString(1, bodyJson.get("token").asText("").trim());
                     stmt2.execute();
                     response.set("status", mapper.valueToTree("ok"));
                     break;

@@ -3,7 +3,6 @@ package it.unibz.gangOf3.model.repositories;
 import it.unibz.gangOf3.model.classes.Message;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.PreparedStatement;
@@ -15,7 +14,13 @@ import java.util.LinkedList;
 public class MessageRepository {
 
     public static int createMessage(User from, User to, String message) throws SQLException, NotFoundException {
-        DatabaseInsertionUtil.insertData("chat", new String[]{"user1", "user2", "message"}, new String[]{from.getID() + "", to.getID() + "", message});
+        PreparedStatement preparedStatement = DatabaseUtil.getConnection()
+            .prepareStatement("INSERT INTO chat (user1, user2, message) VALUES (?, ?, ?);");
+        preparedStatement.setInt(1, from.getID());
+        preparedStatement.setInt(2, to.getID());
+        preparedStatement.setString(3, message);
+        preparedStatement.executeUpdate();
+
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='chat';")
             .executeQuery();
@@ -35,12 +40,14 @@ public class MessageRepository {
         return new Message(messageId);
     }
 
-    public static void filterBySince(Timestamp since, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
+    public static void filterBySince(User requestor, Timestamp since, LinkedList<Message> source, int max) throws SQLException, NotFoundException {
         if (source.size() == 0) {
             PreparedStatement stmt = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM chat WHERE time >= ? LIMIT ?;");
+                .prepareStatement("SELECT id FROM chat WHERE time >= ? AND (user1 = ? OR user2 = ?) LIMIT ?;");
             stmt.setTimestamp(1, since);
-            stmt.setInt(2, max);
+            stmt.setInt(2, requestor.getID());
+            stmt.setInt(3, requestor.getID());
+            stmt.setInt(4, max);
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()){
                 source.add(new Message(resultSet.getInt("id")));

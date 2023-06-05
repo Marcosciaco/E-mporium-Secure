@@ -35,8 +35,8 @@ public class Login extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = UserRepository.getUserByEmail(bodyJson.get("email").asText());
-            ObjectNode loginData = user.login(bodyJson.get("password").asText());
+            User user = UserRepository.getUserByEmail(bodyJson.get("email").asText("").trim());
+            ObjectNode loginData = user.login(bodyJson.get("password").asText("").trim());
             response.set("status", mapper.valueToTree("ok"));
             response.set("data", loginData);
         } catch (Exception e) {

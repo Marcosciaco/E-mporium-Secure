@@ -50,6 +50,7 @@ public class Feed extends HttpServlet {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
             resp.getWriter().write(mapper.writeValueAsString(response));
+            return;
         }
 
         AsyncContext asyncContext = req.startAsync();
@@ -72,11 +73,6 @@ public class Feed extends HttpServlet {
         User receiver = null;
         try {
             receiver = message.getTo();
-        } catch (SQLException | NotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            System.out.println("Notifying user: " + receiver.getUsername() + " about message: " + message.getMessage());
         } catch (SQLException | NotFoundException e) {
             throw new RuntimeException(e);
         }

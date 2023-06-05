@@ -34,7 +34,7 @@ public class Forgot extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            User user = UserRepository.getUserByEmail(bodyJson.get("email").asText());
+            User user = UserRepository.getUserByEmail(bodyJson.get("email").asText("").trim());
             user.forgotPassword();
             response.set("status", mapper.valueToTree("ok"));
         }catch (Exception e) {

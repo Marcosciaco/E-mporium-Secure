@@ -2,6 +2,9 @@ package it.unibz.gangOf3.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.exceptions.UsernameTakenException;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
@@ -34,19 +37,13 @@ public class Register extends HttpServlet {
 
         //create user
         try {
-            String password = bodyJson.get("password").asText().trim();
-            Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$");
-            if (!pattern.matcher(password).matches()) {
-                throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
-            }
-
             UserRepository.createUser(
-                bodyJson.get("username").asText(),
-                bodyJson.get("email").asText(),
-                password,
-                bodyJson.get("type").asText(),
-                bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText() : null,
-                bodyJson.has("emergencyPhone") ? bodyJson.get("emergencyPhone").asText() : null
+                bodyJson.get("username").asText("").trim(),
+                bodyJson.get("email").asText("").trim(),
+                bodyJson.get("password").asText("").trim(),
+                bodyJson.get("type").asText("").trim(),
+                bodyJson.has("emergencyEmail") ? bodyJson.get("emergencyEmail").asText("").trim() : null,
+                bodyJson.has("emergencyPhone") ? bodyJson.get("emergencyPhone").asText("").trim() : null
             );
             response.set("status", mapper.valueToTree("ok"));
 

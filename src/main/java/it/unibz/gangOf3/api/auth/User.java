@@ -34,7 +34,7 @@ public class User extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
-            it.unibz.gangOf3.model.classes.User user = UserRepository.getUserByUsername(bodyJson.get("username").asText());
+            it.unibz.gangOf3.model.classes.User user = UserRepository.getUserByUsername(bodyJson.get("username").asText("").trim());
             ObjectNode data = mapper.createObjectNode();
             data.put("email", user.getEmail());
             response.set("status", mapper.valueToTree("ok"));

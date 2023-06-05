@@ -4,7 +4,6 @@ import it.unibz.gangOf3.model.classes.Product;
 import it.unibz.gangOf3.model.classes.Review;
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.util.DatabaseInsertionUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
 import java.sql.PreparedStatement;
@@ -15,8 +14,16 @@ import java.util.LinkedList;
 public class ReviewRepository {
 
     public static void createReview(User user, int productId, int rating, String comment) throws SQLException, NotFoundException {
-        DatabaseInsertionUtil.insertData("reviews", new String[]{"user", "stars", "comment", "product"}, new String[]{user.getID() + "", rating + "", comment, productId + ""});
+        if (comment.length() < 3 || rating < 1 || rating > 5)
+            throw new IllegalArgumentException("Invalid review data");
         Product product = ProductRepository.getProductById(productId);
+        PreparedStatement insertStmt = DatabaseUtil.getConnection()
+            .prepareStatement("INSERT INTO reviews (user, stars, comment, product) VALUES (?, ?, ?, ?);");
+        insertStmt.setInt(1, user.getID());
+        insertStmt.setInt(2, rating);
+        insertStmt.setString(3, comment);
+        insertStmt.setInt(4, productId);
+        insertStmt.executeUpdate();
         product.updateRating();
     }
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.classes.Product;
 import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.model.exceptions.InvalidQuantityException;
+import it.unibz.gangOf3.model.exceptions.NotAuthorizedException;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.OrderRepository;
 import it.unibz.gangOf3.model.repositories.ProductRepository;
@@ -38,6 +40,9 @@ public class Order extends HttpServlet {
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "fields"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
+        User user = AuthUtil.getAuthedUser(req, resp);
+        if (user == null) return; // authorize already sent the response (401)
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
@@ -48,7 +53,11 @@ public class Order extends HttpServlet {
 
         if (filter.has("id")) {
             try {
-                queryResult.add(OrderRepository.getOrderById(filter.get("id").asInt()));
+                it.unibz.gangOf3.model.classes.Order order = OrderRepository.getOrderById(filter.get("id").asInt());
+                if (order.getBuyer().equals(user) || order.getProduct().getOwner().equals(user))
+                    queryResult.add(OrderRepository.getOrderById(filter.get("id").asInt()));
+                else
+                    throw new NotAuthorizedException("You are not authorized to view this order");
             } catch (Exception ex) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(ex.getMessage()));
@@ -59,8 +68,8 @@ public class Order extends HttpServlet {
 
         if (filter.has("seller")) {
             try {
-                User seller = UserRepository.getUserByEmail(filter.get("seller").asText());
-                OrderRepository.filterOrdersBySeller(seller, queryResult);
+                User seller = UserRepository.getUserByEmail(filter.get("seller").asText("").trim());
+                OrderRepository.filterOrdersBySeller(seller, user, queryResult);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -71,8 +80,8 @@ public class Order extends HttpServlet {
 
         if (filter.has("buyer")) {
             try{
-                User buyer = UserRepository.getUserByEmail(filter.get("buyer").asText());
-                OrderRepository.filterOrdersByBuyer(buyer, queryResult);
+                User buyer = UserRepository.getUserByEmail(filter.get("buyer").asText("").trim());
+                OrderRepository.filterOrdersByBuyer(buyer, user, queryResult);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -84,7 +93,7 @@ public class Order extends HttpServlet {
         if (filter.has("product")) {
             try{
                 Product product = ProductRepository.getProductById(filter.get("product").asInt());
-                OrderRepository.filterOrdersByProduct(product, queryResult);
+                OrderRepository.filterOrdersByProduct(product, user, queryResult);
             } catch (SQLException | NotFoundException e) {
                 response.set("status", mapper.valueToTree("error"));
                 response.set("message", mapper.valueToTree(e.getMessage()));
@@ -139,7 +148,7 @@ public class Order extends HttpServlet {
             ObjectNode data = mapper.createObjectNode();
             response.set("data", data);
             data.set("orderID", mapper.valueToTree(orderID));
-        } catch (SQLException | NotFoundException e) {
+        } catch (SQLException | NotFoundException | InvalidQuantityException e) {
             response.set("status", mapper.valueToTree("error"));
             response.set("message", mapper.valueToTree(e.getMessage()));
         }

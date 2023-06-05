@@ -2,6 +2,8 @@ package it.unibz.gangOf3.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unibz.gangOf3.model.classes.User;
+import it.unibz.gangOf3.util.AuthUtil;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
@@ -26,6 +28,8 @@ public class Logout extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
 
+        User user = AuthUtil.getAuthedUser(req, resp);
+        if (user == null) return; // getAuthedUser already sent the response (401)
         String sessionID = req.getHeader("Authorization");
 
         ObjectMapper mapper = new ObjectMapper();
