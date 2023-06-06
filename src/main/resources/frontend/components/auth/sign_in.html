@@ -135,7 +135,8 @@
             localStorage.setItem('login', JSON.stringify({
                 token: res.token,
                 email: res.email,
-                username: res.username
+                username: res.username,
+                isSeller: res.isSeller
             }));
             loadComponent(document.getElementById('app'), 'screens/home');
         }).catch(err => {

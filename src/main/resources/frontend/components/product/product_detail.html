@@ -3,17 +3,17 @@
         <div class="row" style="justify-content: space-between">
             <div class="close" id="close"></div>
             <div class="green_outline" id="rating">
-                <div class="star" star="1"></div>
-                <div class="star" star="2"></div>
-                <div class="star" star="3"></div>
-                <div class="star" star="4"></div>
-                <div class="star" star="5"></div>
+                <div class="star button" star="1"></div>
+                <div class="star button" star="2"></div>
+                <div class="star button" star="3"></div>
+                <div class="star button" star="4"></div>
+                <div class="star button" star="5"></div>
             </div>
         </div>
         <div class="title" id="name">Haribo Goldbears</div>
         <div class="row" style="justify-content: space-between">
             <div class="green" id="category">sweets</div>
-            <div class="green" id="contactSeller">
+            <div class="green button" id="contactSeller">
                 <div id="owner"></div>
                 <div class="mail"></div>
             </div>
@@ -25,44 +25,46 @@
         </div>
         <div class="subtitle">Reviews</div>
         <div class="reviews" id="reviews"></div>
-        <div class="row">
-            <input class="green_outline comment" id="revComment" type="text"/>
-            <div class="rating">
-                <input id="star-1" name="star" type="radio" value="1">
-                <label for="star-1">1 star</label>
-                <input id="star-2" name="star" type="radio" value="2">
-                <label for="star-2">2 stars</label>
-                <input id="star-3" name="star" type="radio" value="3">
-                <label for="star-3">3 stars</label>
-                <input id="star-4" name="star" type="radio" value="4">
-                <label for="star-4">4 stars</label>
-                <input id="star-5" name="star" type="radio" value="5">
-                <label for="star-5">5 stars</label>
+        <div id="createReviewCont">
+            <div class="row">
+                <input class="green_outline comment" id="revComment" type="text"/>
+                <div class="rating">
+                    <input id="star-1" name="star" type="radio" value="1">
+                    <label for="star-1">1 star</label>
+                    <input id="star-2" name="star" type="radio" value="2">
+                    <label for="star-2">2 stars</label>
+                    <input id="star-3" name="star" type="radio" value="3">
+                    <label for="star-3">3 stars</label>
+                    <input id="star-4" name="star" type="radio" value="4">
+                    <label for="star-4">4 stars</label>
+                    <input id="star-5" name="star" type="radio" value="5">
+                    <label for="star-5">5 stars</label>
 
-                <div class="stars">
-                    <label aria-label="1 star" for="star-1" title="1 star"></label>
-                    <label aria-label="2 stars" for="star-2" title="2 stars"></label>
-                    <label aria-label="3 stars" for="star-3" title="3 stars"></label>
-                    <label aria-label="4 stars" for="star-4" title="4 stars"></label>
-                    <label aria-label="5 stars" for="star-5" title="5 stars"></label>
+                    <div class="stars">
+                        <label aria-label="1 star" for="star-1" title="1 star"></label>
+                        <label aria-label="2 stars" for="star-2" title="2 stars"></label>
+                        <label aria-label="3 stars" for="star-3" title="3 stars"></label>
+                        <label aria-label="4 stars" for="star-4" title="4 stars"></label>
+                        <label aria-label="5 stars" for="star-5" title="5 stars"></label>
+                    </div>
                 </div>
             </div>
+            <div class="green_outline" id="createReview">Send</div>
         </div>
-        <div class="green_outline" id="createReview">Send</div>
     </div>
     <div class="column">
         <img class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
-        <div class="purchase">
+        <div class="purchase" id="purchaseCont">
             <div class="price" id="price">2,99$</div>
             <div class="row">
-                <div class="green_outline">
+                <div class="green_outline button">
                     <div class="minus" onclick="decreaseCount()"></div>
                 </div>
                 <div class="count" id="count">1</div>
-                <div class="green_outline">
+                <div class="green_outline button">
                     <div class="plus" onclick="increaseCount()"></div>
                 </div>
-                <div class="green" id="purchase">
+                <div class="green button" id="purchase">
                     <div>Purchase</div>
                 </div>
             </div>
@@ -342,19 +344,26 @@
 
     updateReviews()
 
+    if (JSON.parse(localStorage.getItem("login")).isSeller === undefined) {
+        document.getElementById("purchaseCont").style.display = "none"
+        document.getElementById("createReviewCont").style.display = "none"
+    }
+
     for (let i = 1; i <= product.stars; i++) {
         const star = document.getElementById("rating").querySelector(`.star[star="${i}"]`)
         star.classList.add("active")
     }
 
     document.getElementById("contactSeller").addEventListener("click", () => {
-        const chat = document.getElementById("chat")
-        chat.style.display = "block"
-        loadComponent(chat, "components/chat/chat", {
-            props: {
-                seller: product.owner
-            }
-        })
+        if (JSON.parse(localStorage.getItem("login")).isSeller !== undefined) {
+            const chat = document.getElementById("chat")
+            chat.style.display = "block"
+            loadComponent(chat, "components/chat/chat", {
+                props: {
+                    seller: product.owner
+                }
+            })
+        }
     })
 
     function updateReviews() {

@@ -28,10 +28,17 @@
     </div>
     <div class="latest-sales">
         <div class="title">Products</div>
-        <div class="products" id="productList"></div>
+        <div class="sales" id="productList"></div>
     </div>
 </div>
 <style>
+
+    .prod-image {
+        height: 40px;
+        width: 40px;
+        object-fit: cover;
+        overflow: hidden;
+    }
 
     .seller-dashboard {
         display: flex;
@@ -127,6 +134,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         width: 95%;
         padding: 10px;
         border: 1px solid #7BE495;
@@ -190,6 +198,19 @@
         width: 100%;
     }
 
+    .deleteBtn {
+        width: 30px;
+        height: 30px;
+        background-color: black;
+        -webkit-mask: url("/frontend/assets?name=icons/delete.svg") no-repeat center;
+        mask: url("/frontend/assets?name=icons/delete.svg") no-repeat center;
+    }
+
+    .deleteBtn:hover {
+        background-color: red;
+        cursor: pointer;
+    }
+
 </style>
 <script>
 
@@ -217,7 +238,8 @@
             fields: [
                 "id",
                 "name",
-                "price"
+                "price",
+                "img"
             ],
             max: -1
         }).then(result => {
@@ -227,10 +249,11 @@
                 const sale = document.createElement("div");
                 sale.className = "sale";
                 sale.innerHTML = `
+                <img class="prod-image" src="${prod.img}"/>
                 <span>${prod.id}</span>
                 <span>${prod.name}</span>
                 <span>${prod.price}</span>
-                <button onclick="deleteProduct(${prod.id})">delete</button>
+                <div class="deleteBtn" onclick="deleteProduct(${prod.id})"></div>
             `
                 document.getElementById("productList").appendChild(sale);
             })
