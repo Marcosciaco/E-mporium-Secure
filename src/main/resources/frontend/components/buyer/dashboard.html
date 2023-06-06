@@ -5,7 +5,7 @@
         <div class="subtitle">Welcome back to your dashboard</div>
     </div>
     <div class="content">
-        <span style="margin-bottom: 10px">You have made a total of <b id="totOrders">0</b> orders.</span>
+        <span class="orderText">You have made a total of <b id="totOrders">0</b> orders.</span>
         <div class="latest-sales">
             <div class="title">Latest orders</div>
             <div class="sales" id="orders"></div>
@@ -13,6 +13,10 @@
     </div>
 </div>
 <style>
+
+    .orderText {
+        margin-bottom: 10px
+    }
 
     .prod-image {
         height: 40px;
@@ -29,29 +33,8 @@
         width: 100%;
     }
 
-    .header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
     .title {
         font-weight: bold;
-    }
-
-    .actions {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .action {
-        width: 30px;
-        height: 30px;
-        margin-left: 10px;
     }
 
     .content {
@@ -62,20 +45,6 @@
         padding: 20px;
         width: 100%;
         height: 100%;
-    }
-
-    .card {
-        width: 100%;
-        height: 200px;
-        border-radius: 10px;
-        background-color: #eee;
-        margin: 10px;
-        padding: 10px;
-    }
-
-    .card:hover {
-        background-color: #7BE495;
-        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }
 
     .title {
@@ -176,19 +145,6 @@
         height: 100vh;
         min-height: 100vh;
         width: 100%;
-    }
-
-    .deleteBtn {
-        width: 30px;
-        height: 30px;
-        background-color: black;
-        -webkit-mask: url("/frontend/assets?name=icons/delete.svg") no-repeat center;
-        mask: url("/frontend/assets?name=icons/delete.svg") no-repeat center;
-    }
-
-    .deleteBtn:hover {
-        background-color: red;
-        cursor: pointer;
     }
 
 </style>

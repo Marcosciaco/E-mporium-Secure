@@ -212,8 +212,7 @@
 
     window.navigatePath = (path, query) => {
         const pathParts = path.split('/');
-        const pathPartsFiltered = pathParts.filter(part => part !== '');
-        window.path = pathPartsFiltered;
+        window.path = pathParts.filter(part => part !== '');
         window.query = query;
         loadComponent(document.getElementById('app'), 'screens/' + (window.path[0] || 'home'));
         window.path = window.path.slice(1);
