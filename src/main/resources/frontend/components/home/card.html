@@ -89,7 +89,7 @@
     const tag = card.querySelector('.row .category');
     tag.innerText = product.category;
 
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= product.stars; i++) {
         const star = card.querySelector(`.row .rating .star[star="${i}"]`)
         star.classList.add("active")
     }

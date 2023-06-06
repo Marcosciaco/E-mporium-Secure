@@ -1,5 +1,5 @@
 <div class="create" id="createProduct">
-    <img class="button" id="add" onclick="createProductDash()" src="/frontend/assets?name=icons/add.svg">
+    <img class="button" id="add" onclick="backToHome()" src="/frontend/assets?name=icons/home.svg">
 </div>
 <div id="seller_dashboard"></div>
 <script>
@@ -8,20 +8,29 @@
 
     if (login.isSeller) {
         loadComponent(card, 'components/seller/dashboard', {});
-        document.getElementById("add").style.display = "block"
     } else {
         loadComponent(card, 'components/buyer/dashboard', {});
-        document.getElementById("add").style.display = "none"
     }
 
     window.createProductDash = () => {
         if (window.create) {
             loadComponent(card, 'components/seller/dashboard', {});
             window.create = false;
-            document.getElementById("add").src = "/frontend/assets?name=icons/add.svg"
+            document.getElementById("add").src = "/frontend/assets?name=icons/home.svg"
         } else {
             loadComponent(card, 'components/seller/create_product', {});
             document.getElementById("add").src = "/frontend/assets?name=icons/chevron_left.svg"
+            window.create = true;
+        }
+    }
+
+    window.backToHome = () => {
+        if (window.create) {
+            loadComponent(card, 'components/seller/dashboard', {});
+            window.create = false;
+            document.getElementById("add").src = "/frontend/assets?name=icons/home.svg"
+        } else {
+            loadComponent(document.getElementById("app"), '/screens/home', {});
             window.create = true;
         }
     }
