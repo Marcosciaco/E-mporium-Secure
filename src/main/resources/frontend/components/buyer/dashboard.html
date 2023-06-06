@@ -5,26 +5,11 @@
         <div class="subtitle">Welcome back to your dashboard</div>
     </div>
     <div class="content">
-        <div class="card">
-            <div class="title">Sales</div>
-            <div class="value" id="totalSales">$ 0</div>
-        </div>
-        <div class="card">
-            <div class="title">Orders</div>
-            <div class="value" id="orders">0</div>
-        </div>
-        <div class="card">
-            <div class="title">Products</div>
-            <div class="value" id="products">0</div>
-        </div>
+        <span>You have made a total of <b id="totOrders">0</b> orders.</span>
     </div>
     <div class="latest-sales">
-        <div class="title">Latest sales</div>
-        <div class="sales" id="sales"></div>
-    </div>
-    <div class="latest-sales">
-        <div class="title">Products</div>
-        <div class="sales" id="productList"></div>
+        <div class="title">Latest orders</div>
+        <div class="sales" id="orders"></div>
     </div>
 </div>
 <style>
@@ -209,104 +194,59 @@
 
 </style>
 <script>
-
-    var totalSales = 0
-
-    window.deleteProduct = (id) => {
-        fetchAPI("/store/product", "DELETE", {
-            id: id
-        }).then(() => {
-            refreshProducts()
-        }).catch(e => {
-            alert(e.message)
-        })
-    }
+    var totalOrders = 0
 
     document.getElementById("username").textContent = getUsername()
 
     refreshProducts()
 
     function refreshProducts() {
-        fetchAPI("/store/product", "POST", {
+        totalOrders = 0
+        fetchAPI("/store/order", "POST", {
             filter: {
-                seller: getEmail()
+                buyer: getEmail()
             },
             fields: [
                 "id",
-                "name",
-                "price",
-                "img"
+                "product",
+                "quantity",
             ],
             max: -1
         }).then(result => {
-            document.getElementById("products").innerText = result.length
-            document.getElementById("productList").innerHTML = ""
-            result.forEach(prod => {
-                const sale = document.createElement("div");
-                sale.className = "sale";
-                sale.innerHTML = `
-                <img class="prod-image" src="${prod.img}"/>
-                <span>${prod.id}</span>
-                <span>${prod.name}</span>
-                <span>${prod.price}</span>
-                <div class="deleteBtn" onclick="deleteProduct(${prod.id})"></div>
-            `
-                document.getElementById("productList").appendChild(sale);
+            document.getElementById("orders").innerHTML = ""
+            result.forEach(order => {
+                ++totalOrders;
+                document.getElementById("totOrders").innerText = totalOrders
+
+                fetchAPI("/store/product", "POST", {
+                    filter: {
+                        id: order.product,
+                    },
+                    fields: [
+                        "id",
+                        "name",
+                        "img",
+                        "price",
+                        "quantity"
+                    ],
+                    max: -1
+                }).then(prod => {
+                    prod = prod[0]
+                    const sale = document.createElement("div");
+                    sale.className = "sale";
+                    sale.innerHTML = `
+                    <img class="prod-image" src="${prod.img}"/>
+                    <span>${prod.id}</span>
+                    <span>${prod.name}</span>
+                    <span>${order.quantity}</span>
+                    <span>${prod.price * order.quantity}$</span>
+                `
+                    document.getElementById("orders").appendChild(sale);
+                })
             })
         }).catch(e => {
-            document.getElementById("productList").innerHTML = ""
-            document.getElementById("products").innerText = "0"
+            document.getElementById("orders").innerHTML = ""
             alert(e.message)
         })
     }
-
-    fetchAPI("/store/order", "POST", {
-        filter: {
-            seller: getEmail()
-        },
-        fields: [
-            "product",
-            "quantity"
-        ],
-        max: -1
-    }).then(result => {
-        document.getElementById("orders").innerText = result.length
-        result.forEach(res => {
-            fetchAPI("/store/product", "POST", {
-                filter: {
-                    id: res.product
-                },
-                fields: [
-                    "id",
-                    "name",
-                    "price"
-                ],
-                max: -1
-            }).then(resp => {
-                const prod = resp[0]
-                const sale = document.createElement("div");
-                sale.className = "sale";
-                const info = document.createElement("div");
-                info.className = "info";
-                const title = document.createElement("div");
-                title.className = "title";
-                title.innerHTML = "Name: " + prod.name;
-                const customer = document.createElement("div");
-                customer.className = "customer";
-                customer.innerHTML = "Quantity: " + res.quantity;
-                info.appendChild(title);
-                info.appendChild(customer);
-                const value = document.createElement("div");
-                value.className = "value";
-                value.innerHTML = "$ " + prod.price * res.quantity;
-                sale.appendChild(info);
-                sale.appendChild(value);
-                document.getElementById("sales").appendChild(sale);
-                totalSales += res.quantity * prod.price
-                document.getElementById("totalSales").innerText = "$ " + totalSales
-            }).catch(e => {
-                alert(e.message)
-            })
-        })
-    })
 </script>

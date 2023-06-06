@@ -405,11 +405,9 @@
     }
 
     window.decreaseCount = () => {
-        if (count > 1) {
-            count--;
-            updateCount();
-            updatePrice();
-        }
+        count--;
+        updateCount();
+        updatePrice();
     }
 
     window.increaseCount = () => {

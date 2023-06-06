@@ -36,9 +36,25 @@
         </div>
     </div>
     <div class="divider"></div>
+    <div class="products" id="productList"></div>
 </div>
 
 <style>
+    .card {
+        height: 300px;
+        width: 300px;
+        border: 20px;
+    }
+
+    .products {
+        display: inline-grid;
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+        grid-template-columns: 300px 300px 300px;
+        justify-content: center;
+    }
+
     .content {
         display: flex;
         flex-direction: column;
@@ -230,34 +246,78 @@
 
     window.navigateDashboard = () => {
         const isSeller = JSON.parse(localStorage.getItem("login")).isSeller;
-        console.log(isSeller);
         if (isSeller !== undefined) {
-            if (isSeller) {
-                loadComponent(
-                    document.getElementById("app"),
-                    "screens/seller_dashboard",
-                    {}
-                );
-            } else {
-                loadComponent(
-                    document.getElementById("app"),
-                    "screens/buyer_dashboard",
-                    {}
-                );
-            }
+            loadComponent(
+                document.getElementById("app"),
+                "screens/dashboard",
+                {}
+            );
         } else {
             loadComponent(document.getElementById("app"), "screens/auth", {});
         }
     };
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var searchInput = document.getElementById("search");
-
-        searchInput.addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                alert("Search: " + this.value);
-            }
+    const search = document.getElementById("search");
+    search.addEventListener("keyup", (e) => {
+        e.preventDefault();
+        const search = document.getElementById("search").value;
+        fetchAPI('store/product', 'POST', {
+            "filter": {
+                "random": true,
+                "query": search
+            },
+            "fields": [
+                "id",
+                "name",
+                "description",
+                "category",
+                "price",
+                "img"
+            ],
+            "max": -1
+        }).then(json => {
+            renderProducts(json)
+        }).catch(err => {
+            alert(err.message)
         });
     });
+
+    fetchAPI('store/product', 'POST', {
+        "filter": {
+            "random": true
+        },
+        "fields": [
+            "id",
+            "name",
+            "description",
+            "category",
+            "price",
+            "img"
+        ],
+        "max": -1
+    }).then(json => {
+        renderProducts(json)
+    }).catch(err => {
+        alert(err.message)
+    });
+
+    function renderProducts(json) {
+        const products = document.getElementById("productList");
+        products.innerHTML = "";
+        if (!Array.isArray(json))
+            throw new Error("Invalid response from server")
+
+        json.forEach((product, index) => {
+            const card = document.createElement("div");
+            card.id = "card" + (8 + index + 1);
+
+            loadComponent(card, 'components/home/card', {
+                props: {
+                    cardId: 8 + index,
+                    product
+                }
+            });
+            products.appendChild(card);
+        });
+    }
 </script>

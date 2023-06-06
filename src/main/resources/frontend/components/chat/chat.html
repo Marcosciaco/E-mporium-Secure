@@ -127,11 +127,9 @@
     document.getElementById("name").innerText = window.props.seller
 
     let seller_mail = "";
-    console.log(window.props.seller)
     fetchAPI("/auth/user", "POST", {
         username: window.props.seller
     }).then(result => {
-        console.log(result)
         seller_mail = result.email
         updateMessages()
     }).catch(e => {

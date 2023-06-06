@@ -4,7 +4,15 @@
 <div id="seller_dashboard"></div>
 <script>
     const card = document.getElementById('seller_dashboard');
-    loadComponent(card, 'components/seller/dashboard', {});
+    const login = JSON.parse(localStorage.getItem("login"))
+
+    if (login.isSeller) {
+        loadComponent(card, 'components/seller/dashboard', {});
+        document.getElementById("add").style.display = "block"
+    } else {
+        loadComponent(card, 'components/buyer/dashboard', {});
+        document.getElementById("add").style.display = "none"
+    }
 
     window.createProductDash = () => {
         if (window.create) {
