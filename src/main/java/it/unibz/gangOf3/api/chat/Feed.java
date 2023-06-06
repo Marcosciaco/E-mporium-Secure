@@ -89,10 +89,12 @@ public class Feed extends HttpServlet {
         AsyncContext asyncContext = req.startAsync();
         asyncContext.setTimeout(0);
 
-        try {
-            feededUsers.put(user.getID(), asyncContext);
-        } catch (SQLException | NotFoundException e) {
-            throw new RuntimeException(e);
+        if (user != null) {
+            try {
+                feededUsers.put(user.getID(), asyncContext);
+            } catch (SQLException | NotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
         resp.flushBuffer();
     }

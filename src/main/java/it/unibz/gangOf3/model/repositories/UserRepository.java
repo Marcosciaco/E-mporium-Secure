@@ -17,7 +17,6 @@ import java.util.UUID;
 public class UserRepository {
 
     public static void createUser(String name, String email, String password, String type, String emergencyEmail, String emergencyPhone) throws UserAlreadyExistsException, SQLException, IOException, MessagingException {
-        type = String.valueOf("seller".equals(type));
         String registrationTokenUUID = UUID.randomUUID().toString();
         DatabaseInsertionUtil.insertData("users", new String[]{"username", "email", "password", "type", "emergencyEmail", "emergencyPhone", "registrationToken"}, new String[]{name, email, password, type, emergencyEmail, emergencyPhone, registrationTokenUUID});
         InputStream registrationEmailStream = User.class.getClassLoader().getResourceAsStream("backend/email/registration.html");

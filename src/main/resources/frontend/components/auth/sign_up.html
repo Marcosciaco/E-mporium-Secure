@@ -136,7 +136,7 @@
             password: document.getElementById('form-password').value.trim(),
             emergencyEmail: document.getElementById('form-emergency-email').value.trim(),
             emergencyPhone: document.getElementById('form-emergency-phone').value.trim(),
-            type: document.getElementById('form-vc-input').checked ? 'seller' : 'customer'
+            type: document.getElementById('form-vc-input').checked ? 'false' : 'true'
         };
 
         fetchAPI('auth/register', 'POST', formData, {
