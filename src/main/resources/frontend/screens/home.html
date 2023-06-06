@@ -1,8 +1,8 @@
 <div class="header-row">
     <div class="left">E-mporium</div>
     <div class="center">
-        <div class="header-item">Home</div>
-        <div class="header-item">Hot Offers</div>
+        <div class="header-item" onclick="scrollToTop()">Home</div>
+        <div class="header-item" onclick="scrollToHot()">Hot Offers</div>
     </div>
     <div class="right">
         <div class="wrapper" id="logout">
@@ -23,7 +23,7 @@
 </div>
 <div class="background" id="carousel"></div>
 <div class="dialog" id="dialog"></div>
-<div class="content">
+<div class="content" id="hot">
     <div class="header">
         <div class="left2">
             <img alt="fire" class="header-img" src="/frontend/assets?name=icons/fire.svg"/>
@@ -315,4 +315,18 @@
             products.appendChild(card);
         });
     }
+
+    window.scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    window.scrollToHot = () => {
+        window.scrollTo({
+            top: document.getElementById("hot").offsetTop - 50,
+            behavior: "smooth",
+        });
+    };
 </script>
