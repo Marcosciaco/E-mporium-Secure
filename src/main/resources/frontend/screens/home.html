@@ -1,231 +1,263 @@
 <div class="header-row">
-    <div class="left">E-mporium</div>
-    <div class="center">
-        <div class="header-item">Home</div>
-        <div class="header-item">Merchandize</div>
-        <div class="header-item">Hot Offers</div>
-        <div class="header-item">Categories</div>
+  <div class="left">E-mporium</div>
+  <div class="center">
+    <div class="header-item">Home</div>
+    <div class="header-item">Merchandize</div>
+    <div class="header-item">Hot Offers</div>
+    <div class="header-item">Categories</div>
+  </div>
+  <div class="right">
+    <div class="wrapper">
+      <img
+        alt="Basket"
+        class="logo"
+        src="/frontend/assets?name=icons/basket.svg"
+      />
     </div>
-    <div class="right">
-        <input id="search" placeholder="Search..." type="text">
-        <div class="wrapper" id="logout">
-            <img alt="Logout" class="logo" src="/frontend/assets?name=icons/logout.svg">
-        </div>
-        <div class="wrapper" onclick="navigateDashboard()">
-            <img alt="Profile" class="logo" src="/frontend/assets?name=icons/profile.svg">
-        </div>
+    <div class="wrapper" onclick="navigateDashboard()">
+      <img
+        alt="Profile"
+        class="logo"
+        src="/frontend/assets?name=icons/profile.svg"
+      />
     </div>
+  </div>
 </div>
 <div class="background" id="carousel"></div>
 <div class="dialog" id="dialog"></div>
 <div class="content">
-    <div class="header">
-        <img class="header-img" src="/frontend/assets?name=icons/fire.svg">
-        <h2 style="margin-left: 10px">Hot Candy right now</h2>
+  <div class="header">
+    <div class="left2">
+      <img class="header-img" src="/frontend/assets?name=icons/fire.svg" />
+      <h2 style="margin-left: 10px">Hot Candy right now</h2>
     </div>
-    <div class="divider"></div>
+    <div class="right">
+      <input id="search" placeholder="Search..." type="text" />
+    </div>
+  </div>
+  <div class="divider"></div>
 </div>
 
 <style>
-    .content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        padding: 20px 0;
-    }
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    padding: 20px 0;
+  }
 
-    .divider {
-        height: 2px;
-        width: calc(100% - 40px);
-        background-color: #CFF4D2;
-        margin: 10px 20px;
-    }
+  .divider {
+    height: 2px;
+    width: calc(100% - 40px);
+    background-color: #cff4d2;
+    margin: 10px 20px;
+  }
 
-    .header-img {
-        height: 40px;
-        width: 40px;
-        display: block;
-        margin-left: 20px;
-    }
+  .header-img {
+    height: 40px;
+    width: 40px;
+    display: block;
+    margin-left: 20px;
+  }
 
-    .header {
-        display: flex;
-        flex-direction: row;
-        justify-content: start;
-        align-items: center;
-        width: 100%;
-    }
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: #205072;
+  }
 
-    .background {
-        background-image: url("/frontend/assets?name=images/background.svg");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        opacity: 1;
-        display: flex;
-        z-index: 0;
-        flex: 1;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        min-height: 100vh;
-        width: 100%;
-    }
+  .background {
+    background-image: url("/frontend/assets?name=images/background.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    display: flex;
+    z-index: 0;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100%;
+  }
 
-    .header-row {
-        top: 0;
-        display: flex;
-        width: 100%;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        color: #205072;
-        z-index: 10;
-        position: fixed;
-    }
+  .header-row {
+    top: 0;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #205072;
+    z-index: 10;
+    position: fixed;
+  }
 
-    .left {
-        display: flex;
-        flex-direction: column;
-        width: 30%;
-        height: 100%;
-        margin: 10px;
-        font-size: 170%;
-    }
+  .left {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    margin: 10px;
+    font-size: 170%;
+  }
 
-    .center {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: max-content;
-        white-space: nowrap;
-    }
+  .left2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
-    .right {
-        width: 30%;
-        display: flex;
-        align-items: center;
-        justify-content: end;
-    }
+  .center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    white-space: nowrap;
+  }
 
-    .header-item {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        margin-left: 25px;
-        margin-right: 25px;
-    }
+  .right {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
 
-    .header-item:hover {
-        text-decoration: underline;
-        cursor: pointer;
-    }
+  .header-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin-left: 25px;
+    margin-right: 25px;
+  }
 
-    input[type="text"] {
-        padding: 8px;
-        border: 1px solid #205072;
-        border-radius: 20px;
-        outline: none;
-        margin-right: 10px;
-        background-color: transparent;
-        float: right;
-    }
+  .header-item:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 
-    input[type="text"]::placeholder {
-        color: #205072;
-    }
+  input[type="text"] {
+    padding: 8px;
+    border: 1px solid #205072;
+    border-radius: 20px;
+    outline: none;
+    margin-right: 10px;
+    background-color: transparent;
+    float: right;
+    width: 300px;
+  }
 
-    input[type="text"]:focus {
-        border: 1px solid #205072;
-        box-shadow: none;
-        float: right;
-    }
+  input[type="text"]::placeholder {
+    color: #205072;
+  }
 
-    .logo {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        fill: #205072;
-    }
+  input[type="text"]:focus {
+    border: 1px solid #205072;
+    box-shadow: none;
+    float: right;
+  }
 
-    .wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        border: 1px solid #205072;
-        border-radius: 50%;
-        cursor: pointer;
-        margin-right: 10px;
-    }
+  .logo {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    fill: #205072;
+  }
 
-    .dialog {
-        background: white;
-        border-radius: 20px;
-        position: fixed;
-        width: 80%;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-        display: none;
-        align-items: center;
-        justify-content: center;
-    }
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #205072;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 10px;
+  }
 
+  .dialog {
+    background: white;
+    border-radius: 20px;
+    position: fixed;
+    width: 80%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <script>
-    if (window.location.pathname !== '/home') {
-        window.history.pushState({
-            path: '/home'
-        }, '', '/home');
-    }
+  if (window.location.pathname !== "/home") {
+    window.history.pushState(
+      {
+        path: "/home",
+      },
+      "",
+      "/home"
+    );
+  }
 
-    if (JSON.parse(localStorage.getItem('login')).isSeller === undefined) {
-        document.getElementById('logout').style.display = 'none';
+  if (JSON.parse(localStorage.getItem("login")).isSeller === undefined) {
+    document.getElementById("logout").style.display = "none";
+  } else {
+    document.getElementById("logout").style.display = "flex";
+  }
+
+  document.getElementById("logout").addEventListener("click", () => {
+    fetchAPI("/auth/logout", "GET", {}).then((res) => {
+      localStorage.removeItem("login");
+      loadComponent(document.getElementById("app"), "screens/auth", {});
+    });
+  });
+
+  const card = document.getElementById("carousel");
+  loadComponent(card, "components/home/carousel", {});
+
+  window.navigateDashboard = () => {
+    const isSeller = JSON.parse(localStorage.getItem("login")).isSeller;
+    console.log(isSeller);
+    if (isSeller !== undefined) {
+      if (isSeller) {
+        loadComponent(
+          document.getElementById("app"),
+          "screens/seller_dashboard",
+          {}
+        );
+      } else {
+        loadComponent(
+          document.getElementById("app"),
+          "screens/buyer_dashboard",
+          {}
+        );
+      }
     } else {
-        document.getElementById('logout').style.display = 'flex';
+      loadComponent(document.getElementById("app"), "screens/auth", {});
     }
+  };
 
-    document.getElementById('logout').addEventListener('click', () => {
-        fetchAPI("/auth/logout", "GET", {}).then((res) => {
-            localStorage.removeItem('login');
-            loadComponent(document.getElementById('app'), 'screens/auth', {});
-        })
-    })
+  document.addEventListener("DOMContentLoaded", function () {
+    var searchInput = document.getElementById("search");
 
-    const card = document.getElementById('carousel');
-    loadComponent(card, 'components/home/carousel', {});
-
-    window.navigateDashboard = () => {
-        const isSeller = JSON.parse(localStorage.getItem('login')).isSeller;
-        console.log(isSeller)
-        if (isSeller !== undefined) {
-            if (isSeller) {
-                loadComponent(document.getElementById('app'), 'screens/seller_dashboard', {})
-            } else {
-                loadComponent(document.getElementById('app'), 'screens/buyer_dashboard', {})
-            }
-        } else {
-            loadComponent(document.getElementById('app'), 'screens/auth', {})
-        }
-    }
-
-    // $(document).ready(function () {
-    //     $('#search').keypress(function (e) {
-    //         if (e.which === 13) { // 13 is the key code for the enter key
-    //             e.preventDefault(); // prevent the form from submitting
-    //             // do something with the search query
-    //             alert('Search: ' + $(this).val());
-    //         }
-    //     });
-    // });
+    searchInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        alert("Search: " + this.value);
+      }
+    });
+  });
 </script>
