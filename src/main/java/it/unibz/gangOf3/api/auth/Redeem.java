@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
+import it.unibz.gangOf3.util.security.PasswordHasher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,16 @@ public class Redeem extends HttpServlet {
                     if (!pattern.matcher(password).matches()) {
                         throw new Exception("Password must be at least 8 characters long and contain at least one digit, one lowercase and one uppercase letter");
                     }
+
+                    //Get salt
+                    PreparedStatement stmtSalt = DatabaseUtil.getConnection()
+                        .prepareStatement("SELECT salt FROM users WHERE forgotToken = ?;");
+                    stmtSalt.setString(1, bodyJson.get("token").asText("").trim());
+                    String salt = stmtSalt.executeQuery().getString("salt");
+
+                    //Hash password
+                    password = PasswordHasher.hashWithSalt(password, salt);
+
                     //Update password
                     PreparedStatement stmt = DatabaseUtil.getConnection()
                         .prepareStatement("UPDATE users SET password = ?, forgotToken = NULL WHERE forgotToken = ?;");

@@ -5,10 +5,12 @@ import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
 import it.unibz.gangOf3.util.DatabaseUtil;
+import it.unibz.gangOf3.util.security.PasswordHasher;
 import jakarta.mail.MessagingException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,17 +38,28 @@ public class UserRepository {
         if (!"".equals(emergencyPhone) && !phonePattern.matcher(emergencyPhone).matches())
             throw new IllegalArgumentException("Invalid emergency phone");
 
+        //Generate salt
+        String salt = PasswordHasher.generateSalt();
+
+        //Hash password
+        try {
+            password = PasswordHasher.hashWithSalt(password, salt);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException("Error while hashing password");
+        }
+
         type = String.valueOf("seller".equals(type));
         String registrationTokenUUID = UUID.randomUUID().toString();
         PreparedStatement insertStmt = DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO users (username, email, password, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (?, ?, ?, ?, ?, ?, ?);");
+            .prepareStatement("INSERT INTO users (username, email, password, salt, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
         insertStmt.setString(1, username);
         insertStmt.setString(2, email);
         insertStmt.setString(3, password);
-        insertStmt.setString(4, type);
-        insertStmt.setString(5, emergencyEmail);
-        insertStmt.setString(6, emergencyPhone);
-        insertStmt.setString(7, registrationTokenUUID);
+        insertStmt.setString(4, salt);
+        insertStmt.setString(5, type);
+        insertStmt.setString(6, emergencyEmail);
+        insertStmt.setString(7, emergencyPhone);
+        insertStmt.setString(8, registrationTokenUUID);
         try {
             insertStmt.executeUpdate();
         } catch (SQLException e) {

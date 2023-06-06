@@ -8,8 +8,9 @@
 - [X] Secure Rest API
 - [X] Check for security on all endpoints separately
 - [X] Add XSS protection stored
-- [ ] Add CSRF protection by using a token
-- [ ] Use password hashing
+- [X] Add CSRF protection by using a token
+- [X] Use password hashing
+- [ ] Use linear congruential generator for salt generation 
 - [ ] Add XSS protection reflected
 - [ ] Sign orders
 - [ ] Encrypt chat messages

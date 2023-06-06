@@ -7,6 +7,7 @@ import it.unibz.gangOf3.model.exceptions.InvalidPasswordException;
 import it.unibz.gangOf3.model.exceptions.UnconfirmedRegistrationException;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
+import it.unibz.gangOf3.util.security.PasswordHasher;
 import jakarta.mail.MessagingException;
 
 import java.io.IOException;
@@ -69,15 +70,16 @@ public class User {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         PreparedStatement stmt = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT password, registrationToken FROM users WHERE email = ?;");
+            .prepareStatement("SELECT password, salt, registrationToken FROM users WHERE email = ?;");
         stmt.setString(1, getEmail());
         ResultSet resultSet = stmt.executeQuery();
         if (!resultSet.next()) {
             throw new InvalidPasswordException("Invalid email or password");
         }
         String dbPassword = resultSet.getString("password");
+        String salt = resultSet.getString("salt");
         String registrationToken = resultSet.getString("registrationToken");
-        if (!dbPassword.equals(password)) {
+        if (!PasswordHasher.verify(password, dbPassword, salt)) {
             throw new InvalidPasswordException("Invalid email or password");
         }
         if (registrationToken != null) {
