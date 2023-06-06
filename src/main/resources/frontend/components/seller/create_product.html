@@ -6,10 +6,11 @@
             <div class="row">
                 <div class="col" style="width: 30%">
                     <img class="prod-image" id="ldImage">
-                    <label for="image" style="width: 100%; text-align: left; font-size: 10px; margin-left: 10px">Select a file &lt; 1 MB.</label>
+                    <label for="image" style="width: 100%; text-align: left; font-size: 10px; margin-left: 10px">Select
+                        a file &lt; 1 MB.</label>
                     <input class="file" id="image" type="file">
-                    <input id="price" placeholder="Price" type="text"/>
-                    <input id="stock" placeholder="Stock" type="text"/>
+                    <input id="price" placeholder="Price" type="number"/>
+                    <input id="stock" placeholder="Stock" type="number"/>
                 </div>
                 <div class="col" style="width: 70%">
                     <input id="name" placeholder="Name" type="text"/>
@@ -52,6 +53,23 @@
         var reader = new FileReader();
 
         reader.readAsDataURL(file);
+
+        if (name.length < 3 || tag.length < 3 || description.length < 3 || category.length < 3) {
+            alert("Please enter at least 3 characters for each text field")
+            return
+        }
+
+        //check if price is a number
+        if (isNaN(price)) {
+            alert("Please enter a valid price")
+            return
+        }
+
+        //check if stock is a number
+        if (isNaN(stock)) {
+            alert("Please enter a valid stock")
+            return
+        }
 
         reader.onloadend = function () {
             var data = {
