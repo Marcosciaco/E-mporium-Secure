@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
-import it.unibz.gangOf3.util.security.PasswordHasher;
+import it.unibz.gangOf3.util.security.hashing.PasswordHasher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

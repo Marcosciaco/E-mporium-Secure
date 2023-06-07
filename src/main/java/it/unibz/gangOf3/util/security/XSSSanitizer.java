@@ -3,7 +3,7 @@ package it.unibz.gangOf3.util.security;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
-public class Sanitizer {
+public class XSSSanitizer {
 
     private static PolicyFactory policyFactory = new HtmlPolicyBuilder().toFactory();
 

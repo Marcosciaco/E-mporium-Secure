@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
 import static it.unibz.gangOf3.util.security.CSRFHandler.handleCSRF;
-import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
+import static it.unibz.gangOf3.util.security.XSSSanitizer.sanitize;
 
 public class Review extends HttpServlet {
 

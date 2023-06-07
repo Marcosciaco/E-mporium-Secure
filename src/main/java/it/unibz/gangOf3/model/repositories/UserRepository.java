@@ -5,7 +5,7 @@ import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
 import it.unibz.gangOf3.util.DatabaseUtil;
-import it.unibz.gangOf3.util.security.PasswordHasher;
+import it.unibz.gangOf3.util.security.hashing.PasswordHasher;
 import jakarta.mail.MessagingException;
 
 import java.io.IOException;

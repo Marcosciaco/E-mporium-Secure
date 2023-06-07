@@ -1,4 +1,4 @@
-package it.unibz.gangOf3.util.security;
+package it.unibz.gangOf3.util.security.hashing;
 
 public class LinearCongruentialGenerator {
 

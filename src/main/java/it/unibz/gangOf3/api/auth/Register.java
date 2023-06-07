@@ -2,9 +2,6 @@ package it.unibz.gangOf3.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import it.unibz.gangOf3.model.classes.User;
-import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.exceptions.UsernameTakenException;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.ResponsePreprocessor;
 import jakarta.servlet.ServletException;
@@ -13,10 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import static it.unibz.gangOf3.util.BodyParser.parseBody;
-import static it.unibz.gangOf3.util.security.Sanitizer.sanitize;
+import static it.unibz.gangOf3.util.security.XSSSanitizer.sanitize;
 
 public class Register extends HttpServlet {
 

@@ -10,9 +10,9 @@
 - [X] Add XSS protection stored
 - [X] Add CSRF protection by using a token
 - [X] Use password hashing
-- [ ] Use linear congruential generator for salt generation 
+- [X] Use linear congruential generator for salt generation
+- [ ] Encrypt chat messages
 - [ ] Add XSS protection reflected
 - [ ] Sign orders
-- [ ] Encrypt chat messages
 - [ ] Update readme
 
