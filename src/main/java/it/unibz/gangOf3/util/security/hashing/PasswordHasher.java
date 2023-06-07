@@ -31,8 +31,8 @@ public class PasswordHasher {
         return sb.toString();
     }
 
-    public static String generateSalt() {
-        return LinearCongruentialGenerator.generateSalt();
+    public static String generateSalt(long seed) {
+        return LinearCongruentialGenerator.generateSalt(seed);
     }
 
     public static boolean verify(String password, String hash) {

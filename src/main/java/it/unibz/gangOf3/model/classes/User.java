@@ -69,6 +69,20 @@ public class User {
     public ObjectNode login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException, NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
+        verifyPassword(password);
+        String sessionUUID = UUID.randomUUID().toString();
+        PreparedStatement stmt2 = DatabaseUtil.getConnection()
+            .prepareStatement("UPDATE users SET sessionToken = ? WHERE email = ?;");
+        stmt2.setString(1, sessionUUID);
+        stmt2.setString(2, getEmail());
+        stmt2.execute();
+        result.put("token", sessionUUID);
+        result.put("email", getEmail());
+        result.put("username", getUsername());
+        return result;
+    }
+
+    public void verifyPassword(String password) throws SQLException, InvalidPasswordException, UnconfirmedRegistrationException {
         PreparedStatement stmt = DatabaseUtil.getConnection()
             .prepareStatement("SELECT password, salt, registrationToken FROM users WHERE email = ?;");
         stmt.setString(1, getEmail());
@@ -85,16 +99,6 @@ public class User {
         if (registrationToken != null) {
             throw new UnconfirmedRegistrationException("Please confirm your email");
         }
-        String sessionUUID = UUID.randomUUID().toString();
-        PreparedStatement stmt2 = DatabaseUtil.getConnection()
-            .prepareStatement("UPDATE users SET sessionToken = ? WHERE email = ?;");
-        stmt2.setString(1, sessionUUID);
-        stmt2.setString(2, getEmail());
-        stmt2.execute();
-        result.put("token", sessionUUID);
-        result.put("email", getEmail());
-        result.put("username", getUsername());
-        return result;
     }
 
     public void forgotPassword() throws SQLException, IOException, MessagingException, NotFoundException {

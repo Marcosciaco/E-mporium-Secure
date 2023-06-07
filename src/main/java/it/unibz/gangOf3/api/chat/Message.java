@@ -28,7 +28,6 @@ public class Message extends HttpServlet {
 
     /**
      * Fetch already existing messages
-     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -37,6 +36,7 @@ public class Message extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
+        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"filter", "max"}); //max per sender - receiver - couple
         if (bodyJson == null) return; // parseBody already sent the response (400)

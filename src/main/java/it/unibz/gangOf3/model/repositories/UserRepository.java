@@ -39,7 +39,7 @@ public class UserRepository {
             throw new IllegalArgumentException("Invalid emergency phone");
 
         //Generate salt
-        String salt = PasswordHasher.generateSalt();
+        String salt = PasswordHasher.generateSalt(password.length() * 2L + password.charAt(0));
 
         //Hash password
         try {

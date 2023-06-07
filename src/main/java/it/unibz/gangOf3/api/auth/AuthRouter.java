@@ -31,6 +31,10 @@ public class AuthRouter {
         //User
         tomcat.addServlet(context, "userServlet", new User());
         context.addServletMappingDecoded(prefix + "/user", "userServlet");
+
+        //Verify password
+        tomcat.addServlet(context, "verifyPasswordServlet", new VerifyPassword());
+        context.addServletMappingDecoded(prefix + "/verifypassword", "verifyPasswordServlet");
     }
 
 }
