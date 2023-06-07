@@ -10,6 +10,8 @@ public class RSA {
         // generate two random prime numbers p and q. Tip: https://stackoverflow.com/questions/24006143/generating-a-random-prime-number-in-java
         int p = PrimeNumberGenerator.generatePrimeNumber();
         int q = PrimeNumberGenerator.generatePrimeNumber();
+        System.out.println("p: " + p);
+        System.out.println("q: " + q);
 
 		// calculate n = p*q
         int n = p*q;
@@ -115,6 +117,7 @@ public class RSA {
         //Test the RSA key generation
 
         RSA rsa = new RSA();
+       // RSAKeys keys = new RSAKeys(3, 4137747, 6211693);
         RSAKeys keys = rsa.generateKeys();
 
         System.out.println("RSA keys generated:");
@@ -124,7 +127,7 @@ public class RSA {
 
         //Test the encryption and decryption
 
-        String plaintext = "security";
+        String plaintext = "eliasbinder#1#2";
         System.out.println("Plaintext: " + plaintext);
         String encrypted = encrypt(plaintext, keys.getE(), keys.getN());
         System.out.println("Encrypted: " + encrypted);

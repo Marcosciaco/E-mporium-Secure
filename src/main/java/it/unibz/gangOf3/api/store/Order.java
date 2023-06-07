@@ -109,7 +109,7 @@ public class Order extends HttpServlet {
             try {
                 data.add(order.getAsJSON(fields, mapper));
             } catch (Exception e) {
-                //Ignore me
+                e.printStackTrace();
             }
         }
         response.set("status", mapper.valueToTree("ok"));

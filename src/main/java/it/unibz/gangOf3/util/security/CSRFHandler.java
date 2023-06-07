@@ -2,12 +2,15 @@ package it.unibz.gangOf3.util.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unibz.gangOf3.Runner;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+import static it.unibz.gangOf3.Runner.containsArg;
 
 public class CSRFHandler {
 
@@ -21,6 +24,9 @@ public class CSRFHandler {
      * @return true if the CSRF token is valid, false otherwise
      */
     public static boolean handleCSRF(HttpServletRequest req, HttpServletResponse resp) {
+        //For debugging
+        if (containsArg("--no-csrf")) return true;
+
         try {
             // Check CSRF token
             String sessionId = req.getHeader("Authorization");

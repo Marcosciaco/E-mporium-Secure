@@ -1,27 +1,33 @@
 package it.unibz.gangOf3.util.security.RSALab;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public class PrimeNumberGenerator {
 
    public static int generatePrimeNumber() {
-       int[] primesList = {2, 3, 5, 7, 11, 13, 17, 19}; // list of known primes
-       int num = 0;
-       int i = 0;
-       int counter = 1;
-       SecureRandom rand = new SecureRandom(); // generate a random number
-
-       while (i != counter) {
-           num = rand.nextInt(1000) + 1;
-
-           if (num % primesList[i] == 0) { // check if num is evenly divisible by a prime from the list
-               i++;
-           } else { // if it is prime exit loop
-               i = 0;
-               counter = 0;
+       int prime;
+       while (true)
+       {
+           int count = 0;
+           double x  = Math.random();
+           double y  = 10000 * x;
+           double z  = Math.ceil(y);
+           prime     = (int)z;
+           for (int i = 1; i <= prime; i++)
+           {
+               int modfactor = prime % i;
+               if (modfactor == 0)
+               {
+                   count++;
+               }
+           }
+           if (count == 2)
+           {
+               break;
            }
        }
-       return num;
+       return prime;
    }
 
 }

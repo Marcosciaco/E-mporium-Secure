@@ -25,7 +25,11 @@ import java.security.*;
 import java.security.cert.CertificateException;
 
 public class Runner {
+
+    public static String[] args;
+
     public static void main(String[] args) throws LifecycleException, IOException {
+        Runner.args = args;
 
         //Initialize database
 
@@ -82,5 +86,14 @@ public class Runner {
         connector.addSslHostConfig(sslHostConfig);
 
         return connector;
+    }
+
+    public static boolean containsArg(String arg) {
+        for (String s : args) {
+            if (s.equals(arg)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

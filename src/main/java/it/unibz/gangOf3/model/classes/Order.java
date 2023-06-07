@@ -68,7 +68,7 @@ public class Order {
         //Get public key for the buyer
         User buyer = getBuyer();
         stmt = DatabaseUtil.getConnection()
-            .prepareStatement("SELECT d, n FROM rsaKeys WHERE id = ?;");
+            .prepareStatement("SELECT d, n FROM rsaKeys WHERE user = ?;");
         stmt.setInt(1, buyer.getID());
         resultSet = stmt.executeQuery();
         if (!resultSet.next())
