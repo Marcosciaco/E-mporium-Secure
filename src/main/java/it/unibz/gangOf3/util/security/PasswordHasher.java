@@ -32,7 +32,7 @@ public class PasswordHasher {
     }
 
     public static String generateSalt() {
-        return Long.toHexString(Double.doubleToLongBits(Math.random()));
+        return LinearCongruentialGenerator.generateSalt();
     }
 
     public static boolean verify(String password, String hash) {
