@@ -71,24 +71,22 @@ public class UserRepository {
         }
 
         //Generate RSA key pair for user
-        if (!"seller".equals(type)) {
-            //Get id of user
-            PreparedStatement getUserIdStmt = DatabaseUtil.getConnection()
-                .prepareStatement("SELECT id FROM users WHERE email = ?;");
-            getUserIdStmt.setString(1, email);
-            ResultSet resultSet = getUserIdStmt.executeQuery();
-            if (resultSet.next()) {
-                int userId = resultSet.getInt("id");
-                RSA rsa = new RSA();
-                RSAKeys rsaKeys = rsa.generateKeys();
-                PreparedStatement insertRsaKeysStmt = DatabaseUtil.getConnection()
-                    .prepareStatement("INSERT INTO rsaKeys (user, e, d, n) VALUES (?, ?, ?, ?);");
-                insertRsaKeysStmt.setInt(1, userId);
-                insertRsaKeysStmt.setInt(2, rsaKeys.getE());
-                insertRsaKeysStmt.setInt(3, rsaKeys.getD());
-                insertRsaKeysStmt.setInt(4, rsaKeys.getN());
-                insertRsaKeysStmt.executeUpdate();
-            }
+        //Get id of user
+        PreparedStatement getUserIdStmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT id FROM users WHERE email = ?;");
+        getUserIdStmt.setString(1, email);
+        ResultSet resultSet = getUserIdStmt.executeQuery();
+        if (resultSet.next()) {
+            int userId = resultSet.getInt("id");
+            RSA rsa = new RSA();
+            RSAKeys rsaKeys = rsa.generateKeys();
+            PreparedStatement insertRsaKeysStmt = DatabaseUtil.getConnection()
+                .prepareStatement("INSERT INTO rsaKeys (user, e, d, n) VALUES (?, ?, ?, ?);");
+            insertRsaKeysStmt.setInt(1, userId);
+            insertRsaKeysStmt.setInt(2, rsaKeys.getE());
+            insertRsaKeysStmt.setInt(3, rsaKeys.getD());
+            insertRsaKeysStmt.setInt(4, rsaKeys.getN());
+            insertRsaKeysStmt.executeUpdate();
         }
 
         //Send email

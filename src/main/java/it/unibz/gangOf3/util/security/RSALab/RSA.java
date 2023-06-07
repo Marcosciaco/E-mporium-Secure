@@ -10,8 +10,6 @@ public class RSA {
         // generate two random prime numbers p and q. Tip: https://stackoverflow.com/questions/24006143/generating-a-random-prime-number-in-java
         int p = PrimeNumberGenerator.generatePrimeNumber();
         int q = PrimeNumberGenerator.generatePrimeNumber();
-        System.out.println("p: " + p);
-        System.out.println("q: " + q);
 
 		// calculate n = p*q
         int n = p*q;

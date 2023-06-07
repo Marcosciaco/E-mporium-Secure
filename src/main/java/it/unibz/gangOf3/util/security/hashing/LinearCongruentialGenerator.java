@@ -5,7 +5,7 @@ public class LinearCongruentialGenerator {
     private static final long increment = 12345;
     private static final long modulus = (long) Math.pow(2, 31);
 
-    public static String generateSalt(long seed) {
+    public static String generateRandom(long seed) {
         //Create a 20 digit salt using the LCG
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 20; i++) {

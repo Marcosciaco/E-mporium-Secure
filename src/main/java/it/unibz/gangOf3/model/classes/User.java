@@ -12,6 +12,11 @@ import jakarta.mail.MessagingException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
