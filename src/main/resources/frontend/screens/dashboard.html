@@ -1,19 +1,36 @@
 <div class="create" id="createProduct">
-    <img id="add" onclick="createProductDash()" src="/frontend/assets?name=icons/add.svg">
+    <img alt="home" class="button" id="add" onclick="backToHome()" src="/frontend/assets?name=icons/home.svg">
 </div>
 <div id="seller_dashboard"></div>
 <script>
     const card = document.getElementById('seller_dashboard');
-    loadComponent(card, 'components/seller/dashboard', {});
+    const login = JSON.parse(localStorage.getItem("login"))
+
+    if (login.isSeller) {
+        loadComponent(card, 'components/seller/dashboard', {});
+    } else {
+        loadComponent(card, 'components/buyer/dashboard', {});
+    }
 
     window.createProductDash = () => {
         if (window.create) {
             loadComponent(card, 'components/seller/dashboard', {});
             window.create = false;
-            document.getElementById("add").src = "/frontend/assets?name=icons/add.svg"
+            document.getElementById("add").src = "/frontend/assets?name=icons/home.svg"
         } else {
             loadComponent(card, 'components/seller/create_product', {});
             document.getElementById("add").src = "/frontend/assets?name=icons/chevron_left.svg"
+            window.create = true;
+        }
+    }
+
+    window.backToHome = () => {
+        if (window.create) {
+            loadComponent(card, 'components/seller/dashboard', {});
+            window.create = false;
+            document.getElementById("add").src = "/frontend/assets?name=icons/home.svg"
+        } else {
+            loadComponent(document.getElementById("app"), '/screens/home', {});
             window.create = true;
         }
     }

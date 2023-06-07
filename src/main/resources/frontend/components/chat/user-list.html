@@ -1,24 +1,12 @@
 <div class="chat-card">
     <div class="header">
-        <img class="search-icon" id="closeChat" src="/frontend/assets?name=icons/close.svg">
-        <input class="search-field" id="search_users" type="text"/>
-        <img class="search-icon" src="/frontend/assets?name=icons/search.svg">
+        <img alt="close" class="search-icon" id="closeChat" src="/frontend/assets?name=icons/close.svg">
+        <label for="search_users"></label><input class="search-field" id="search_users" type="text"/>
+        <img alt="search" class="search-icon" src="/frontend/assets?name=icons/search.svg">
     </div>
     <div class="users" id="users"></div>
 </div>
 <style>
-
-    .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-
-    .name {
-        margin-left: 10px;
-        font-weight: bold;
-    }
 
     .items {
         display: flex;

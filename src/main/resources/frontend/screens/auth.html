@@ -2,8 +2,8 @@
 
 <div class="form form-animation" id="form">
 </div>
-<div id="form-loading" class="form" style="width: 80px; display: none">
-    <img src="/frontend/assets?name=images/loading.gif"  width="80px" height="80px"/>
+<div class="form" id="form-loading" style="width: 80px; display: none">
+    <img height="80px" src="/frontend/assets?name=images/loading.gif" width="80px"/>
 </div>
 
 <style>
@@ -12,16 +12,16 @@
         left: 0;
         height: 100%;
         width: 100%;
-        position:fixed;
+        position: fixed;
         background: linear-gradient(156.42deg, #329D9C 0%, #7BE495 55.53%);
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d12738', endColorstr='#7a1726',GradientType=0 );
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d12738', endColorstr='#7a1726', GradientType=0);
     }
 
     .background:after {
         -moz-transform: rotate(-15deg);
-        -ms-transform:rotate(-15deg); /* Internet Explorer */
-        -webkit-transform:rotate(-15deg); /* Safari and Chrome */
-        -o-transform:rotate(-15deg); /* Opera */
+        -ms-transform: rotate(-15deg); /* Internet Explorer */
+        -webkit-transform: rotate(-15deg); /* Safari and Chrome */
+        -o-transform: rotate(-15deg); /* Opera */
         background: none repeat scroll 0 0 white;
         content: "";
         height: 200%;
@@ -43,18 +43,9 @@
         margin-bottom: 20px;
         box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
     }
+
     .form-animation {
         animation: slide_in_animation 0.7s ease-in-out;
-    }
-
-    .form-img {
-        background-image: url("/frontend/assets?name=user.svg");
-        width: 130px;
-        height: 130px;
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-        margin-top: -100px;
     }
 
     h1 {
@@ -121,21 +112,11 @@
         margin-bottom: 15px;
         font-weight: 500;
     }
+
     .form span a {
         color: #56C596;
         text-decoration: none;
         font-weight: 400;
-    }
-
-    .diagonal {
-        width: 400%;
-        height: 100%;
-        top: 65%;
-        z-index: 0;
-        position: absolute;
-
-        background: #FFFFFF;
-        transform: rotate(-15deg);
     }
 
     @keyframes slide_in_animation {
@@ -210,5 +191,6 @@
                 break;
         }
     }
+
     processPath();
 </script>

@@ -1,12 +1,12 @@
 <div class="chat-card">
     <div class="header">
-        <img class="back" id="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
-        <div class="name" id="name">Lisa Mussner</div>
+        <img alt="back" class="back" id="back" src="/frontend/assets?name=icons/chevron_left.svg"/>
+        <div class="name" id="name">Name</div>
     </div>
     <div class="messages" id="messages"></div>
     <div class="footer">
-        <input class="message" id="message" type="text"/>
-        <img class="back green_outline" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
+        <label for="message"></label><input class="message" id="message" type="text"/>
+        <img alt="send" class="back green_outline" id="send" src="/frontend/assets?name=icons/chevron_right.svg">
     </div>
 
 </div>
@@ -127,11 +127,9 @@
     document.getElementById("name").innerText = window.props.seller
 
     let seller_mail = "";
-    console.log(window.props.seller)
     fetchAPI("/auth/user", "POST", {
         username: window.props.seller
     }).then(result => {
-        console.log(result)
         seller_mail = result.email
         updateMessages()
     }).catch(e => {

@@ -5,30 +5,33 @@
         <div id="create_product_form">
             <div class="row">
                 <div class="col" style="width: 30%">
-                    <img class="prod-image" id="ldImage">
+                    <img alt="product image" class="prod-image" id="ldImage"
+                         src="/frontend/assets?name=images/placeholder.png">
+                    <label for="image" style="width: 100%; text-align: left; font-size: 10px; margin-left: 10px">Select
+                        a file &lt; 1 MB.</label>
                     <input class="file" id="image" type="file">
-                    <input id="price" placeholder="Price" type="text"/>
-                    <input id="stock" placeholder="Stock" type="text"/>
+                    <label for="price"></label><input id="price" placeholder="Price" type="number"/>
+                    <label for="stock"></label><input id="stock" placeholder="Stock" type="number"/>
                 </div>
                 <div class="col" style="width: 70%">
-                    <input id="name" placeholder="Name" type="text"/>
-                    <textarea id="description" placeholder="Description"></textarea>
-                    <input id="tag" placeholder="Tag" type="text"/>
-                    <input id="category" placeholder="Category" type="text"/>
+                    <label for="name"></label><input id="name" placeholder="Name" type="text"/>
+                    <label for="description"></label><textarea id="description" placeholder="Description"></textarea>
+                    <label for="tag"></label><input id="tag" placeholder="Tag" type="text"/>
+                    <label for="category"></label><input id="category" placeholder="Category" type="text"/>
                 </div>
             </div>
-            <button class="submit" id="submitProduct" onclick="createProduct()">Create</button>
+            <button class="submit button" id="submitProduct" onclick="createProduct()">Create</button>
         </div>
     </div>
 </div>
 <script>
 
     document.getElementById("image").addEventListener("change", () => {
-        var fileInput = document.getElementById("image");
-        var img = document.getElementById("ldImage");
+        const fileInput = document.getElementById("image");
+        const img = document.getElementById("ldImage");
 
-        var file = fileInput.files[0];
-        var reader = new FileReader();
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
         reader.readAsDataURL(file);
 
@@ -39,16 +42,16 @@
     })
 
     window.createProduct = () => {
-        var name = document.getElementById("name").value.trim()
-        var tag = document.getElementById("tag").value.trim()
-        var description = document.getElementById("description").value.trim()
-        var price = document.getElementById("price").value
-        var category = document.getElementById("category").value.trim()
-        var stock = document.getElementById("stock").value
-        var fileInput = document.getElementById("image");
+        const name = document.getElementById("name").value
+        const tag = document.getElementById("tag").value
+        const description = document.getElementById("description").value
+        const price = document.getElementById("price").value
+        const category = document.getElementById("category").value.trim()
+        const stock = document.getElementById("stock").value
+        const fileInput = document.getElementById("image");
 
-        var file = fileInput.files[0];
-        var reader = new FileReader();
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
         reader.readAsDataURL(file);
 
@@ -70,7 +73,7 @@
         }
 
         reader.onloadend = function () {
-            var data = {
+            const data = {
                 name: name,
                 description: description,
                 tag: tag,

@@ -50,7 +50,6 @@ public class UserRepository {
             throw new IllegalArgumentException("Error while hashing password");
         }
 
-        type = String.valueOf("seller".equals(type));
         String registrationTokenUUID = UUID.randomUUID().toString();
         PreparedStatement insertStmt = DatabaseUtil.getConnection()
             .prepareStatement("INSERT INTO users (username, email, password, salt, type, emergencyEmail, emergencyPhone, registrationToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");

@@ -21,6 +21,7 @@ public class Logout extends HttpServlet {
 
     /**
      * Logout the user by setting the sessionToken to null
+     *
      * @param req
      * @param resp
      * @throws ServletException

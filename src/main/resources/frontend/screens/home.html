@@ -1,32 +1,53 @@
 <div class="header-row">
     <div class="left">E-mporium</div>
     <div class="center">
-        <div class="header-item">Home</div>
-        <div class="header-item">Merchandize</div>
-        <div class="header-item">Hot Offers</div>
-        <div class="header-item">Categories</div>
+        <div class="header-item" onclick="scrollToTop()">Home</div>
+        <div class="header-item" onclick="scrollToHot()">Hot Offers</div>
     </div>
     <div class="right">
-        <input id="search" placeholder="Search..." type="text">
-        <div class="wrapper">
-            <img alt="Basket" class="logo" src="/frontend/assets?name=icons/basket.svg">
+        <div class="wrapper" id="logout">
+            <img
+                alt="Basket"
+                class="logo"
+                src="/frontend/assets?name=icons/logout.svg"
+            />
         </div>
-        <div class="wrapper" onclick="navigateLogin()">
-            <img alt="Profile" class="logo" src="/frontend/assets?name=icons/profile.svg">
+        <div class="wrapper" onclick="navigateDashboard()">
+            <img
+                alt="Profile"
+                class="logo"
+                src="/frontend/assets?name=icons/profile.svg"
+            />
         </div>
     </div>
 </div>
 <div class="background" id="carousel"></div>
 <div class="dialog" id="dialog"></div>
-<div class="content">
+<div class="content" id="hot">
     <div class="header">
-        <img class="header-img" src="/frontend/assets?name=icons/fire.svg">
-        <h2 style="margin-left: 10px">Hot Candy right now</h2>
+        <div class="left2">
+            <img alt="fire" class="header-img" src="/frontend/assets?name=icons/fire.svg"/>
+            <h2 style="margin-left: 10px">Hot Candy right now</h2>
+        </div>
+        <div class="right">
+            <label for="search"></label><input id="search" placeholder="Search..." type="text"/>
+        </div>
     </div>
     <div class="divider"></div>
+    <div class="products" id="productList"></div>
 </div>
 
 <style>
+
+    .products {
+        display: inline-grid;
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+        grid-template-columns: 300px 300px 300px;
+        justify-content: center;
+    }
+
     .content {
         display: flex;
         flex-direction: column;
@@ -40,7 +61,7 @@
     .divider {
         height: 2px;
         width: calc(100% - 40px);
-        background-color: #CFF4D2;
+        background-color: #cff4d2;
         margin: 10px 20px;
     }
 
@@ -54,9 +75,10 @@
     .header {
         display: flex;
         flex-direction: row;
-        justify-content: start;
+        justify-content: space-between;
         align-items: center;
         width: 100%;
+        color: #205072;
     }
 
     .background {
@@ -97,6 +119,12 @@
         font-size: 170%;
     }
 
+    .left2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
     .center {
         display: flex;
         flex-direction: row;
@@ -135,6 +163,7 @@
         margin-right: 10px;
         background-color: transparent;
         float: right;
+        width: 300px;
     }
 
     input[type="text"]::placeholder {
@@ -178,31 +207,126 @@
         display: none;
         align-items: center;
         justify-content: center;
+        z-index: 100;
     }
-
 </style>
 
 <script>
-    if (window.location.pathname !== '/home') {
-        window.history.pushState({
-            path: '/home'
-        }, '', '/home');
+    if (window.location.pathname !== "/home") {
+        window.history.pushState(
+            {
+                path: "/home",
+            },
+            "",
+            "/home"
+        );
     }
 
-    const card = document.getElementById('carousel');
-    loadComponent(card, 'components/home/carousel', {});
-
-    window.navigateLogin = () => {
-        loadComponent(document.getElementById('app'), 'screens/auth', {})
+    if (JSON.parse(localStorage.getItem("login")).isSeller === undefined) {
+        document.getElementById("logout").style.display = "none";
+    } else {
+        document.getElementById("logout").style.display = "flex";
     }
 
-    // $(document).ready(function () {
-    //     $('#search').keypress(function (e) {
-    //         if (e.which === 13) { // 13 is the key code for the enter key
-    //             e.preventDefault(); // prevent the form from submitting
-    //             // do something with the search query
-    //             alert('Search: ' + $(this).val());
-    //         }
-    //     });
-    // });
+    document.getElementById("logout").addEventListener("click", () => {
+        fetchAPI("/auth/logout", "GET", {}).then((res) => {
+            localStorage.removeItem("login");
+            loadComponent(document.getElementById("app"), "screens/auth", {});
+        });
+    });
+
+    const card = document.getElementById("carousel");
+    loadComponent(card, "components/home/carousel", {});
+
+    window.navigateDashboard = () => {
+        const isSeller = JSON.parse(localStorage.getItem("login")).isSeller;
+        if (isSeller !== undefined) {
+            loadComponent(
+                document.getElementById("app"),
+                "screens/dashboard",
+                {}
+            );
+        } else {
+            loadComponent(document.getElementById("app"), "screens/auth", {});
+        }
+    };
+
+    const search = document.getElementById("search");
+    search.addEventListener("keyup", (e) => {
+        e.preventDefault();
+        const search = document.getElementById("search").value;
+        fetchAPI('store/product', 'POST', {
+            "filter": {
+                "random": true,
+                "query": search
+            },
+            "fields": [
+                "id",
+                "name",
+                "description",
+                "category",
+                "price",
+                "img"
+            ],
+            "max": -1
+        }).then(json => {
+            renderProducts(json)
+        }).catch(err => {
+            alert(err.message)
+        });
+    });
+
+    fetchAPI('store/product', 'POST', {
+        "filter": {
+            "random": true
+        },
+        "fields": [
+            "id",
+            "name",
+            "description",
+            "category",
+            "price",
+            "starss",
+            "img"
+        ],
+        "max": -1
+    }).then(json => {
+        renderProducts(json)
+    }).catch(err => {
+        alert(err.message)
+    });
+
+    function renderProducts(json) {
+        const products = document.getElementById("productList");
+        products.innerHTML = "";
+        if (!Array.isArray(json))
+            throw new Error("Invalid response from server")
+
+        json.forEach((product, index) => {
+            const card = document.createElement("div");
+            card.id = "card" + (8 + index + 1);
+
+            loadComponent(card, 'components/home/card', {
+                props: {
+                    cardId: 8 + index,
+                    product
+                }
+            });
+            products.appendChild(card);
+        });
+    }
+
+    window.scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    window.scrollToHot = () => {
+        window.scrollTo({
+            top: document.getElementById("hot").offsetTop - 50,
+            behavior: "smooth",
+        });
+    };
 </script>

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.email.EmailSender;
 import it.unibz.gangOf3.model.exceptions.InvalidPasswordException;
-import it.unibz.gangOf3.model.exceptions.UnconfirmedRegistrationException;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.exceptions.UnconfirmedRegistrationException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.security.hashing.PasswordHasher;
 import jakarta.mail.MessagingException;
@@ -101,6 +101,7 @@ public class User {
         result.put("token", sessionUUID);
         result.put("email", getEmail());
         result.put("username", getUsername());
+        result.put("isSeller", isSeller());
         return result;
     }
 
@@ -121,6 +122,16 @@ public class User {
         if (registrationToken != null) {
             throw new UnconfirmedRegistrationException("Please confirm your email");
         }
+    }
+
+    private boolean isSeller() throws SQLException, NotFoundException {
+        ResultSet resultSet = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT type FROM users WHERE id = '" + getID() + "';")
+            .executeQuery();
+        if (!resultSet.next()) {
+            throw new NotFoundException("User not found");
+        }
+        return resultSet.getBoolean("type");
     }
 
     public void forgotPassword() throws SQLException, IOException, MessagingException, NotFoundException {

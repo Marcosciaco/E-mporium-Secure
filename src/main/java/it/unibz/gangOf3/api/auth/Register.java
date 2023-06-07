@@ -18,6 +18,7 @@ public class Register extends HttpServlet {
 
     /**
      * Register a new user
+     *
      * @param req
      * @param resp
      * @throws ServletException
