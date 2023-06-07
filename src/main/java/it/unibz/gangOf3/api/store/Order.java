@@ -131,7 +131,7 @@ public class Order extends HttpServlet {
         ResponsePreprocessor.preprocessResponse(resp);
         if (!handleCSRF(req, resp)) return;
 
-        ObjectNode bodyJson = parseBody(req, resp, new String[]{"product", "quantity"});
+        ObjectNode bodyJson = parseBody(req, resp, new String[]{"product", "quantity", "signature"});
         if (bodyJson == null) return; // parseBody already sent the response (400)
 
         User user = AuthUtil.getAuthedUser(req, resp);
@@ -145,7 +145,8 @@ public class Order extends HttpServlet {
             int orderID = OrderRepository.createOrder(
                 user,
                 toBeOrdered,
-                bodyJson.get("quantity").asInt()
+                bodyJson.get("quantity").asInt(),
+                bodyJson.get("signature").asText("")
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();

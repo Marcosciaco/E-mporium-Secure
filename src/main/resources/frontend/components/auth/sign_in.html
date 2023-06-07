@@ -132,11 +132,7 @@
             email,
             password
         }).then(res => {
-            localStorage.setItem('login', JSON.stringify({
-                token: res.token,
-                email: res.email,
-                username: res.username
-            }));
+            localStorage.setItem('login', JSON.stringify(res));
             loadComponent(document.getElementById('app'), 'screens/home');
         }).catch(err => {
             alert(err.message);

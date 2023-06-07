@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS orders (
     buyer INTEGER NOT NULL,
     product INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
+    signature TEXT NOT NULL,
     FOREIGN KEY(buyer) REFERENCES users(id),
     FOREIGN KEY(product) REFERENCES products(id)
 );
@@ -53,4 +54,13 @@ CREATE TABLE IF NOT EXISTS chat(
     time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user1) REFERENCES users(id),
     FOREIGN KEY(user2) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS rsaKeys(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user INTEGER NOT NULL,
+    e BIGINT NOT NULL,
+    d BIGINT NOT NULL,
+    n BIGINT NOT NULL,
+    FOREIGN KEY(user) REFERENCES users(id)
 );

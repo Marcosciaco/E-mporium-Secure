@@ -422,10 +422,40 @@
         dialog.style.display = "none"
     })
 
+
     document.getElementById("purchase").addEventListener("click", () => {
+        const signatureRaw = getUsername() + '#' + product.id + '#' + count;
+
+        const encrypt = (plaintext, e, n) => {
+            // Convert each character of plaintext into ASCII value
+            let plaintextNumbers = [];
+            for (let i = 0; i < plaintext.length; i++) {
+                plaintextNumbers[i] = plaintext.charCodeAt(i);
+            }
+
+            // For each number from the plaintext, compute (number^e) % n
+            // Use the BigInt class for arbitrary precision arithmetic
+            let ciphertext = [];
+            for (var i = 0; i < plaintextNumbers.length; i++) {
+                var bigInt = BigInt(plaintextNumbers[i]);
+                bigInt = bigInt ** BigInt(e) % BigInt(n);
+                ciphertext[i] = Number(bigInt);
+            }
+
+            return ciphertext.join(',');
+        }
+
+        let login = JSON.parse(localStorage.getItem("login"));
+        if (!login.rsaKey) {
+            alert("You must be logged and be a buyer in to purchase products")
+            return
+        }
+        const rsaKey = login.rsaKey;
+
         fetchAPI("/store/order", "PUT", {
             "product": product.id,
-            "quantity": count
+            "quantity": count,
+            "signature": encrypt(signatureRaw, rsaKey.e, rsaKey.n)
         }).then(() => {
             alert("Purchase was successful")
         }).catch(e => {

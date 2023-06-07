@@ -59,7 +59,7 @@ public class RSA {
         return euclideanAlgorithm(num2, num1 % num2);
     }
 
-    public static int[] encrypt(String plaintext, int e, int n){
+    public static String encrypt(String plaintext, int e, int n){
         // plaintext -> each character is converted into asci in this way: int ascii = (int) character;
         int[] plaintextNumbers = new int[plaintext.length()];
         for (int i = 0; i < plaintext.length(); i++) {
@@ -75,10 +75,23 @@ public class RSA {
             bigInteger = bigInteger.modPow(BigInteger.valueOf(e), BigInteger.valueOf(n));
             ciphertext[i] = bigInteger.intValue();
         }
-        return ciphertext;
+
+        //Convert the resulting numbers into a string
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ciphertext.length; i++) {
+            sb.append(ciphertext[i]);
+            if (i != ciphertext.length - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
     }
 
-    public static String decrypt(int[] ciphertext, int d, int n){
+    public static String decrypt(String ciphertextStr, int d, int n){
+        int[] ciphertext = Arrays.stream(ciphertextStr.split(","))
+            .mapToInt(Integer::parseInt)
+            .toArray();
+
         // for each number in the ciphertext compute ( pow(number, d) ) mod n:  Use for this method modpow of BigInteger. Documentation: https://learn.microsoft.com/it-it/dotnet/api/system.numerics.biginteger.modpow?view=net-6.0
         ciphertext = Arrays.stream(ciphertext)
             .map(i -> BigInteger.valueOf(i).modPow(BigInteger.valueOf(d), BigInteger.valueOf(n)).intValue())
@@ -113,8 +126,8 @@ public class RSA {
 
         String plaintext = "security";
         System.out.println("Plaintext: " + plaintext);
-        int[] encrypted = encrypt(plaintext, keys.getE(), keys.getN());
-        System.out.println("Encrypted: " + Arrays.toString(encrypted));
+        String encrypted = encrypt(plaintext, keys.getE(), keys.getN());
+        System.out.println("Encrypted: " + encrypted);
         String decrypted = decrypt(encrypted, keys.getD(), keys.getN());
         System.out.println("Decrypted: " + decrypted);
     }

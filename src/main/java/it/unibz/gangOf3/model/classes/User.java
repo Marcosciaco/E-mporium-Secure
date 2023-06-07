@@ -70,6 +70,28 @@ public class User {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         verifyPassword(password);
+
+        //Get if buyer or seller
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT type FROM users WHERE id = ?;");
+        stmt.setInt(1, getID());
+        ResultSet resultSet = stmt.executeQuery();
+        boolean type = resultSet.getBoolean("type");
+        System.out.println(type);
+        if (!type) { //user is buyer
+            //Get user's rsa key with private exponent
+            stmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT e, n FROM rsaKeys WHERE user = ?;");
+            stmt.setInt(1, getID());
+            resultSet = stmt.executeQuery();
+            int e = resultSet.getInt("e");
+            int n = resultSet.getInt("n");
+            ObjectNode rsaKey = mapper.createObjectNode();
+            rsaKey.put("e", e);
+            rsaKey.put("n", n);
+            result.set("rsaKey", rsaKey);
+        }
+
         String sessionUUID = UUID.randomUUID().toString();
         PreparedStatement stmt2 = DatabaseUtil.getConnection()
             .prepareStatement("UPDATE users SET sessionToken = ? WHERE email = ?;");

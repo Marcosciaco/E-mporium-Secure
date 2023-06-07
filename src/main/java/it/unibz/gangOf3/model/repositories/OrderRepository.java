@@ -14,17 +14,18 @@ import java.util.LinkedList;
 
 public class OrderRepository {
 
-    public static int createOrder(User buyer, Product product, int quantity) throws SQLException, NotFoundException, InvalidQuantityException {
+    public static int createOrder(User buyer, Product product, int quantity, String signature) throws SQLException, NotFoundException, InvalidQuantityException {
         if (quantity >= product.getStock())
             throw new InvalidQuantityException("Not enough products in stock");
         if (quantity < 1)
             throw new InvalidQuantityException("Quantity must be greater than 0");
         //Create order in database
         PreparedStatement insertStmt = DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO orders (buyer, product, quantity) VALUES (?, ?, ?);");
+            .prepareStatement("INSERT INTO orders (buyer, product, quantity, signature) VALUES (?, ?, ?, ?);");
         insertStmt.setInt(1, buyer.getID());
         insertStmt.setInt(2, product.getId());
         insertStmt.setInt(3, quantity);
+        insertStmt.setString(4, signature);
         insertStmt.executeUpdate();
         //Update stock
         PreparedStatement updateStmt = DatabaseUtil.getConnection()

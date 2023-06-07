@@ -5,6 +5,8 @@ import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.exceptions.UserAlreadyExistsException;
 import it.unibz.gangOf3.util.DatabaseUtil;
+import it.unibz.gangOf3.util.security.RSALab.RSA;
+import it.unibz.gangOf3.util.security.RSALab.RSAKeys;
 import it.unibz.gangOf3.util.security.hashing.PasswordHasher;
 import jakarta.mail.MessagingException;
 
@@ -68,6 +70,29 @@ public class UserRepository {
             }
             throw e;
         }
+
+        //Generate RSA key pair for user
+        if (!"seller".equals(type)) {
+            //Get id of user
+            PreparedStatement getUserIdStmt = DatabaseUtil.getConnection()
+                .prepareStatement("SELECT id FROM users WHERE email = ?;");
+            getUserIdStmt.setString(1, email);
+            ResultSet resultSet = getUserIdStmt.executeQuery();
+            if (resultSet.next()) {
+                int userId = resultSet.getInt("id");
+                RSA rsa = new RSA();
+                RSAKeys rsaKeys = rsa.generateKeys();
+                PreparedStatement insertRsaKeysStmt = DatabaseUtil.getConnection()
+                    .prepareStatement("INSERT INTO rsaKeys (user, e, d, n) VALUES (?, ?, ?, ?);");
+                insertRsaKeysStmt.setInt(1, userId);
+                insertRsaKeysStmt.setInt(2, rsaKeys.getE());
+                insertRsaKeysStmt.setInt(3, rsaKeys.getD());
+                insertRsaKeysStmt.setInt(4, rsaKeys.getN());
+                insertRsaKeysStmt.executeUpdate();
+            }
+        }
+
+        //Send email
         InputStream registrationEmailStream = User.class.getClassLoader().getResourceAsStream("backend/email/registration.html");
         String registrationEmail = new String(registrationEmailStream.readAllBytes());
         EmailSender.sendEmail(email, "Confirm your email", registrationEmail
