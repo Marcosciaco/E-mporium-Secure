@@ -11,8 +11,8 @@
 - [X] Add CSRF protection by using a token
 - [X] Use password hashing
 - [X] Use linear congruential generator for salt generation
+- [X] Sign orders
+- [X] Update readme
 - [ ] Encrypt chat messages
 - [ ] Add XSS protection reflected
-- [ ] Sign orders
-- [ ] Update readme
 
