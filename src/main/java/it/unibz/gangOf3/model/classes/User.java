@@ -71,6 +71,20 @@ public class User {
         return id;
     }
 
+    public int[] getRSACredentials () throws SQLException, NotFoundException {
+        PreparedStatement stmt = DatabaseUtil.getConnection()
+            .prepareStatement("SELECT d, e, n FROM rsaKeys WHERE user = ?;");
+        stmt.setInt(1, getID());
+        ResultSet resultSet = stmt.executeQuery();
+        if (!resultSet.next()) {
+            throw new NotFoundException("User not found");
+        }
+        int d = resultSet.getInt("d");
+        int e = resultSet.getInt("e");
+        int n = resultSet.getInt("n");
+        return new int[] {d, e, n};
+    }
+
     public ObjectNode login(String password) throws InvalidPasswordException, SQLException, UnconfirmedRegistrationException, NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
