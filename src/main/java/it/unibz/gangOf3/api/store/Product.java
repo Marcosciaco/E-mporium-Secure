@@ -51,7 +51,6 @@ public class Product extends HttpServlet {
         double price = bodyJson.get("price").asDouble(1.00);
         String category = sanitize(bodyJson.get("category").asText("").trim());
         int stock = bodyJson.get("stock").asInt();
-        String image = sanitize(bodyJson.get("image").asText("").trim());
 
         try{
             int productID = ProductRepository.createProduct(
@@ -61,8 +60,7 @@ public class Product extends HttpServlet {
                 description,
                 price,
                 category,
-                stock,
-                image
+                stock
             );
             response.set("status", mapper.valueToTree("ok"));
             ObjectNode data = mapper.createObjectNode();

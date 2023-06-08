@@ -34,8 +34,8 @@ public class SubKeysGenerator {
 
     public static String[] generateSubKeys(String binkey) {
         String[] keys = new String[16];
-        // Reduce the input key to a 56-bit permuted key
 
+        // Reduce the input key to a 56-bit permuted key
         String binKey_PC1 = "";
 
         for(int i = 0; i < PC1.length; i++)
@@ -69,7 +69,6 @@ public class SubKeysGenerator {
                 keys[i-1] += CDn[i-1].charAt(PC2[j]-1);
 
         }
-
 
         return keys;
     }

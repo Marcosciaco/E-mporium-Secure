@@ -22,6 +22,7 @@ public class DiffieHellman {
         //Get user keys
         int[] user1Keys = user1.getRSACredentials(); //d, e, n
         int[] user2Keys = user2.getRSACredentials(); //d, e, n
+
         //Both the users should be agreed upon the public keys G and P
         int G = user1Keys[1];
         int P = user2Keys[1];

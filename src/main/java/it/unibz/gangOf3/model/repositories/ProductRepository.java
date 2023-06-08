@@ -24,16 +24,12 @@ public class ProductRepository {
      * @throws SQLException
      * @throws NotFoundException
      */
-    public static int createProduct(User owner, String name, String tag, String description, double price, String category, int stock, String image) throws SQLException, NotFoundException {
-        if (name.length() < 3 || tag.length() < 3 || description.length() < 3 || price < 0 || category.length() < 3 || stock < 1 || image.length() < 3)
+    public static int createProduct(User owner, String name, String tag, String description, double price, String category, int stock) throws SQLException, NotFoundException {
+        if (name.length() < 3 || tag.length() < 3 || description.length() < 3 || price < 0 || category.length() < 3 || stock < 1)
             throw new IllegalArgumentException("Invalid product data");
 
-        if (!image.startsWith("data:image/")) {
-            throw new IllegalArgumentException("Invalid image URL");
-        }
-
         PreparedStatement insertStmt = DatabaseUtil.getConnection()
-            .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner, stock, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+            .prepareStatement("INSERT INTO products (name, tag, description, price, category, owner, stock) VALUES (?, ?, ?, ?, ?, ?, ?);");
         insertStmt.setString(1, name);
         insertStmt.setString(2, tag);
         insertStmt.setString(3, description);
@@ -41,7 +37,6 @@ public class ProductRepository {
         insertStmt.setString(5, category);
         insertStmt.setInt(6, owner.getID());
         insertStmt.setInt(7, stock);
-        insertStmt.setString(8, image);
         insertStmt.executeUpdate();
         ResultSet resultSet = DatabaseUtil.getConnection()
             .prepareStatement("SELECT seq from sqlite_sequence WHERE name='products';")

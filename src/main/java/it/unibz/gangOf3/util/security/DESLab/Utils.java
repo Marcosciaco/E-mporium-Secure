@@ -3,7 +3,7 @@ package it.unibz.gangOf3.util.security.DESLab;
 public class Utils {
 
     public static String cyclicLeftShift(String s, int k){
-        k = k%s.length();
+        k = k % s.length();
         return s.substring(k) + s.substring(0, k);
     }
 

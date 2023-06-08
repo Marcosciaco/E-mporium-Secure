@@ -39,7 +39,15 @@ public class DESWrapper {
             encryptedMessage.append(DES.encodeMessage(block, binaryKey.toString()));
         }
 
-        return encryptedMessage.toString();
+        //Convert binary message to String
+        StringBuilder stringMessage = new StringBuilder();
+        for (int i = 0; i < encryptedMessage.length(); i += 8) {
+            String sub = encryptedMessage.substring(i, i + 8);
+            int decimal = Integer.parseInt(sub, 2);
+            stringMessage.append((char) decimal);
+        }
+
+        return stringMessage.toString();
     }
 
     public static String decrypt(String message, String key) {
@@ -54,8 +62,14 @@ public class DESWrapper {
             binaryKey.append(binaryKey);
         }
 
+        //Convert message to binary String
+        StringBuilder binaryMessage = new StringBuilder();
+        for (char c : message.toCharArray()) {
+            binaryMessage.append(String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0'));
+        }
+
         //Split binary message into 64-bit blocks
-        String[] blocks = Utils.splitEqually(message, 64);
+        String[] blocks = Utils.splitEqually(binaryMessage.toString(), 64);
 
         StringBuilder decryptedMessage = new StringBuilder();
 
