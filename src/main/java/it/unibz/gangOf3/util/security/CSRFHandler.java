@@ -9,13 +9,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static it.unibz.gangOf3.Runner.containsArg;
 
 public class CSRFHandler {
 
     private static final String CSRF_COOKIE_NAME = "CSRF-TOKEN";
-    private static HashMap<String, String> csrfTokens = new HashMap<>();
+    private static ConcurrentHashMap<String, String> csrfTokens = new ConcurrentHashMap<>();
 
     /**
      * Check and update CSRF token
@@ -33,7 +34,6 @@ public class CSRFHandler {
             if (sessionId == null) throw new Exception("No session id");
             Cookie[] cookies = req.getCookies();
             if (cookies == null) throw new Exception("No cookies");
-            String sessionid = null;
             String csrfToken = null;
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(CSRF_COOKIE_NAME)) {
@@ -51,6 +51,7 @@ public class CSRFHandler {
             cookie.setPath("/api");
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
+            cookie.setMaxAge(60 * 60 * 24 * 7);
             resp.addCookie(cookie);
             return true;
         }catch (Exception e){
@@ -81,6 +82,7 @@ public class CSRFHandler {
         cookie.setPath("/api");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setMaxAge(60 * 60 * 24 * 7);
         resp.addCookie(cookie);
     }
 

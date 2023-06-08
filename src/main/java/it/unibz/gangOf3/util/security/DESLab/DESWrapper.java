@@ -95,9 +95,7 @@ public class DESWrapper {
         String toEncrypt = "Hello World!";
         String key = "12345678";
         String encrypted = encrypt(toEncrypt, key);
-        System.out.println(encrypted);
         String decrypted = decrypt(encrypted, key);
-        System.out.println(decrypted);
     }
 
 }

@@ -33,7 +33,6 @@ public class Review extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ResponsePreprocessor.preprocessResponse(resp);
-        if (!handleCSRF(req, resp)) return;
 
         ObjectNode bodyJson = parseBody(req, resp, new String[]{"product"});
         if (bodyJson == null) return; // parseBody already sent the response (400)

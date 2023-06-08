@@ -85,8 +85,6 @@ public class OrderRepository {
                 .prepareStatement("SELECT orders.id " +
                     "FROM orders JOIN products p ON p.id = orders.product " +
                     "WHERE (p.owner = ? AND orders.buyer = ?) OR (p.owner = ? AND p.owner = ?);");
-            System.out.println("Seller: " + seller.getID());
-            System.out.println("Requestor: " + requestor.getID());
             stmt.setInt(1, seller.getID());
             stmt.setInt(2, requestor.getID());
             stmt.setInt(3, seller.getID());
