@@ -8,6 +8,8 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -80,7 +82,7 @@ public class Product {
         return rs.getString("category");
     }
 
-    public String getImg() throws SQLException, NotFoundException {
+    public Blob getImg() throws SQLException, NotFoundException {
         PreparedStatement stmt = DatabaseUtil.getConnection()
             .prepareStatement("SELECT image FROM products WHERE id = ?;");
         stmt.setInt(1, id);
@@ -88,7 +90,19 @@ public class Product {
         if (!rs.next()) {
             throw new NotFoundException("Product not found");
         }
-        return rs.getString("image");
+        return rs.getBlob("image");
+    }
+
+    public void setImg(InputStream imgStream) {
+        try {
+            PreparedStatement stmt = DatabaseUtil.getConnection()
+                .prepareStatement("UPDATE products SET image = ? WHERE id = ?;");
+            stmt.setBlob(1, imgStream);
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public User getOwner() throws SQLException, NotFoundException {
@@ -166,7 +180,6 @@ public class Product {
                 case "description" -> node.put(fieldName, getDescription());
                 case "price" -> node.put(fieldName, getPrice());
                 case "category" -> node.put(fieldName, getCategory());
-                case "img" -> node.put(fieldName, getImg());
                 case "owner" -> node.put(fieldName, getOwner().getUsername());
                 case "stock" -> node.put(fieldName, getStock());
                 case "stars" -> node.put(fieldName, getStars());

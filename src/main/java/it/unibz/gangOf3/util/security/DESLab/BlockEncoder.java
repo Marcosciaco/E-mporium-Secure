@@ -16,13 +16,13 @@ public class BlockEncoder {
 
 
     public static String encodeBlock(String m) {
-        String ip = "";
+        StringBuilder ip = new StringBuilder();
 
-        // Apply Initial Permutation IP
+        // Apply Initial Permutation using IP
         for (int i = 0; i < m.length(); i++) {
-            ip += m.charAt(IP[i]-1);
+            ip.append(m.charAt(IP[i] - 1));
         }
-        return ip;
+        return ip.toString();
     }
 
 }

@@ -3,9 +3,14 @@ package it.unibz.gangOf3.model.classes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
+import it.unibz.gangOf3.model.repositories.ChatRepository;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
+import it.unibz.gangOf3.util.security.DESLab.DESWrapper;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,11 +74,17 @@ public class Message {
         return resultSet.getTimestamp("time");
     }
 
-    public ObjectNode getAsJson(ObjectMapper mapper) throws SQLException, NotFoundException, ParseException {
+    public ObjectNode getAsJson(ObjectMapper mapper) throws SQLException, NotFoundException, ParseException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+        User from = getFrom();
+        User to = getTo();
+        String key = ChatRepository.generateSymmetricKey(from, to);
+        String message = getMessage();
+        message = DESWrapper.decrypt(message, key);
+
         ObjectNode node = mapper.createObjectNode();
-        node.put("from", getFrom().getEmail());
-        node.put("to", getTo().getEmail());
-        node.put("message", getMessage());
+        node.put("from", from.getEmail());
+        node.put("to", to.getEmail());
+        node.put("message", message);
         node.put("timestamp", DateTimeFormatter.ISO_INSTANT.format(getTimestamp().toInstant()));
         return node;
     }
