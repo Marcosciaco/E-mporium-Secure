@@ -57,7 +57,12 @@ public class ProductImage extends HttpServlet {
         ObjectNode response = mapper.createObjectNode();
 
         try {
+
             Product product = ProductRepository.getProductById(Integer.parseInt(req.getParameter("pid")));
+            if (!product.getOwner().equals(user)){
+                resp.setStatus(401);
+                return;
+            }
             product.setImg(req.getInputStream());
             resp.setStatus(200);
             response.set("status", mapper.valueToTree("ok"));
