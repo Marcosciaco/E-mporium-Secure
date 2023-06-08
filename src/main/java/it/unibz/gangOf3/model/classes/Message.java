@@ -3,10 +3,10 @@ package it.unibz.gangOf3.model.classes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
-import it.unibz.gangOf3.model.repositories.ChatRepository;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.security.DESLab.DESWrapper;
+import it.unibz.gangOf3.util.security.DESLab.DiffieHellman;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -77,7 +77,7 @@ public class Message {
     public ObjectNode getAsJson(ObjectMapper mapper) throws SQLException, NotFoundException, ParseException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         User from = getFrom();
         User to = getTo();
-        String key = ChatRepository.generateSymmetricKey(from, to);
+        String key = DiffieHellman.getSharedKey(from, to);
         String message = getMessage();
         message = DESWrapper.decrypt(message, key);
 

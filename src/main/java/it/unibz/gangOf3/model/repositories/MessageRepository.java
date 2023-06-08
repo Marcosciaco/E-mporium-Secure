@@ -5,6 +5,7 @@ import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.DatabaseUtil;
 import it.unibz.gangOf3.util.security.DESLab.DESWrapper;
+import it.unibz.gangOf3.util.security.DESLab.DiffieHellman;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +19,7 @@ import java.util.LinkedList;
 public class MessageRepository {
 
     public static int createMessage(User from, User to, String message) throws SQLException, NotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-        String key = ChatRepository.generateSymmetricKey(from, to);
+        String key = DiffieHellman.getSharedKey(from, to);
         message = DESWrapper.encrypt(message, key);
 
         PreparedStatement preparedStatement = DatabaseUtil.getConnection()

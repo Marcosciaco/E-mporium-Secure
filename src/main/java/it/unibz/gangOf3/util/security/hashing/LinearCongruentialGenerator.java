@@ -8,7 +8,7 @@ public class LinearCongruentialGenerator {
     public static String generateRandom(long seed) {
         //Create a 20 digit salt using the LCG
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             seed = next(seed);
             sb.append((char) (seed % 94 + 33)); //Printable ASCII characters
         }

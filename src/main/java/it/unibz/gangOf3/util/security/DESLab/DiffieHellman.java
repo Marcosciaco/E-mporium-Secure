@@ -1,17 +1,12 @@
-package it.unibz.gangOf3.model.repositories;
+package it.unibz.gangOf3.util.security.DESLab;
 
 import it.unibz.gangOf3.model.classes.User;
 import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.util.security.hashing.LinearCongruentialGenerator;
 
-import javax.crypto.KeyAgreement;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 
-public class ChatRepository {
+public class DiffieHellman {
 
     /**
      * A Diffie-Hellman implementation
@@ -20,11 +15,8 @@ public class ChatRepository {
      * @return The symmetric key
      * @throws SQLException
      * @throws NotFoundException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     * @throws InvalidKeyException
      */
-    public static String generateSymmetricKey(User user1, User user2) throws SQLException, NotFoundException {
+    public static String getSharedKey(User user1, User user2) throws SQLException, NotFoundException {
         //Get user keys
         int[] user1Keys = user1.getRSACredentials(); //d, e, n
         int[] user2Keys = user2.getRSACredentials(); //d, e, n
@@ -43,12 +35,12 @@ public class ChatRepository {
         long ka = calculatePower(y, a, P);
         // calculate secret key for User2
         long kb = calculatePower(x, b, P);
-        // print secret keys of user1 and user2
-        if (ka == kb) {
-            return String.valueOf(ka);
-        } else {
-            return null;
-        }
+
+        // compare secret keys of user1 and user2
+        if (ka != kb)
+            throw new IllegalStateException("Keys do not match");
+
+        return LinearCongruentialGenerator.generateRandom(ka);
     }
 
     private static long calculatePower(long a, long b, long P) {
