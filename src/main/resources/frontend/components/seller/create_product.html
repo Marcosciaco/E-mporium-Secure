@@ -83,9 +83,8 @@
 
         fetchAPI("store/product", "PUT", data).then(res => {
             fetch("/api/store/productImage?pid=" + res.productID, {
-                method: "PUT",
+                method: "POST",
                 headers: {
-                    "Content-Type": "multipart/form-data",
                     'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
                 },
                 body: formData

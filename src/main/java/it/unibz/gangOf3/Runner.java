@@ -13,8 +13,10 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Service;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.net.SSLHostConfig;
 import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 
@@ -46,7 +48,10 @@ public class Runner {
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir("temp");
         tomcat.setPort(8443);
-        tomcat.setConnector(getHttpsConnector());
+        Connector connector = getHttpsConnector();
+        connector.setMaxPostSize(-1);
+        ((AbstractHttp11Protocol<?>) connector.getProtocolHandler()).setAllowedTrailerHeaders(FileUpload.MULTIPART_FORM_DATA);
+        tomcat.setConnector(connector);
 
         // Configure the security constraint for HTTPS
         SecurityCollection securityCollection = new SecurityCollection();
@@ -61,6 +66,7 @@ public class Runner {
 
         Context context = tomcat.addContext(contextPath, docBase);
         context.addConstraint(securityConstraint);
+        context.setAllowCasualMultipartParsing(true);
 
         FrameworkRouter.registerRoutes(tomcat, context);
         ApiRouter.registerRoutes(tomcat, context);
