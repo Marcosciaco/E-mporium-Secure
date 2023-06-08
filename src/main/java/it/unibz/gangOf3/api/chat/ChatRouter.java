@@ -15,10 +15,6 @@ public class ChatRouter {
         //Feed
         tomcat.addServlet(context, "feedServlet", new Feed());
         context.addServletMappingDecoded(prefix + "/feed", "feedServlet");
-
-        //Chat
-        tomcat.addServlet(context, "keyServlet", new Key());
-        context.addServletMappingDecoded(prefix + "/key", "keyServlet");
     }
 
 }

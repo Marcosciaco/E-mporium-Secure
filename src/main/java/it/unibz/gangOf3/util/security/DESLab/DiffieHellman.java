@@ -17,6 +17,8 @@ public class DiffieHellman {
      * @throws NotFoundException
      */
     public static String getSharedKey(User user1, User user2) throws SQLException, NotFoundException {
+        System.out.println(user1.getUsername());
+        System.out.println(user2.getUsername());
         //Get user keys
         int[] user1Keys = user1.getRSACredentials(); //d, e, n
         int[] user2Keys = user2.getRSACredentials(); //d, e, n
