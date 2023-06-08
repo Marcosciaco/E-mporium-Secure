@@ -84,8 +84,7 @@
     title.innerText = product.name;
 
     const image = card.querySelector("#imageContainer");
-    image.innerHTML = `<img alt="product image" class="prod-image" src="${product.img}">`
-    //image.src = product.img;
+    image.innerHTML = `<img alt="product image" class="prod-image" src="/api/store/productImage?pid=${product.id}">`
 
     const price = card.querySelector('.row .card-price');
     price.innerText = product.price + '$';
@@ -112,8 +111,7 @@
                 "category",
                 "price",
                 "owner",
-                "stars",
-                "img"
+                "stars"
             ],
             "max": 1
         }).then(json => {

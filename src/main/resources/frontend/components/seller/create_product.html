@@ -92,6 +92,7 @@
                 if (res.status !== 200) {
                     alert("Error uploading image")
                 } else {
+                    window.render()
                     alert("Product created successfully")
                 }
             }).catch(e => {
@@ -99,7 +100,6 @@
             })
         }).catch(e => {
             alert(e.message)
-
         })
 
     }

@@ -87,7 +87,7 @@
     }
 
     window.backToLogin = () => {
-        window.location.href = "http://localhost:8080/auth";
+        loadComponent(document.getElementById('app'), '/screens/auth');
     }
 
     validate();

@@ -146,7 +146,6 @@
     }
 </style>
 <div class="chat" id="chat">
-
 </div>
 <div id="app"></div>
 <div id="snackbar"></div>
@@ -245,6 +244,7 @@
     }
 
     window.messageListener = () => {
+        console.log("messageListener")
         const es = new EventSource("/api/chat/feed?token=" + JSON.parse(localStorage.getItem("login")).token)
         es.onmessage = (e) => {
             const data = JSON.parse(e.data)
@@ -252,8 +252,7 @@
         }
     }
 
-    if (JSON.parse(localStorage.getItem("login")).email !== undefined)
-        messageListener()
+    messageListener()
 </script>
 </body>
 </html>

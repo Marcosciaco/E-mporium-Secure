@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <div class="green_outline" id="createReview">Send</div>
+            <div class="green_outline button" id="createReview">Send</div>
         </div>
     </div>
     <div class="column">
@@ -332,13 +332,13 @@
     document.getElementById("category").innerText = product.category
     document.getElementById("name").innerText = product.name
 
-    document.getElementById("detailImageContainer").innerHTML = `<img class="prod-image" src="${product.img}">`
+    document.getElementById("detailImageContainer").innerHTML = `<img class="prod-image" src="/api/store/productImage?pid=${product.id}">`
     document.getElementById("price").innerText = price + "$"
     document.getElementById("description").innerText = product.description
 
     updateReviews()
 
-    if (JSON.parse(localStorage.getItem("login")).isSeller === undefined) {
+    if (JSON.parse(localStorage.getItem("login")) === null) {
         document.getElementById("purchaseCont").style.display = "none"
         document.getElementById("createReviewCont").style.display = "none"
     }
@@ -349,7 +349,7 @@
     }
 
     document.getElementById("contactSeller").addEventListener("click", () => {
-        if (JSON.parse(localStorage.getItem("login")).isSeller !== undefined) {
+        if (JSON.parse(localStorage.getItem("login")) !== null && JSON.parse(localStorage.getItem("login")).isSeller !== undefined) {
             const chat = document.getElementById("chat")
             chat.style.display = "block"
             loadComponent(chat, "components/chat/chat", {

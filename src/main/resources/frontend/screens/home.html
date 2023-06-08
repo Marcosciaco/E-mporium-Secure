@@ -5,14 +5,21 @@
         <div class="header-item" onclick="scrollToHot()">Hot Offers</div>
     </div>
     <div class="right">
-        <div class="wrapper" id="logout">
+        <div class="wrapper button" id="chatBtn">
             <img
-                alt="Basket"
+                alt="Chat"
+                class="logo"
+                src="/frontend/assets?name=icons/chat.svg"
+            />
+        </div>
+        <div class="wrapper button" id="logout">
+            <img
+                alt="Logout"
                 class="logo"
                 src="/frontend/assets?name=icons/logout.svg"
             />
         </div>
-        <div class="wrapper" onclick="navigateDashboard()">
+        <div class="wrapper button" onclick="navigateDashboard()">
             <img
                 alt="Profile"
                 class="logo"
@@ -222,25 +229,32 @@
         );
     }
 
-    if (JSON.parse(localStorage.getItem("login")).isSeller === undefined) {
+    if (JSON.parse(localStorage.getItem("login")) === null) {
         document.getElementById("logout").style.display = "none";
+        document.getElementById("chatBtn").style.display = "none";
     } else {
         document.getElementById("logout").style.display = "flex";
+        document.getElementById("chatBtn").style.display = "flex";
     }
 
     document.getElementById("logout").addEventListener("click", () => {
-        fetchAPI("/auth/logout", "GET", {}).then((res) => {
+        fetchAPI("/auth/logout", "GET", {}).then(() => {
             localStorage.removeItem("login");
             loadComponent(document.getElementById("app"), "screens/auth", {});
         });
     });
 
+    document.getElementById("chatBtn").addEventListener("click", () => {
+        const chat = document.getElementById("chat")
+        chat.style.display = "block"
+        loadComponent(chat, "components/chat/user-list", {})
+    })
+
     const card = document.getElementById("carousel");
     loadComponent(card, "components/home/carousel", {});
 
     window.navigateDashboard = () => {
-        const isSeller = JSON.parse(localStorage.getItem("login")).isSeller;
-        if (isSeller !== undefined) {
+        if (JSON.parse(localStorage.getItem("login")) !== null) {
             loadComponent(
                 document.getElementById("app"),
                 "screens/dashboard",
@@ -255,6 +269,8 @@
     search.addEventListener("keyup", (e) => {
         e.preventDefault();
         const search = document.getElementById("search").value;
+        const products = document.getElementById("productList");
+        products.innerHTML = "";
         fetchAPI('store/product', 'POST', {
             "filter": {
                 "query": search
@@ -265,8 +281,7 @@
                 "description",
                 "category",
                 "price",
-                "stars",
-                "img"
+                "stars"
             ],
             "max": -1
         }).then(json => {
@@ -286,8 +301,7 @@
             "description",
             "category",
             "price",
-            "stars",
-            "img"
+            "stars"
         ],
         "max": -1
     }).then(json => {
@@ -298,7 +312,6 @@
 
     function renderProducts(json) {
         const products = document.getElementById("productList");
-        products.innerHTML = "";
 
         if (!Array.isArray(json))
             throw new Error("Invalid response from server")

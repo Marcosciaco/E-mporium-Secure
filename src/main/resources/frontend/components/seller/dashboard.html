@@ -1,4 +1,5 @@
 <div class="background"></div>
+<img alt="home" class="button backHome" id="back" src="/frontend/assets?name=icons/home.svg">
 <div class="seller-dashboard">
     <div class="greetings">
         <div class="title">Hello, <span id="username"></span></div>
@@ -222,6 +223,15 @@
         cursor: pointer;
     }
 
+    .backHome {
+        width: 30px;
+        height: 30px;
+        margin: 10px;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
 </style>
 <script>
 
@@ -250,7 +260,6 @@
                 "id",
                 "name",
                 "price",
-                "img"
             ],
             max: -1
         }).then(result => {
@@ -260,7 +269,7 @@
                 const sale = document.createElement("div");
                 sale.className = "sale";
                 sale.innerHTML = `
-                <img class="prod-image" src="${prod.img}" alt="product image"/>
+                <img class="prod-image" src="/api/store/productImage?pid=${prod.id}" alt="product image"/>
                 <span>${prod.id}</span>
                 <span>${prod.name}</span>
                 <span>${prod.price}</span>
@@ -324,4 +333,12 @@
             })
         })
     })
+
+    document.getElementById("back").addEventListener("click", () => {
+        loadComponent(document.getElementById("app"), '/screens/home', {});
+    })
+
+    window.createProductDash = () => {
+        loadComponent(document.getElementById("seller_dashboard"), '/components/seller/create_product', {});
+    }
 </script>
