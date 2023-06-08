@@ -41,6 +41,7 @@
         </div>
     </div>
     <div class="divider"></div>
+    <div style="display: flex; justify-content: center; align-items: center;width: 100%" id="searchedFor"></div>
     <div class="products" id="productList"></div>
 </div>
 
@@ -272,12 +273,13 @@
         const products = document.getElementById("productList");
         products.innerHTML = "";
         const searchedFor = document.createElement("div");
-        const secQuery = DOMPurify.sanitize(search);
+        const secQuery = DOMPurify.sanitize(search, { ALLOWED_TAGS: [] });
         searchedFor.innerHTML = `Search results for "${secQuery}"`;
         searchedFor.style.margin = "10px";
         searchedFor.style.color = "#205072";
         searchedFor.style.fontWeight = "bold";
-        products.appendChild(searchedFor);
+        document.getElementById("searchedFor").innerHTML = "";
+        document.getElementById("searchedFor").appendChild(searchedFor);
         fetchAPI('store/product', 'POST', {
             "filter": {
                 "query": secQuery
