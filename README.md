@@ -34,7 +34,7 @@ The Insecure Drug Online Shop provides a range of intentionally vulnerable featu
 - Impersonation: session tokens are autoincremental integers
   - Fixed by using UUIDv4 tokens
 - Retrieve all files by providing a ".." path query parameter for ComponentProvider and/or AssetsProvider
-  - TODO
+  - Fixed by using DOMPurify
 
 !! Please note that these vulnerabilities are intentionally included in the project and should not be replicated in any production environment.
 
