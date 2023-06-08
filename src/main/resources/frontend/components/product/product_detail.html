@@ -325,6 +325,7 @@
 
 <script>
     const product = window.props.product
+    console.log(product)
 
     let count = 1;
     let price = product.price;
@@ -407,9 +408,11 @@
     }
 
     window.increaseCount = () => {
-        count++;
-        updateCount();
-        updatePrice();
+        if (count < product.stock) {
+            count++;
+            updateCount();
+            updatePrice();
+        }
     }
 
     window.updateCount = () => {

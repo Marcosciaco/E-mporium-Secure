@@ -271,9 +271,16 @@
         const search = document.getElementById("search").value;
         const products = document.getElementById("productList");
         products.innerHTML = "";
+        const searchedFor = document.createElement("div");
+        const secQuery = DOMPurify.sanitize(search);
+        searchedFor.innerHTML = `Search results for "${secQuery}"`;
+        searchedFor.style.margin = "10px";
+        searchedFor.style.color = "#205072";
+        searchedFor.style.fontWeight = "bold";
+        products.appendChild(searchedFor);
         fetchAPI('store/product', 'POST', {
             "filter": {
-                "query": search
+                "query": secQuery
             },
             "fields": [
                 "id",

@@ -270,9 +270,9 @@
                 sale.className = "sale";
                 sale.innerHTML = `
                 <img class="prod-image" src="/api/store/productImage?pid=${prod.id}" alt="product image"/>
-                <span>${prod.id}</span>
-                <span>${prod.name}</span>
-                <span>${prod.price}</span>
+                <span>id: ${prod.id}</span>
+                <span><b>${prod.name}</b></span>
+                <span>${prod.price}$</span>
                 <div class="deleteBtn" onclick="deleteProduct(${prod.id})"></div>
             `
                 document.getElementById("productList").appendChild(sale);
