@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
@@ -30,9 +32,13 @@ public class ProductImage extends HttpServlet {
 
         try {
             Product product = ProductRepository.getProductById(Integer.parseInt(req.getParameter("pid")));
+            InputStream productImage = product.getImg();
             resp.setContentType("image/jpeg");
-            Blob productImage = product.getImg();
-            resp.getOutputStream().write(productImage.getBytes(1, (int) productImage.length()));
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = productImage.read(buffer)) != -1) {
+                resp.getOutputStream().write(buffer, 0, read);
+            }
             resp.getOutputStream().flush();
             resp.getOutputStream().close();
         } catch (Exception ex) {
@@ -63,7 +69,8 @@ public class ProductImage extends HttpServlet {
                 resp.setStatus(401);
                 return;
             }
-            product.setImg(req.getInputStream());
+            //product.setImg(req.getPart("image").getInputStream());
+            System.out.println(new String(req.getInputStream().readAllBytes()));
             resp.setStatus(200);
             response.set("status", mapper.valueToTree("ok"));
         } catch (SQLException | NotFoundException e) {

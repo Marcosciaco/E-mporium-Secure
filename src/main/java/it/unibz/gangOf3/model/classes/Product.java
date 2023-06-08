@@ -8,6 +8,7 @@ import it.unibz.gangOf3.model.exceptions.NotFoundException;
 import it.unibz.gangOf3.model.repositories.UserRepository;
 import it.unibz.gangOf3.util.DatabaseUtil;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
@@ -82,7 +83,7 @@ public class Product {
         return rs.getString("category");
     }
 
-    public Blob getImg() throws SQLException, NotFoundException {
+    public InputStream getImg() throws SQLException, NotFoundException {
         PreparedStatement stmt = DatabaseUtil.getConnection()
             .prepareStatement("SELECT image FROM products WHERE id = ?;");
         stmt.setInt(1, id);
@@ -90,17 +91,17 @@ public class Product {
         if (!rs.next()) {
             throw new NotFoundException("Product not found");
         }
-        return rs.getBlob("image");
+        return rs.getBinaryStream("image");
     }
 
     public void setImg(InputStream imgStream) {
         try {
             PreparedStatement stmt = DatabaseUtil.getConnection()
                 .prepareStatement("UPDATE products SET image = ? WHERE id = ?;");
-            stmt.setBlob(1, imgStream);
+            stmt.setBytes(1, imgStream.readAllBytes());
             stmt.setInt(2, id);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }

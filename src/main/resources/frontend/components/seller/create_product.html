@@ -51,9 +51,6 @@
         const fileInput = document.getElementById("image");
 
         const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
 
         if (name.length < 3 || tag.length < 3 || description.length < 3 || category.length < 3) {
             alert("Please enter at least 3 characters for each text field")
@@ -72,23 +69,40 @@
             return
         }
 
-        reader.onloadend = function () {
-            const data = {
-                name: name,
-                description: description,
-                tag: tag,
-                price: price,
-                category: category,
-                stock: stock,
-                image: reader.result
-            }
+        const formData = new FormData();
+        formData.append("image", file)
 
-            fetchAPI("store/product", "PUT", data).then(() => {
-                alert("Product created successfully")
+        const data = {
+            name: name,
+            description: description,
+            tag: tag,
+            price: price,
+            category: category,
+            stock: stock
+        }
+
+        fetchAPI("store/product", "PUT", data).then(res => {
+            fetch("/api/store/productImage?pid=" + res.productID, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization': localStorage.getItem('login') ? JSON.parse(localStorage.getItem('login')).token : undefined
+                },
+                body: formData
+            }).then(res => {
+                if (res.status !== 200) {
+                    alert("Error uploading image")
+                } else {
+                    alert("Product created successfully")
+                }
             }).catch(e => {
                 alert(e.message)
             })
-        }
+        }).catch(e => {
+            alert(e.message)
+
+        })
+
     }
 </script>
 <style>
