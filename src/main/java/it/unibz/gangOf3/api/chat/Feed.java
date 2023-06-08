@@ -66,6 +66,7 @@ public class Feed extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        resp.flushBuffer();
     }
 
     /**

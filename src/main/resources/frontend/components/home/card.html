@@ -1,5 +1,7 @@
 <div class="card">
-    <img alt="product image" class="prod-image" src="/frontend/assets?name=images/haribo.jpg">
+    <div id="imageContainer">
+    </div>
+    <!--<img alt="product image" class="prod-image" src="/frontend/assets?name=images/haribo.jpg">-->
     <div class="row">
         <span class="category">Gummy Bears</span>
         <div class="rating">
@@ -81,8 +83,9 @@
     const title = card.querySelector('.row .card-title');
     title.innerText = product.name;
 
-    const image = card.querySelector('.prod-image');
-    image.src = product.img;
+    const image = card.querySelector("#imageContainer");
+    image.innerHTML = `<img alt="product image" class="prod-image" src="${product.img}">`
+    //image.src = product.img;
 
     const price = card.querySelector('.row .card-price');
     price.innerText = product.price + '$';

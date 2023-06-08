@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS products (
     tag VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
-    image BLOB DEFAULT NULL,
+    image TEXT DEFAULT NULL,
     stock INTEGER DEFAULT NULL,
     category VARCHAR(255) NOT NULL,
     stars REAL DEFAULT NULL,

@@ -53,7 +53,8 @@
         </div>
     </div>
     <div class="column">
-        <img alt="product image" class="prod-image" id="image" src="/frontend/assets?name=images/haribo.jpg">
+        <div id="detailImageContainer">
+        </div>
         <div class="purchase" id="purchaseCont">
             <div class="price" id="price">2,99$</div>
             <div class="row">
@@ -330,7 +331,8 @@
 
     document.getElementById("category").innerText = product.category
     document.getElementById("name").innerText = product.name
-    document.getElementById("image").src = product.img
+
+    document.getElementById("detailImageContainer").innerHTML = `<img class="prod-image" src="${product.img}">`
     document.getElementById("price").innerText = price + "$"
     document.getElementById("description").innerText = product.description
 

@@ -257,7 +257,6 @@
         const search = document.getElementById("search").value;
         fetchAPI('store/product', 'POST', {
             "filter": {
-                "random": true,
                 "query": search
             },
             "fields": [
@@ -266,6 +265,7 @@
                 "description",
                 "category",
                 "price",
+                "stars",
                 "img"
             ],
             "max": -1
@@ -286,7 +286,7 @@
             "description",
             "category",
             "price",
-            "starss",
+            "stars",
             "img"
         ],
         "max": -1
@@ -299,6 +299,7 @@
     function renderProducts(json) {
         const products = document.getElementById("productList");
         products.innerHTML = "";
+
         if (!Array.isArray(json))
             throw new Error("Invalid response from server")
 

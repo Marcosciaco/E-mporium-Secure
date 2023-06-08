@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class UserRepository {
 
     public static void createUser(String username, String email, String password, String type, String emergencyEmail, String emergencyPhone) throws UserAlreadyExistsException, SQLException, IOException, MessagingException {
-        if (username.length() < 3 || !(type.equals("seller") || type.equals("buyer")))
+        if (username.length() < 3 || !(type.equals("true") || type.equals("false")))
             throw new IllegalArgumentException("Invalid username or type");
 
         //Check password
@@ -57,7 +57,7 @@ public class UserRepository {
         insertStmt.setString(2, email);
         insertStmt.setString(3, password);
         insertStmt.setString(4, salt);
-        insertStmt.setString(5, type);
+        insertStmt.setBoolean(5, Boolean.parseBoolean(type));
         insertStmt.setString(6, emergencyEmail);
         insertStmt.setString(7, emergencyPhone);
         insertStmt.setString(8, registrationTokenUUID);
