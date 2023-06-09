@@ -290,7 +290,8 @@
         },
         fields: [
             "product",
-            "quantity"
+            "quantity",
+            "verified"
         ],
         max: -1
     }).then(result => {
@@ -309,22 +310,18 @@
             }).then(resp => {
                 const prod = resp[0]
                 const sale = document.createElement("div");
+                console.log(res)
                 sale.className = "sale";
-                const info = document.createElement("div");
-                info.className = "info";
-                const title = document.createElement("div");
-                title.className = "title";
-                title.innerHTML = "Name: " + prod.name;
-                const customer = document.createElement("div");
-                customer.className = "customer";
-                customer.innerHTML = "Quantity: " + res.quantity;
-                info.appendChild(title);
-                info.appendChild(customer);
-                const value = document.createElement("div");
-                value.className = "value";
-                value.innerHTML = "$ " + prod.price * res.quantity;
-                sale.appendChild(info);
-                sale.appendChild(value);
+                sale.innerHTML = `
+                    <div class="info">
+                        <div class="title">Name: ${prod.name}</div>
+                        <div class="customer">Quantity: ${res.quantity}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: row; align-items: center">
+                        <div class="value">$ ${prod.price * res.quantity}</div>
+                        <img title="${res.verified ? "Verified" : "Not Verified"}" style="height: 20px; width: 20px; margin-left: 20px" src="${res.verified ? "/frontend/assets?name=icons/done.svg" : "/frontend/assets?name=icons/close.svg"}" />
+                    </div>
+                `;
                 document.getElementById("sales").appendChild(sale);
                 totalSales += res.quantity * prod.price
                 document.getElementById("totalSales").innerText = "$ " + totalSales

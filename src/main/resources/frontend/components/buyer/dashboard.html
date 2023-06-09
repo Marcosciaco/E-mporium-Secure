@@ -175,6 +175,7 @@
                 "id",
                 "product",
                 "quantity",
+                "verified"
             ],
             max: -1
         }).then(result => {
@@ -191,7 +192,7 @@
                         "id",
                         "name",
                         "price",
-                        "quantity"
+                        "quantity",
                     ],
                     max: -1
                 }).then(prod => {
@@ -203,6 +204,7 @@
                     <span>${prod.id}</span>
                     <span>${prod.name}</span>
                     <span>${order.quantity}</span>
+                    <img title="${result.verified ? "Verified" : "Not Verified"}" src="${result.verified ? "/frontend/assets?name=icons/done.svg" : "/frontend/assets?name=icons/close.svg"}"/>
                     <span>${prod.price * order.quantity}$</span>
                 `
                     document.getElementById("orders").appendChild(sale);
